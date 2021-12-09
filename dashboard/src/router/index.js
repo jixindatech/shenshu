@@ -54,7 +54,60 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  {
+    path: '/site',
+    component: Layout,
+    meta: { title: '站点管理', icon: 'el-icon-s-help' },
+    redirect: 'site',
+    children: [{
+      path: 'sites',
+      name: 'Sites',
+      component: () => import('@/views/site/sites'),
+      meta: { title: '站点配置', icon: 'dashboard' }
+    },
+    {
+      path: 'ssl',
+      name: 'SSL',
+      component: () => import('@/views/site/ssl'),
+      meta: { title: '证书配置', icon: 'dashboard' }
+    },
+    {
+      path: 'upstream',
+      name: 'Upstream',
+      component: () => import('@/views/site/upstream'),
+      meta: { title: 'Upstream配置', icon: 'dashboard' }
+    }]
+  },
+  {
+    path: '/config',
+    component: Layout,
+    meta: { title: '规则管理', icon: 'el-icon-s-help' },
+    redirect: 'ip',
+    children: [{
+      path: 'ip',
+      name: 'IP',
+      component: () => import('@/views/config/ip'),
+      meta: { title: 'IP配置', icon: 'dashboard' }
+    },
+    {
+      path: 'bot',
+      name: 'Bot',
+      component: () => import('@/views/config/bot'),
+      meta: { title: '爬虫配置', icon: 'dashboard' }
+    },
+    {
+      path: 'cc',
+      name: 'CC',
+      component: () => import('@/views/config/cc'),
+      meta: { title: 'CC配置', icon: 'dashboard' }
+    },
+    {
+      path: 'rule',
+      name: 'Rule',
+      component: () => import('@/views/config/rule'),
+      meta: { title: '规则配置', icon: 'dashboard' }
+    }]
+  },
   {
     path: '/system',
     component: Layout,
@@ -81,6 +134,7 @@ export const constantRoutes = [
       meta: { title: '系统配置', icon: 'dashboard' }
     }]
   },
+  /*
   {
     path: '/example',
     component: Layout,
@@ -174,6 +228,7 @@ export const constantRoutes = [
       }
     ]
   },
+  */
   {
     path: 'external-link',
     component: Layout,

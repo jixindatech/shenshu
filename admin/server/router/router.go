@@ -3,6 +3,7 @@ package router
 import (
 	"admin/core/log"
 	"admin/server/pkg/app"
+	"admin/server/router/shenshu"
 	"admin/server/router/system"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -66,7 +67,28 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		apis.PUT("/msg/:id", system.UpdateMsg)
 		apis.DELETE("/msg/:id", system.DeleteMsg)
 		apis.POST("/msg/:id/user", system.SendMsg)
+
 	}
 
+	shenshuApis := r.Group("/shenshu", auth())
+	{
+		shenshuApis.POST("/ssl", shenshu.AddSSL)
+		shenshuApis.GET("/ssl", shenshu.GetSSLs)
+		shenshuApis.GET("/ssl/:id", shenshu.GetSSL)
+		shenshuApis.PUT("/ssl/:id", shenshu.UpdateSSL)
+		shenshuApis.DELETE("/ssl/:id", shenshu.DeleteSSL)
+
+		shenshuApis.POST("/upstream", shenshu.AddUpstream)
+		shenshuApis.GET("/upstream", shenshu.GetUpstreams)
+		shenshuApis.GET("/upstream/:id", shenshu.GetUpstream)
+		shenshuApis.PUT("/upstream/:id", shenshu.UpdateUpstream)
+		shenshuApis.DELETE("/upstream/:id", shenshu.DeleteUpstream)
+
+		shenshuApis.POST("/site", shenshu.AddSite)
+		shenshuApis.GET("/site", shenshu.GetSites)
+		shenshuApis.GET("/site/:id", shenshu.GetSite)
+		shenshuApis.PUT("/site/:id", shenshu.UpdateSite)
+		shenshuApis.DELETE("/site/:id", shenshu.DeleteSite)
+	}
 	return r, nil
 }

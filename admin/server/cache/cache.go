@@ -8,7 +8,7 @@ import (
 
 const (
 	CONFIG = "config"
-	MEMORY = "memroy"
+	MEMORY = "memory"
 	REDIS  = "redis"
 )
 
@@ -21,7 +21,7 @@ var cacheItems map[string]interface{}
 var cacheConfig string
 
 func SetupCache(cfg *config.Config) error {
-	cacheItems := make(map[string]interface{})
+	cacheItems = make(map[string]interface{})
 	cacheConfig = cfg.Cache
 
 	cacheRedis, err := setupRedis(cfg.Redis)

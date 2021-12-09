@@ -17,4 +17,20 @@ p, admin, ^/system/ldap$, GET
 p, admin, ^/system/ldap$, POST
 p, admin, ^/system/ldap/\+?[1-9][0-9]*$, PUT
 
-p, test,  ^/system/user/\+?[1-9][0-9]*$, GET
+p, admin, ^/shenshu/site$, POST
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*$, DELETE
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*$, PUT
+p, admin, ^/shenshu/site$, GET
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*$, GET
+
+p, admin, ^/shenshu/ssl$, POST
+p, admin, ^/shenshu/ssl/\+?[1-9][0-9]*$, DELETE
+p, admin, ^/shenshu/ssl/\+?[1-9][0-9]*$, PUT
+p, admin, ^/shenshu/ssl$, GET
+p, admin, ^/shenshu/ssl/\+?[1-9][0-9]*$, GET
+
+p, admin, ^/shenshu/upstream$, POST
+p, admin, ^/shenshu/upstream/\+?[1-9][0-9]*$, DELETE
+p, admin, ^/shenshu/upstream/\+?[1-9][0-9]*$, PUT
+p, admin, ^/shenshu/upstream$, GET
+p, admin, ^/shenshu/upstream/\+?[1-9][0-9]*$, GET

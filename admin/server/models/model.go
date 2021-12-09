@@ -47,6 +47,10 @@ func Setup(cfg *config.DataBase) error {
 		Ldap{},
 		Txsms{},
 		Msg{},
+
+		SSL{},
+		Upstream{},
+		Site{},
 	)
 
 	return nil

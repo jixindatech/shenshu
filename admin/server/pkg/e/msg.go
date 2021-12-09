@@ -19,13 +19,28 @@ var MsgFlags = map[int]string{
 	LdapUpdateFailed: "添加LDAP失败",
 
 	TxsmsAddFailed:    "添加Txsms失败",
-	TxsmsGetFailed:    "添加Txsms失败",
-	TxsmsUpdateFailed: "添加Txsms失败",
+	TxsmsGetFailed:    "获取Txsms失败",
+	TxsmsUpdateFailed: "更新Txsms失败",
 
 	MsgAddFailed:    "添加msg失败",
-	MsgGetFailed:    "添加msg失败",
-	MsgUpdateFailed: "添加msg失败",
-	MsgDeleteFailed: "添加msg失败",
+	MsgGetFailed:    "获取msg失败",
+	MsgUpdateFailed: "更新msg失败",
+	MsgDeleteFailed: "删除msg失败",
+
+	SiteAddFailed:    "添加站点失败",
+	SiteGetFailed:    "获取站点失败",
+	SitePutFailed:    "更新站点失败",
+	SiteDeleteFailed: "删除站点失败",
+
+	SSLAddFailed:    "添加SSL失败",
+	SSLGetFailed:    "添加SSL失败",
+	SSLPutFailed:    "添加SSL失败",
+	SSLDeleteFailed: "添加SSL失败",
+
+	UpstreamAddFailed:    "添加Upstream失败",
+	UpstreamGetFailed:    "添加Upstream失败",
+	UpstreamPutFailed:    "添加Upstream失败",
+	UpstreamDeleteFailed: "添加Upstream失败",
 }
 
 func GetMsg(code int) string {

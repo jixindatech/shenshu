@@ -22,4 +22,19 @@ const (
 	MsgGetFailed      = 50001
 	MsgUpdateFailed   = 50002
 	MsgDeleteFailed   = 50003
+
+	SiteAddFailed    = 60001
+	SiteGetFailed    = 60002
+	SitePutFailed    = 60003
+	SiteDeleteFailed = 60004
+
+	SSLAddFailed    = 70001
+	SSLGetFailed    = 70002
+	SSLPutFailed    = 70003
+	SSLDeleteFailed = 70004
+
+	UpstreamAddFailed    = 80001
+	UpstreamGetFailed    = 80002
+	UpstreamPutFailed    = 80003
+	UpstreamDeleteFailed = 80004
 )

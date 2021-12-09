@@ -8,6 +8,7 @@ import (
 	"admin/server/pkg/app"
 	"admin/server/pkg/e"
 	"admin/server/service"
+	"admin/server/util"
 	"bytes"
 	"encoding/gob"
 	"fmt"
@@ -92,7 +93,7 @@ func GetJwtMiddleWare(login func(c *gin.Context) (interface{}, error), logout fu
 					if err != nil {
 						log.Logger.Error("user", zap.String("err", err.Error()))
 					}
-					if user.Status == 1 {
+					if user.Status == util.USER_ACCEPT {
 						return true
 					}
 				}

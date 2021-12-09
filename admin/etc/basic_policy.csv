@@ -1,0 +1,20 @@
+p, *,     ^/system/user/info, GET
+p, *,     ^/system/user/logout, POST
+
+p, admin, ^/system/user$, GET
+p, admin, ^/system/user$, POST
+p, admin, ^/system/user$, PUT
+p, admin, ^/system/user/\+?[1-9][0-9]*$, GET
+p, admin, ^/system/user/\+?[1-9][0-9]*$, PUT
+p, admin, ^/system/user/\+?[1-9][0-9]*$, DELETE
+p, admin, ^/system/user/password/\+?[1-9][0-9]*$, PUT
+
+p, admin, ^/system/email$, GET
+p, admin, ^/system/email$, POST
+p, admin, ^/system/email/\+?[1-9][0-9]*$, PUT
+
+p, admin, ^/system/ldap$, GET
+p, admin, ^/system/ldap$, POST
+p, admin, ^/system/ldap/\+?[1-9][0-9]*$, PUT
+
+p, test,  ^/system/user/\+?[1-9][0-9]*$, GET

@@ -1,0 +1,49 @@
+run_mode: debug #debug release test
+
+log:
+  filename: logs/gin.log
+  level: debug  #debug info warn error panic fatal
+  maxsize: 10
+  maxbackup: 3
+  maxage: 28
+  compress: false
+
+server:
+  port : 8080
+  read-timeout : 60
+  write-timeout : 60
+
+database:
+  type : mysql
+  user : root
+  password : 123456
+  host : 127.0.0.1:3306
+  name : shenshu
+  table-prefix :
+
+rbac:
+  model: etc\basic_model.conf
+  policy: etc\basic_policy.csv
+  auth: etc\auth.json
+
+app:
+  page-size: 10
+  adminpassword: '123456'
+
+cache: memory
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password:
+  db: 0
+  key_prefix: admin
+
+memory:
+  purge_time: 60 # seconds
+
+elasticsearch:
+  host: http://192.168.3.203:9200
+  index: waf-events
+  timeout: 5s
+  user: elastic
+  password: changme

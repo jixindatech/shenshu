@@ -1,0 +1,236 @@
+.login_page .login_box {
+  height: 650px;
+  background: url('~@/assets/images/login.jpg') no-repeat center center;
+}
+.login_page .login_box .center_box {
+  width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.login_page .login_form {
+  width: 380px;
+  position: absolute;
+  top: 80px;
+  right: 0px;
+  border-radius: 6px;
+  transition: all 0.8s;
+  transform: perspective(600px);
+}
+
+.login_page .login_form.rotate {
+  transform: rotateY(-180deg);
+}
+.login_page .form_body {
+  background: #fff;
+  padding: 0 30px 20px;
+  border-radius: 0 0 6px 6px;
+}
+.login_page .form_body input[type=text], .login_page .form_body input[type=password], .login_page .form_body input[type=button], .login_page .form_body input[type=submit] {
+  width: 310px;
+  height: 43px;
+  padding-left: 10px;
+  margin-top: 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+.login_page .form_body input[type=text].btn, .login_page .form_body input[type=password].btn, .login_page .form_body input[type=button].btn, .login_page .form_body input[type=submit].btn {
+  background: #345dc2;
+  width: 320px;
+  color: #fff;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+.login_page .form_body .error_msg {
+  width: 310px;
+  color: #D51423;
+  font-size: 12px;
+}
+.login_page .form_body .next_auto {
+  font-size: 14px;
+  color: #333;
+}
+.login_page .form_body .is_go {
+  float: right;
+  color: #345dc2;
+  height: 18px;
+  line-height: 18px;
+  font-size: 14px;
+  display: inline-block;
+  padding: 0 10px;
+  text-decoration: none;
+}
+.login_page .form_body .is_go:hover {
+  text-decoration: underline;
+}
+.login_page .form_body .agree {
+    font-size: 14px;
+    color: #333;
+    margin-top: 20px;
+}
+.login_page .form_body .agree a{
+    color: #345dc2;
+    text-decoration: none;
+}
+.login_page .form_body .agree a:hover {
+  text-decoration: underline;
+}
+.fl {
+  float: left;
+}
+.login_page .yzm_btn {
+  width: 100px;
+  height: 46px;
+  position: absolute;
+  left: 210px;
+  top: 21px;
+  line-height: 48px;
+  border-radius: 0 6px 6px 0;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+}
+.login_page .login_footer {
+  padding-bottom: 30px;
+}
+.login_page .login_footer p {
+  text-align: center;
+  font-size: 12px;
+  color: #1E1E1E;
+  margin-top: 20px;
+}
+.login_page .check {
+  width: 14px;
+  height: 14px;
+  position: relative;
+  top: -1px;
+}
+.login_page .img_box {
+  height: 70px;
+}
+.login_page .img_box img {
+  width: 70px;
+  height: 70px;
+  display: block;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.login_page .hellow_text {
+  text-align: center;
+  font-size: 14px;
+  padding: 20px 0;
+  border-bottom: 1px solid #ccc;
+}
+.login_page .btn_box {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 20px;
+}
+.login_page .btn_box li {
+  float: left;
+  width: 140px;
+  text-align: center;
+  line-height: 30px;
+  margin: 20px 10px 0;
+  border-radius: 6px;
+}
+.login_page .btn_box li a {
+  display: block;
+  background: whitesmoke;
+  border-radius: 6px;
+}
+.login_page .btn_box li a:hover {
+  color: #fff;
+  text-decoration: none;
+  background: skyblue;
+}
+.login_page .out_btn {
+  display: inline-block;
+  margin: 10px 0 0 100px;
+  font-size: 16px;
+  color: #333;
+  width: 120px;
+  line-height: 30px;
+  text-align: center;
+}
+.login_page .out_btn:hover {
+  text-decoration: none;
+}
+.login_page .prn_icon {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  top: 3px;
+}
+.login_page .tabs {
+  height: 60px;
+  line-height: 60px;
+  background: #fff;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e6e6e6;
+}
+.login_page .tabs .tab {
+  font-size: 18px;
+  width: 50%;
+  text-align: center;
+  cursor: pointer;
+  line-height: 60px;
+}
+.login_page .tabs span {
+  display: inline-block;
+  height: 59px;
+}
+.login_page .tabs .on {
+  border-bottom: 2px solid #345dc2;
+  color: #345dc2;
+}
+.login_page .r180 {
+  transform: rotateY(-180deg);
+}
+/* 用户协议 */
+.login_page .xieyi {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 3;
+}
+.login_page .xieyi .xieyi_content {
+  width: 900px;
+  height: 500px;
+  margin: 50px auto 0;
+  border-radius: 8px;
+  background: #fff;
+  position: relative;
+}
+.login_page .xieyi .xieyi_title {
+  color: #333;
+  font-size: 28px;
+  line-height: 70px;
+  text-align: center;
+}
+.login_page .xieyi .xieyi_body {
+  height: 350px;
+  overflow-y: auto;
+  padding: 0 20px;
+}
+.login_page .xieyi .xieyi_btn {
+  position: absolute;
+  bottom: 15px;
+  width: 166px;
+  height: 46px;
+  background: #345dc2;
+  color: #fff;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  left: 50%;
+  margin-left: -83px;
+  border-radius: 6px;
+}

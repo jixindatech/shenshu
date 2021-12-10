@@ -30,7 +30,7 @@ app:
   page-size: 10
   adminpassword: '123456'
 
-cache: memory
+cache: redis
 redis:
   host: 127.0.0.1
   port: 6379

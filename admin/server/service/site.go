@@ -2,6 +2,7 @@ package service
 
 import (
 	"admin/core/log"
+	"admin/server/cache"
 	"admin/server/models"
 	"encoding/json"
 	"fmt"
@@ -83,14 +84,13 @@ func SetupSites() error {
 			log.Logger.Error("site", zap.String("err", err.Error()))
 			return err
 		}
-		fmt.Println(siteStr)
-		/*
-			err = cache.Set(cacheSiteName, string(siteStr))
-			if err != nil {
-				golog.Error("site", zap.String("err", err.Error()))
-				return err
-			}
-		*/
+
+		err = cache.Set(cache.CONFIG, cacheSiteName, string(siteStr), 0)
+		if err != nil {
+			log.Logger.Error("site", zap.String("err", err.Error()))
+			return err
+		}
+
 		return nil
 	}
 
@@ -117,13 +117,12 @@ func SetupSites() error {
 		log.Logger.Error("site", zap.String("err", err.Error()))
 		return err
 	}
-	fmt.Println(siteStr)
-	/*
-		err = cache.Set(cacheSiteName, string(siteStr))
-		if err != nil {
-			golog.Error("site", zap.String("err", err.Error()))
-			return err
-		}
-	*/
+
+	err = cache.Set(cache.CONFIG, cacheSiteName, string(siteStr), 0)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
 	return nil
 }

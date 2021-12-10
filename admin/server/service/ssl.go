@@ -2,6 +2,7 @@ package service
 
 import (
 	"admin/core/log"
+	"admin/server/cache"
 	"admin/server/models"
 	"crypto/tls"
 	"crypto/x509"
@@ -115,14 +116,13 @@ func SetupSSLs() error {
 			log.Logger.Error("cert", zap.String("err", err.Error()))
 			return err
 		}
-		fmt.Println(certData)
-		/*
-			err = cache.Set(cacheSSLName, string(certData))
-			if err != nil {
-				log.Logger.Error("cert", zap.String("err", err.Error()))
-				return err
-			}
-		*/
+
+		err = cache.Set(cache.CONFIG, cacheSSLName, string(certData), 0)
+		if err != nil {
+			log.Logger.Error("cert", zap.String("err", err.Error()))
+			return err
+		}
+
 		return nil
 	}
 
@@ -158,14 +158,12 @@ func SetupSSLs() error {
 		log.Logger.Error("ssl", zap.String("err", err.Error()))
 		return err
 	}
-	/*
-		err = cache.Set(cacheSSLName, string(certData))
-		if err != nil {
-			log.Logger.Error("ssl", zap.String("err", err.Error()))
-			return err
-		}
-	*/
-	fmt.Println(certData)
+
+	err = cache.Set(cache.CONFIG, cacheSSLName, string(certData), 0)
+	if err != nil {
+		log.Logger.Error("ssl", zap.String("err", err.Error()))
+		return err
+	}
 
 	return nil
 }

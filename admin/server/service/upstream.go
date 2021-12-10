@@ -2,9 +2,9 @@ package service
 
 import (
 	"admin/core/log"
+	"admin/server/cache"
 	"admin/server/models"
 	"encoding/json"
-	"fmt"
 	"go.uber.org/zap"
 	"strconv"
 	"time"
@@ -101,14 +101,13 @@ func SetupUpstreams() error {
 			log.Logger.Error("upstream", zap.String("err", err.Error()))
 			return err
 		}
-		fmt.Println(upstreamStr)
-		/*
-			err = cache.Set(cacheUpstreamName, string(upstreamStr))
-			if err != nil {
-				golog.Error("upstream", zap.String("err", err.Error()))
-				return err
-			}
-		*/
+
+		err = cache.Set(cache.CONFIG, cacheUpstreamName, string(upstreamStr), 0)
+		if err != nil {
+			log.Logger.Error("upstream", zap.String("err", err.Error()))
+			return err
+		}
+
 		return nil
 	}
 
@@ -154,13 +153,12 @@ func SetupUpstreams() error {
 		log.Logger.Error("upstream", zap.String("err", err.Error()))
 		return err
 	}
-	fmt.Println(upstreamStr)
-	/*
-		err = cache.Set(cacheUpstreamName, string(upstreamStr))
-		if err != nil {
-			golog.Error("upstream", zap.String("err", err.Error()))
-			return err
-		}
-	*/
+
+	err = cache.Set(cache.CONFIG, cacheUpstreamName, string(upstreamStr), 0)
+	if err != nil {
+		log.Logger.Error("upstream", zap.String("err", err.Error()))
+		return err
+	}
+
 	return nil
 }

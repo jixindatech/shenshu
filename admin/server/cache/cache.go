@@ -22,7 +22,6 @@ var cacheConfig string
 
 func SetupCache(cfg *config.Config) error {
 	cacheItems = make(map[string]interface{})
-	cacheConfig = cfg.Cache
 
 	cacheRedis, err := setupRedis(cfg.Redis)
 	if err != nil {
@@ -35,6 +34,12 @@ func SetupCache(cfg *config.Config) error {
 		return err
 	}
 	cacheItems[MEMORY] = memory
+
+	if cfg.Cache == REDIS {
+		cacheConfig = REDIS
+	} else {
+		return fmt.Errorf("%s", "invalid cache type")
+	}
 
 	return nil
 }

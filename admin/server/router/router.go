@@ -3,7 +3,7 @@ package router
 import (
 	"admin/core/log"
 	"admin/server/pkg/app"
-	"admin/server/router/shenshu"
+	"admin/server/router/nginx"
 	"admin/server/router/system"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -70,25 +70,25 @@ func Setup(mode string) (g *gin.Engine, err error) {
 
 	}
 
-	shenshuApis := r.Group("/shenshu", auth())
+	nginxApis := r.Group("/nginx", auth())
 	{
-		shenshuApis.POST("/ssl", shenshu.AddSSL)
-		shenshuApis.GET("/ssl", shenshu.GetSSLs)
-		shenshuApis.GET("/ssl/:id", shenshu.GetSSL)
-		shenshuApis.PUT("/ssl/:id", shenshu.UpdateSSL)
-		shenshuApis.DELETE("/ssl/:id", shenshu.DeleteSSL)
+		nginxApis.POST("/ssl", nginx.AddSSL)
+		nginxApis.GET("/ssl", nginx.GetSSLs)
+		nginxApis.GET("/ssl/:id", nginx.GetSSL)
+		nginxApis.PUT("/ssl/:id", nginx.UpdateSSL)
+		nginxApis.DELETE("/ssl/:id", nginx.DeleteSSL)
 
-		shenshuApis.POST("/upstream", shenshu.AddUpstream)
-		shenshuApis.GET("/upstream", shenshu.GetUpstreams)
-		shenshuApis.GET("/upstream/:id", shenshu.GetUpstream)
-		shenshuApis.PUT("/upstream/:id", shenshu.UpdateUpstream)
-		shenshuApis.DELETE("/upstream/:id", shenshu.DeleteUpstream)
+		nginxApis.POST("/upstream", nginx.AddUpstream)
+		nginxApis.GET("/upstream", nginx.GetUpstreams)
+		nginxApis.GET("/upstream/:id", nginx.GetUpstream)
+		nginxApis.PUT("/upstream/:id", nginx.UpdateUpstream)
+		nginxApis.DELETE("/upstream/:id", nginx.DeleteUpstream)
 
-		shenshuApis.POST("/site", shenshu.AddSite)
-		shenshuApis.GET("/site", shenshu.GetSites)
-		shenshuApis.GET("/site/:id", shenshu.GetSite)
-		shenshuApis.PUT("/site/:id", shenshu.UpdateSite)
-		shenshuApis.DELETE("/site/:id", shenshu.DeleteSite)
+		nginxApis.POST("/site", nginx.AddSite)
+		nginxApis.GET("/site", nginx.GetSites)
+		nginxApis.GET("/site/:id", nginx.GetSite)
+		nginxApis.PUT("/site/:id", nginx.UpdateSite)
+		nginxApis.DELETE("/site/:id", nginx.DeleteSite)
 	}
 	return r, nil
 }

@@ -17,7 +17,7 @@ type Site struct {
 	Name        string
 	Host        string
 	Path        string
-	UpstreamRef uint64
+	UpstreamRef uint
 	Remark      string
 
 	Page     int

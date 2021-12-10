@@ -1,4 +1,4 @@
-package shenshu
+package nginx
 
 import (
 	"admin/core/log"
@@ -13,7 +13,7 @@ import (
 
 type upstreamForm struct {
 	Name           string         `json:"name" validate:"required,max=254"`
-	Lb             string         `json:"lb" validate:"required,Match(/chash|roundrobin/)"`
+	Lb             string         `json:"lb" validate:"required,lb"`
 	Key            string         `json:"key"`
 	Backend        []service.Node `json:"backend" validate:"required"`
 	Retry          int            `json:"retry" validate:"required,min=1"`

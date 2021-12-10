@@ -1,4 +1,4 @@
-package shenshu
+package nginx
 
 import (
 	"admin/core/log"
@@ -8,20 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
+	"strings"
 )
 
-type SiteForm struct {
-	Name       string `json:"name" validate:"required,max(254)"`
-	Host       string `json:"host" validate:"required"`
-	Path       string `json:"path" validate:"required"`
-	UptreamRef uint64 `json:"upstreamRef" validate:"required"`
-	Remark     string `json:"remark" validate:"max(254)"`
+type sslForm struct {
+	Name   string `json:"name" validate:"required,max=254"`
+	Pub    string `json:"pub" validate:"required,max=5120"`
+	Pri    string `json:"pri"  validate:"required,max=5120"`
+	Remark string `json:"remark" validate:"max=254"`
 }
 
-func AddSite(c *gin.Context) {
+func AddSSL(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		form     SiteForm
+		form     sslForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -34,20 +34,17 @@ func AddSite(c *gin.Context) {
 		return
 	}
 
-	Site := service.Site{
-		Name:        form.Name,
-		Host:        form.Host,
-		Path:        form.Path,
-		UpstreamRef: form.UptreamRef,
-
+	ssl := service.SSL{
+		Name:   form.Name,
+		Pub:    strings.TrimSpace(form.Pub),
+		Pri:    strings.TrimSpace(form.Pri),
 		Remark: form.Remark,
 	}
-
-	err = Site.Save()
+	err = ssl.Save()
 	if err != nil {
-		log.Logger.Error("Site", zap.String("add", err.Error()))
+		log.Logger.Error("ssl", zap.String("add", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.SiteAddFailed
+		errCode = e.SSLAddFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}
@@ -55,11 +52,11 @@ func AddSite(c *gin.Context) {
 	appG.Response(httpCode, errCode, "", nil)
 }
 
-func GetSite(c *gin.Context) {
+func GetSSL(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		httpCode = http.StatusOK
 		formId   app.IDForm
+		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
 
@@ -71,33 +68,33 @@ func GetSite(c *gin.Context) {
 		return
 	}
 
-	Site := service.Site{
+	ssl := service.SSL{
 		ID: formId.ID,
 	}
-	idSite, err := Site.Get()
+	idSSL, err := ssl.Get()
 	if err != nil {
-		log.Logger.Error("Site", zap.String("get", err.Error()))
+		log.Logger.Error("user", zap.String("get", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.SiteGetFailed
+		errCode = e.UserGetFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}
 
 	data := make(map[string]interface{})
-	data["item"] = idSite
+	data["item"] = idSSL
 	appG.Response(httpCode, errCode, "", data)
 }
 
-type querySiteForm struct {
+type querySSLForm struct {
 	Name     string `form:"name" validate:"max=254"`
 	Page     int    `form:"page" validate:"required,min=1,max=50"`
 	PageSize int    `form:"size" validate:"required,min=1"`
 }
 
-func GetSites(c *gin.Context) {
+func GetSSLs(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		form     querySiteForm
+		form     querySSLForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -110,31 +107,31 @@ func GetSites(c *gin.Context) {
 		return
 	}
 
-	Site := service.Site{
+	ssl := service.SSL{
 		Name:     form.Name,
 		Page:     form.Page,
 		PageSize: form.PageSize,
 	}
-	Sites, count, err := Site.GetList()
+	ssls, count, err := ssl.GetList()
 	if err != nil {
-		log.Logger.Error("Site", zap.String("get", err.Error()))
+		log.Logger.Error("ssl", zap.String("get", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.SiteGetFailed
+		errCode = e.SSLGetFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}
 
 	data := make(map[string]interface{})
-	data["list"] = Sites
+	data["list"] = ssls
 	data["total"] = count
 	appG.Response(httpCode, errCode, "", data)
 }
 
-func UpdateSite(c *gin.Context) {
+func UpdateSSL(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		formId   app.IDForm
-		form     SiteForm
+		form     sslForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -155,19 +152,18 @@ func UpdateSite(c *gin.Context) {
 		return
 	}
 
-	Site := service.Site{
-		ID:          formId.ID,
-		Host:        form.Host,
-		Path:        form.Path,
-		UpstreamRef: form.UptreamRef,
-
+	ssl := service.SSL{
+		ID:     formId.ID,
+		Name:   form.Name,
+		Pub:    form.Pub,
+		Pri:    form.Pri,
 		Remark: form.Remark,
 	}
-	err = Site.Save()
+	err = ssl.Save()
 	if err != nil {
-		log.Logger.Error("Site", zap.String("put", err.Error()))
+		log.Logger.Error("ssl", zap.String("put", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.SitePutFailed
+		errCode = e.SSLPutFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}
@@ -175,11 +171,11 @@ func UpdateSite(c *gin.Context) {
 	appG.Response(httpCode, errCode, "", nil)
 }
 
-func DeleteSite(c *gin.Context) {
+func DeleteSSL(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		httpCode = http.StatusOK
 		formId   app.IDForm
+		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
 
@@ -191,14 +187,14 @@ func DeleteSite(c *gin.Context) {
 		return
 	}
 
-	Site := service.Site{
+	ssl := service.SSL{
 		ID: formId.ID,
 	}
-	err = Site.Delete()
+	err = ssl.Delete()
 	if err != nil {
-		log.Logger.Error("Site", zap.String("delete", err.Error()))
+		log.Logger.Error("ssl", zap.String("delete", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.SiteDeleteFailed
+		errCode = e.SSLDeleteFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}

@@ -38,6 +38,15 @@ func ValidateRole(fl validator.FieldLevel) bool {
 	return false
 }
 
+func ValidateLB(fl validator.FieldLevel) bool {
+	lb := fl.Field().String()
+	if lb != "" && (lb == "chash" || lb == "roundrobin") {
+		return true
+	}
+
+	return false
+}
+
 func SetupValidate() error {
 	var err error
 
@@ -48,6 +57,11 @@ func SetupValidate() error {
 	}
 
 	err = validate.RegisterValidation("role", ValidateRole)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("lb", ValidateLB)
 	if err != nil {
 		return err
 	}

@@ -55,26 +55,26 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/site',
+    path: '/nginx',
     component: Layout,
     meta: { title: '站点管理', icon: 'el-icon-s-help' },
     redirect: 'site',
     children: [{
-      path: 'sites',
-      name: 'Sites',
-      component: () => import('@/views/site/sites'),
+      path: 'site',
+      name: 'Site',
+      component: () => import('@/views/nginx/site'),
       meta: { title: '站点配置', icon: 'dashboard' }
     },
     {
       path: 'ssl',
       name: 'SSL',
-      component: () => import('@/views/site/ssl'),
+      component: () => import('@/views/nginx/ssl'),
       meta: { title: '证书配置', icon: 'dashboard' }
     },
     {
       path: 'upstream',
       name: 'Upstream',
-      component: () => import('@/views/site/upstream'),
+      component: () => import('@/views/nginx/upstream'),
       meta: { title: 'Upstream配置', icon: 'dashboard' }
     }]
   },

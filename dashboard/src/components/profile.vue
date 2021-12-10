@@ -70,7 +70,7 @@ export default {
   watch: {
     visible(newVal, oldVal) {
       if (newVal === true) {
-        this.formData = JSON.parse(this.$store.getters.info)
+        this.formData = this.$store.getters.info
       }
     }
   },

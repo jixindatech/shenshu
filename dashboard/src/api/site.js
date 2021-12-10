@@ -1,39 +1,39 @@
 import request from '@/utils/request'
 
-export function getList(query, current = 1, size = 10) {
-  return request({
-    url: `/shenshu/site`,
-    method: 'get',
-    params: { ...query, page: current, size }
-  })
-}
-
 export function add(data) {
   return request({
-    url: `/shenshu/site`,
+    url: `/nginx/site`,
     method: 'post',
     data
   })
 }
 
-export function update(id, data) {
+export function put(id, data) {
   return request({
-    url: `/shenshu/site/${id}`,
+    url: `/nginx/site/${id}`,
     method: 'put',
     data
   })
 }
 
-export function getById(id) {
+export function get(id) {
   return request({
-    url: `/shenshu/site/${id}`,
+    url: `/nginx/site/${id}`,
     method: 'get'
+  })
+}
+
+export function getList(query, current = 1, size = 20) {
+  return request({
+    url: `/nginx/site`,
+    method: 'get',
+    params: { ...query, page: current, size }
   })
 }
 
 export function deleteById(id) {
   return request({
-    url: `/shenshu/site/${id}`,
+    url: `/nginx/site/${id}`,
     method: 'delete'
   })
 }

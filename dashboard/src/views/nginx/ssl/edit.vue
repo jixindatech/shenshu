@@ -14,10 +14,15 @@
       style="width: 400px"
       status-icon
     >
-      <el-form-item label="站点名称：" prop="username">
-        <el-input v-model="formData.username" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="formData.name" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
       </el-form-item>
-
+      <el-form-item label="公钥:" prop="pub">
+        <el-input v-model="formData.pub" type="textarea" />
+      </el-form-item>
+      <el-form-item label="私钥:" prop="pri">
+        <el-input v-model="formData.pri" type="textarea" />
+      </el-form-item>
       <el-form-item label="备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />
       </el-form-item>
@@ -34,11 +39,11 @@
 </template>
 
 <script>
-import { add, update } from '@/api/site'
-
+import * as api from '@/api/ssl'
 export default {
   props: {
     title: {
+      // 弹窗的标题
       type: String,
       default: ''
     },
@@ -48,18 +53,20 @@ export default {
     },
     formData: {
       type: Object,
-      default: function() { return {} }
+      default: () => {}
     },
     remoteClose: {
       type: Function,
-      default: function() {}
+      default: () => {}
     }
   },
 
   data() {
     return {
       rules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        pub: [{ required: true, message: '请输入公钥', trigger: 'blur' }],
+        pri: [{ required: true, message: '请输入私钥', trigger: 'blur' }]
       }
     }
   },
@@ -70,23 +77,19 @@ export default {
         if (valid) {
           this.submitData()
         } else {
+          // console.log('error submit!!');
           return false
         }
       })
     },
 
     async submitData() {
-      let response = null
-      if (this.formData.id) {
-        response = await update(this.formData.id, this.formData)
-      } else {
-        this.formData.password = this.formData.username
-        response = await add(this.formData)
-      }
-
+      const response = await api.add(this.formData)
       if ((response.code === 0)) {
         this.$message({ message: '保存成功', type: 'success' })
         this.handleClose()
+      } else {
+        this.$message({ message: '保存失败', type: 'error' })
       }
     },
 

@@ -51,6 +51,8 @@ func Setup(cfg *config.DataBase) error {
 		SSL{},
 		Upstream{},
 		Site{},
+
+		IP{},
 	)
 
 	return nil

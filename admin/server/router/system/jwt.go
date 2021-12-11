@@ -11,7 +11,6 @@ import (
 	"admin/server/util"
 	"bytes"
 	"encoding/gob"
-	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -108,7 +107,7 @@ func GetJwtMiddleWare(login func(c *gin.Context) (interface{}, error), logout fu
 					}
 				}
 			}
-			fmt.Println("forbidden page")
+
 			return false
 		},
 		RefreshResponse: func(c *gin.Context, code int, token string, expire time.Time) {

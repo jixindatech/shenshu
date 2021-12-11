@@ -52,7 +52,7 @@ func DeleteSite(id uint) error {
 	return nil
 }
 
-func PutSite(id uint, data map[string]interface{}) error {
+func UpdateSite(id uint, data map[string]interface{}) error {
 	site := Site{}
 	site.Model.ID = id
 

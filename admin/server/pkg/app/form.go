@@ -4,8 +4,13 @@ import (
 	"admin/core/rbac"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/locales/zh"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
+	zh_translations "github.com/go-playground/validator/v10/translations/zh"
+	"net"
 	"regexp"
+	"strings"
 )
 
 type IDForm struct {
@@ -47,10 +52,38 @@ func ValidateLB(fl validator.FieldLevel) bool {
 	return false
 }
 
+func ValidateIP(fl validator.FieldLevel) bool {
+	ip := fl.Field().String()
+
+	ok := strings.Contains(ip, "/")
+	if ok {
+		_, _, err := net.ParseCIDR(ip)
+		if err != nil {
+			return false
+		}
+		return true
+	}
+
+	if net.ParseIP(ip) != nil {
+		return true
+	}
+
+	return false
+}
+
 func SetupValidate() error {
 	var err error
 
+	uni := ut.New(zh.New())
+	trans, _ := uni.GetTranslator("zh")
+
 	validate = validator.New()
+
+	err = zh_translations.RegisterDefaultTranslations(validate, trans)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	err = validate.RegisterValidation("phone", ValidatePhone)
 	if err != nil {
 		return err
@@ -62,6 +95,11 @@ func SetupValidate() error {
 	}
 
 	err = validate.RegisterValidation("lb", ValidateLB)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("ip", ValidateIP)
 	if err != nil {
 		return err
 	}

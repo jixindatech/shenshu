@@ -2,6 +2,8 @@ package cache
 
 import (
 	"admin/config"
+	"bytes"
+	"encoding/gob"
 	"fmt"
 	gocache "github.com/patrickmn/go-cache"
 	"time"
@@ -32,6 +34,13 @@ func (m *Memory) Set(key string, value interface{}, expire time.Duration) error 
 		return fmt.Errorf("%s", "invalid ttl value")
 	}
 
-	m.memeory.Set(key, value, expire)
+	buf := bytes.Buffer{}
+	encoder := gob.NewEncoder(&buf)
+	err := encoder.Encode(value)
+	if err != nil {
+		return err
+	}
+
+	m.memeory.Set(key, buf.Bytes(), expire)
 	return nil
 }

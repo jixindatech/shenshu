@@ -33,7 +33,7 @@ func (r *Site) Save() (err error) {
 	data["remark"] = r.Remark
 
 	if r.ID > 0 {
-		err = models.PutSite(r.ID, data)
+		err = models.UpdateSite(r.ID, data)
 	} else {
 		data["name"] = r.Name
 		err = models.AddSite(data)

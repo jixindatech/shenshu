@@ -4,6 +4,7 @@ import (
 	"admin/core/log"
 	"admin/server/pkg/app"
 	"admin/server/router/nginx"
+	"admin/server/router/shenshu"
 	"admin/server/router/system"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -89,6 +90,12 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		nginxApis.GET("/site/:id", nginx.GetSite)
 		nginxApis.PUT("/site/:id", nginx.UpdateSite)
 		nginxApis.DELETE("/site/:id", nginx.DeleteSite)
+	}
+
+	shenshuApis := r.Group("/shenshu", auth())
+	{
+		shenshuApis.POST("/ip", shenshu.AddIP)
+		shenshuApis.GET("/ip", shenshu.GetIPs)
 	}
 	return r, nil
 }

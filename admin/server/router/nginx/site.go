@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-type SiteForm struct {
+type siteForm struct {
 	Name       string `json:"name" validate:"required,max=254"`
 	Host       string `json:"host" validate:"required"`
 	Path       string `json:"path" validate:"required"`
@@ -21,7 +21,7 @@ type SiteForm struct {
 func AddSite(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		form     SiteForm
+		form     siteForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -134,7 +134,7 @@ func UpdateSite(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		formId   app.IDForm
-		form     SiteForm
+		form     siteForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)

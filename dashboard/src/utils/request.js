@@ -44,7 +44,6 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
     // if the custom code is not 0, it is judged as an error.
     if (res.code !== 0) {
       Message({
@@ -72,6 +71,11 @@ service.interceptors.response.use(
     }
   },
   error => {
+    if (error.response.status === 401) {
+      store.dispatch('user/resetToken').then(() => {
+        location.reload()
+      })
+    }
     console.log('err' + error) // for debug
     Message({
       message: error.message,

@@ -4,10 +4,10 @@
   >
     <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
       <el-tab-pane label="Allow名单" name="1">
-        <Allow :params="activeName" :type="IP_TYPE.ALLOW" />
+        <Item :params="activeName" :type="IP_TYPE.ALLOW" />
       </el-tab-pane>
       <el-tab-pane label="Deny名单" name="2">
-        <Deny :params="activeName" :type="IP_TYPE.DENY" />
+        <Item :params="activeName" :type="IP_TYPE.DENY" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -15,12 +15,11 @@
 
 <script>
 import { IP_TYPE } from '@/utils/const'
-import Allow from './components/allow.vue'
-import Deny from './components/deny.vue'
+import Item from './components/ip.vue'
 
 export default {
   name: 'IP',
-  components: { Allow, Deny },
+  components: { Item },
   data() {
     return {
       IP_TYPE,

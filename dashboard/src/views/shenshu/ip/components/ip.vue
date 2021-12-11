@@ -63,6 +63,11 @@
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
+            type="success"
+            size="mini"
+            @click="relateIPWithSites(scope.row.id)"
+          >关联域名</el-button>
+          <el-button
             type="danger"
             size="mini"
             :disabled="scope.row.id === 1"
@@ -89,22 +94,28 @@
       :remote-close="remoteClose"
     />
 
+    <el-dialog title="关联站点" :visible.sync="site.visible" width="65%">
+      <Site :ids="site.ids" @getSites="getSites" />
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { getList, deleteById, getById } from '@/api/ip'
 import Edit from './edit'
+import Site from '@/views/nginx/site'
+
 export default {
-  components: { Edit },
+  components: { Edit, Site },
   props: {
     params: {
       type: String,
-      default: '2'
+      default: '1'
     },
     type: {
       type: String,
-      default: '2'
+      default: '1'
     }
   },
   data() {
@@ -112,6 +123,7 @@ export default {
       query: {},
       edit: {
         title: '',
+        type: '',
         visible: false,
         formData: {}
       },
@@ -122,7 +134,12 @@ export default {
       },
       list: [],
       listLoading: true,
-      checkedUserList: []
+      checkedUserList: [],
+      site: {
+        visible: false,
+        ids: [],
+        ip: null
+      }
     }
   },
   watch: {
@@ -200,6 +217,30 @@ export default {
         })
         .catch(() => {
         })
+    },
+    relateIPWithSites(id) {
+      this.site.ip = id
+      this.site.ids = []
+      this.site.visible = true
+      /*
+      api.getRoleIdsByUserId(id).then((response) => {
+        this.site.ids = response.data.list
+        this.site.visible = true
+      })
+      */
+    },
+    getSites(ids) {
+      console.log(ids)
+      this.site.visible = false
+      /*
+      const data = { ids }
+      api.saveUserRole(this.site.id, data).then((response) => {
+        if (response.code === 0) {
+          this.$message({ message: '关联成功', type: 'success' })
+          this.site.visible = false
+        }
+      })
+      */
     }
   }
 }

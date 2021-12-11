@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :inline="true" :model="query" size="mini">
       <el-form-item
-        label="路由名称:"
+        label="Site名称:"
       >
         <el-input v-model.trim="query.name" />
       </el-form-item>
@@ -17,18 +17,35 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-if="ids === null"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
         >新增</el-button>
+        <el-button
+          v-if="ids !== null"
+          icon="el-icon-circle-plus-outline"
+          type="success"
+          @click="getSites"
+        >关联站点</el-button>
       </el-form-item>
     </el-form>
     <el-table
+      ref="dataTable"
       :data="list"
       stripe
       border
       style="width: 100%"
+      row-key="id"
+      @selection-change="handleSelectionChange"
     >
+      <el-table-column
+        v-if="ids !== null"
+        align="center"
+        reserve-selection
+        type="selection"
+        width="55"
+      />
       <el-table-column align="center" type="index" label="序号" width="60px" />
       <el-table-column align="center" prop="name" label="名称" width="150px" />
       <el-table-column align="center" prop="host" label="域名" width="200px" />
@@ -39,28 +56,13 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="remark" label="备注" width="200px" />
-      <el-table-column align="center" label="操作">
+      <el-table-column v-if="ids === null" align="center" label="操作">
         <template slot-scope="scope">
           <el-button
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
-          <el-button
-            type="info"
-            size="mini"
-            @click="handleDelete(scope.row.id)"
-          >IP管理</el-button>
-          <el-button
-            type="warning"
-            size="mini"
-            @click="handleDelete(scope.row.id)"
-          >CC配置</el-button>
-          <el-button
-            type="success"
-            size="mini"
-            @click="handleDelete(scope.row.id)"
-          >Bot管理</el-button>
           <el-button
             type="primary"
             size="mini"
@@ -102,9 +104,9 @@ export default {
   name: 'Site',
   components: { Edit },
   props: {
-    name: {
-      type: String,
-      default: ''
+    ids: {
+      type: Array,
+      default: function() { return null }
     }
   },
   data() {
@@ -120,7 +122,14 @@ export default {
         title: '',
         visible: false,
         formData: {}
-      }
+      },
+      checkedSitesList: []
+    }
+  },
+  watch: {
+    ids() {
+      this.query = {}
+      this.queryData()
     }
   },
   created() {
@@ -136,6 +145,8 @@ export default {
 
       this.list = data.list
       this.page.total = data.total
+
+      this.chekedSites()
     },
 
     handleSizeChange(val) {
@@ -193,6 +204,28 @@ export default {
       this.edit.formData = {}
       this.edit.visible = false
       this.fetchData()
+    },
+    chekedSites() {
+      this.$refs.dataTable.clearSelection()
+      if (this.ids) {
+        this.list.forEach((item) => {
+          if (this.ids.indexOf(item.id) !== -1) {
+            this.$refs.dataTable.toggleRowSelection(item, true)
+          }
+        })
+      }
+    },
+    handleSelectionChange(val) {
+      this.checkedSitesList = val
+    },
+    getSites() {
+      const checkedSites = []
+      this.checkedSitesList.forEach((item) => {
+        checkedSites.push(item.id)
+      })
+
+      this.checkedSitesList = []
+      this.$emit('getSites', checkedSites)
     }
   }
 }

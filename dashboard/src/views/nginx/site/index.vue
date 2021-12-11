@@ -29,23 +29,43 @@
       border
       style="width: 100%"
     >
-      <el-table-column align="center" type="index" label="序号" width="60" />
-      <el-table-column align="center" prop="name" label="名称" />
-      <el-table-column align="center" prop="host" label="域名" />
-      <el-table-column align="center" prop="path" label="路径" />
-      <el-table-column align="center" prop="upstreamRef" label="Upstream">
+      <el-table-column align="center" type="index" label="序号" width="60px" />
+      <el-table-column align="center" prop="name" label="名称" width="150px" />
+      <el-table-column align="center" prop="host" label="域名" width="200px" />
+      <el-table-column align="center" prop="path" label="路径" width="150px" />
+      <el-table-column align="center" prop="upstreamRef" label="Upstream" width="100px">
         <template v-if="scope.row.upstreamRef.length === 1" slot-scope="scope">
           {{ scope.row.upstreamRef[0].name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="remark" label="备注" />
-      <el-table-column align="center" label="操作" width="330">
+      <el-table-column align="center" prop="remark" label="备注" width="200px" />
+      <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
+          <el-button
+            type="info"
+            size="mini"
+            @click="handleDelete(scope.row.id)"
+          >IP管理</el-button>
+          <el-button
+            type="warning"
+            size="mini"
+            @click="handleDelete(scope.row.id)"
+          >CC配置</el-button>
+          <el-button
+            type="success"
+            size="mini"
+            @click="handleDelete(scope.row.id)"
+          >Bot管理</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleDelete(scope.row.id)"
+          >规则管理</el-button>
           <el-button
             type="danger"
             size="mini"

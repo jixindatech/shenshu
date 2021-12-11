@@ -79,33 +79,33 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/config',
+    path: '/shenshu',
     component: Layout,
     meta: { title: '规则管理', icon: 'el-icon-s-help' },
     redirect: 'ip',
     children: [{
       path: 'ip',
       name: 'IP',
-      component: () => import('@/views/config/ip'),
-      meta: { title: 'IP配置', icon: 'dashboard' }
-    },
-    {
-      path: 'bot',
-      name: 'Bot',
-      component: () => import('@/views/config/bot'),
-      meta: { title: '爬虫配置', icon: 'dashboard' }
+      component: () => import('@/views/shenshu/ip'),
+      meta: { title: 'IP管理', icon: 'dashboard' }
     },
     {
       path: 'cc',
       name: 'CC',
-      component: () => import('@/views/config/cc'),
+      component: () => import('@/views/shenshu/cc'),
       meta: { title: 'CC配置', icon: 'dashboard' }
+    },
+    {
+      path: 'bot',
+      name: 'Bot',
+      component: () => import('@/views/shenshu/bot'),
+      meta: { title: 'Bot管理', icon: 'dashboard' }
     },
     {
       path: 'rule',
       name: 'Rule',
-      component: () => import('@/views/config/rule'),
-      meta: { title: '规则配置', icon: 'dashboard' }
+      component: () => import('@/views/shenshu/rule'),
+      meta: { title: '规则管理', icon: 'dashboard' }
     }]
   },
   {

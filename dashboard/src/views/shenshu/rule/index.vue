@@ -95,10 +95,10 @@
 </template>
 
 <script>
-import { getList, deleteById, getById } from '@/api/ip'
+import { getList, deleteById, getById } from '@/api/rule'
 import Edit from './edit'
 export default {
-  name: 'IP',
+  name: 'Rule',
   components: { Edit },
   props: {
     msgId: {
@@ -215,3 +215,8 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+::v-deep .input_size .el-input { width: 250px; }
+
+</style>

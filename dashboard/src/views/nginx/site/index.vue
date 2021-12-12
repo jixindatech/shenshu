@@ -26,7 +26,7 @@
           v-if="ids !== null"
           icon="el-icon-circle-plus-outline"
           type="success"
-          @click="getSites"
+          @click="ipdateIpSites"
         >关联站点</el-button>
       </el-form-item>
     </el-form>
@@ -218,14 +218,14 @@ export default {
     handleSelectionChange(val) {
       this.checkedSitesList = val
     },
-    getSites() {
+    ipdateIpSites() {
       const checkedSites = []
       this.checkedSitesList.forEach((item) => {
         checkedSites.push(item.id)
       })
 
       this.checkedSitesList = []
-      this.$emit('getSites', checkedSites)
+      this.$emit('updateIpSites', checkedSites)
     }
   }
 }

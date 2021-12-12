@@ -60,11 +60,6 @@
           <el-button
             type="success"
             size="mini"
-            @click="handleEdit(scope.row.id)"
-          >编辑</el-button>
-          <el-button
-            type="success"
-            size="mini"
             @click="relateIPWithSites(scope.row.id)"
           >关联域名</el-button>
           <el-button
@@ -95,14 +90,14 @@
     />
 
     <el-dialog title="关联站点" :visible.sync="site.visible" width="65%">
-      <Site :ids="site.ids" @getSites="getSites" />
+      <Site :ids="site.ids" @updateIpSites="updateIpSites" />
     </el-dialog>
 
   </div>
 </template>
 
 <script>
-import { getList, deleteById, getById } from '@/api/ip'
+import { getList, deleteById, getById, update } from '@/api/ip'
 import Edit from './edit'
 import Site from '@/views/nginx/site'
 
@@ -192,14 +187,6 @@ export default {
       this.page.current = val
       this.fetchData()
     },
-    handleEdit(id) {
-      getById(id).then((response) => {
-        const { data } = response
-        this.edit.formData = data.item
-        this.edit.title = '编辑'
-        this.edit.visible = true
-      })
-    },
     handleDelete(id) {
       this.$confirm('确认删除这条记录吗?', '提示', {
         confirmButtonText: '确定',
@@ -222,25 +209,24 @@ export default {
       this.site.ip = id
       this.site.ids = []
       this.site.visible = true
-      /*
-      api.getRoleIdsByUserId(id).then((response) => {
-        this.site.ids = response.data.list
+
+      getById(id).then((response) => {
+        console.log(response)
+        const ip = response.data.item
+        ip.sites.forEach(element => {
+          this.site.ids.push(element.id)
+        })
         this.site.visible = true
       })
-      */
     },
-    getSites(ids) {
-      console.log(ids)
-      this.site.visible = false
-      /*
-      const data = { ids }
-      api.saveUserRole(this.site.id, data).then((response) => {
+    updateIpSites(ids) {
+      const data = { sites: ids }
+      update(this.site.ip, data).then((response) => {
         if (response.code === 0) {
           this.$message({ message: '关联成功', type: 'success' })
           this.site.visible = false
         }
       })
-      */
     }
   }
 }

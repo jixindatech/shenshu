@@ -96,6 +96,9 @@ func Setup(mode string) (g *gin.Engine, err error) {
 	{
 		shenshuApis.POST("/ip", shenshu.AddIP)
 		shenshuApis.GET("/ip", shenshu.GetIPs)
+		shenshuApis.GET("/ip/:id", shenshu.GetIP)
+		shenshuApis.PUT("/ip/:id", shenshu.UpdateIP)
+		shenshuApis.DELETE("/ip/:id", shenshu.DeleteIP)
 	}
 	return r, nil
 }

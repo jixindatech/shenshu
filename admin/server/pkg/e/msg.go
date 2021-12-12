@@ -41,6 +41,11 @@ var MsgFlags = map[int]string{
 	UpstreamGetFailed:    "添加Upstream失败",
 	UpstreamPutFailed:    "添加Upstream失败",
 	UpstreamDeleteFailed: "添加Upstream失败",
+
+	IPAddFailed:    "添加IP失败",
+	IPGetFailed:    "添加IP失败",
+	IPPutFailed:    "添加IP失败",
+	IPDeleteFailed: "添加IP失败",
 }
 
 func GetMsg(code int) string {

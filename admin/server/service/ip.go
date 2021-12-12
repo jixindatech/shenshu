@@ -13,12 +13,20 @@ type IP struct {
 	IP     []string
 	Remark string
 
+	Sites []uint
+
 	Page     int
 	PageSize int
 }
 
 func (i *IP) Save() (err error) {
 	data := make(map[string]interface{})
+
+	if i.ID > 0 {
+		data["sites"] = i.Sites
+		return models.UpdateIP(i.ID, data)
+	}
+
 	data["name"] = i.Name
 	data["type"] = i.Type
 
@@ -28,13 +36,8 @@ func (i *IP) Save() (err error) {
 	}
 	data["ip"] = ip
 	data["remark"] = i.Remark
-
-	if i.ID > 0 {
-		//err = models.PutSite(i.ID, data)
-	} else {
-		data["name"] = i.Name
-		err = models.AddIP(data)
-	}
+	data["name"] = i.Name
+	err = models.AddIP(data)
 
 	if err != nil {
 		return err
@@ -52,4 +55,18 @@ func (i *IP) GetList() ([]*models.IP, int, error) {
 	data["pagesize"] = i.PageSize
 
 	return models.GetIPs(data)
+}
+
+func (i *IP) Get() (*models.IP, error) {
+	return models.GetIP(i.ID)
+}
+
+func (i *IP) Delete() error {
+	err := models.DeleteIP(i.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+	//return SetupSites()
 }

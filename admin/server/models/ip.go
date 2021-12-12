@@ -13,7 +13,7 @@ type IP struct {
 	IP     datatypes.JSON `json:"ip" gorm:"column:ip;not null"`
 	Remark string         `json:"remark" gorm:"column:remark;"`
 
-	Sites []Site `gorm:"many2many:site_ip;"`
+	Sites []Site `json:"sites" gorm:"many2many:site_ip;"`
 }
 
 func AddIP(data map[string]interface{}) error {
@@ -62,4 +62,42 @@ func GetIPs(data map[string]interface{}) ([]*IP, int, error) {
 	}
 
 	return ips, count, nil
+}
+
+func UpdateIP(id uint, data map[string]interface{}) error {
+	ip := IP{}
+	ip.Model.ID = id
+
+	var sites []*Site
+	for _, item := range data["sites"].([]uint) {
+		temp := Site{}
+		temp.Model.ID = item
+		sites = append(sites, &temp)
+	}
+
+	return db.Model(&ip).Association("Sites").Replace(sites).Error
+}
+
+func DeleteIP(id uint) error {
+	ip := IP{}
+	ip.Model.ID = id
+	/* clear Associations with sites*/
+	db.Model(&ip).Association("Sites").Clear()
+
+	err := db.Delete(&ip).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetIP(id uint) (*IP, error) {
+	var ip IP
+
+	err := db.Preload("Sites").Where("id = ?", id).Find(&ip).Error
+	if err != nil {
+		return &ip, err
+	}
+
+	return &ip, nil
 }

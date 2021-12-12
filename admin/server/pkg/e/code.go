@@ -37,4 +37,9 @@ const (
 	UpstreamGetFailed    = 80002
 	UpstreamPutFailed    = 80003
 	UpstreamDeleteFailed = 80004
+
+	IPAddFailed    = 90001
+	IPGetFailed    = 90002
+	IPPutFailed    = 90003
+	IPDeleteFailed = 90004
 )

@@ -15,7 +15,7 @@
       status-icon
     >
       <el-form-item prop="name" label="名称">
-        <el-input v-model="formData.name" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
+        <el-input v-model="formData.name" maxlength="30" />
       </el-form-item>
       <el-form-item prop="host">
         <span slot="label">域名

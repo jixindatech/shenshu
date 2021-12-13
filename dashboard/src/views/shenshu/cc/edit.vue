@@ -17,11 +17,6 @@
       <el-form-item label="规则名称：" prop="name">
         <el-input v-model="formData.name" />
       </el-form-item>
-      <el-form-item label="站点选择：" prop="site">
-        <el-select v-model="formData.site" placeholder="请选择匹配方式">
-          <el-option v-for="(item,index) in sites" :key="index" :label="item.host" :value="item.id" />
-        </el-select>
-      </el-form-item>
       <el-form-item label="限定方式：" prop="mode">
         <el-radio-group v-model="formData.mode">
           <el-radio :label="'ip'" border>IP</el-radio>
@@ -77,7 +72,6 @@
 </template>
 
 <script>
-import * as site from '@/api/site'
 import { add, update } from '@/api/cc'
 import { CC_ACTIONS } from '@/utils/rule'
 
@@ -91,6 +85,10 @@ export default {
       type: Boolean,
       default: false
     },
+    site: {
+      type: Number,
+      default: 0
+    },
     formData: {
       type: Object,
       default: function() { return {} }
@@ -102,7 +100,6 @@ export default {
   },
   data() {
     return {
-      sites: [],
       methodList: [
         { label: 'GET', value: 'GET' },
         { label: 'POST', value: 'POST' },
@@ -144,7 +141,7 @@ export default {
   watch: {
     visible(newVal, oldVal) {
       if (newVal) {
-        this.fetchSites()
+        console.log(newVal)
       }
     }
   },
@@ -159,17 +156,6 @@ export default {
         }
       })
     },
-    async fetchSites() {
-      this.sites = []
-      const { data } = await site.getList({}, 0, 10)
-      data.list.forEach(element => {
-        const item = {
-          id: element.id,
-          host: element.host
-        }
-        this.sites.push(item)
-      })
-    },
 
     async submitData() {
       let response = null
@@ -177,7 +163,7 @@ export default {
       if (this.formData.id) {
         response = await update(this.formData.id, this.formData)
       } else {
-        response = await add(this.formData)
+        response = await add(this.site, this.formData)
       }
 
       if (response.code === 0) {

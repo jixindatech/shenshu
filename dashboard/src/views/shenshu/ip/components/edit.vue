@@ -15,7 +15,7 @@
       status-icon
     >
       <el-form-item label="IP名称：" prop="name">
-        <el-input v-model="formData.name" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
+        <el-input v-model="formData.name" maxlength="30" />
       </el-form-item>
       <el-form-item>
         <span slot="label">IP

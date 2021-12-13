@@ -3,6 +3,11 @@
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
+      <el-form-item label="域名:">
+        <el-select v-model="siteId" placeholder="请选择域名" @change="selectChanged">
+          <el-option v-for="(item,index) in sites" :key="index" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="规则名称:">
         <el-input v-model.trim="query.name" />
       </el-form-item>
@@ -36,6 +41,26 @@
       row-key="id"
     >
       <el-table-column prop="name" label="规则名" />
+      <el-table-column align="center" prop="mode" label="限定方式">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.mode === 'ip'" type="success">IP</el-tag>
+          <el-tag v-if="scope.row.mode === ''" type="success">Session</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="method" label="请求方法" />
+      <el-table-column align="center" prop="match" label="匹配条件">
+        <template slot-scope="scope">
+          {{ OPERATORS_TEXT[scope.row.match] }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="uri" label="URI" />
+      <el-table-column align="center" prop="threshold" label="阈值" />
+      <el-table-column align="center" prop="duration" label="时间间隔" />
+      <el-table-column align="center" prop="action" label="执行动作">
+        <template slot-scope="scope">
+          {{ CC_ACTION_TEXT[scope.row.action] }}
+        </template>
+      </el-table-column>
       <el-table-column prop="createdAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -75,6 +100,7 @@
 
     <edit
       :title="edit.title"
+      :site="siteId"
       :form-data="edit.formData"
       :visible="edit.visible"
       :remote-close="remoteClose"
@@ -84,13 +110,19 @@
 </template>
 
 <script>
+import * as site from '@/api/site'
 import { getList, deleteById, getById } from '@/api/cc'
 import Edit from './edit'
+import { OPERATORS_TEXT, CC_ACTION_TEXT } from '@/utils/rule'
 export default {
   name: 'CC',
   components: { Edit },
   data() {
     return {
+      OPERATORS_TEXT,
+      CC_ACTION_TEXT,
+      siteId: 1,
+      sites: [],
       query: {},
       edit: {
         title: '',
@@ -107,13 +139,31 @@ export default {
       checkedUserList: []
     }
   },
+  watch: {
+    '$route.path': {
+      immediate: true,
+      handler() {
+        const id = this.$route.params.site
+        if (id === undefined) {
+          this.siteId = 1
+        } else {
+          this.siteId = id
+        }
+      }
+    }
+  },
   created() {
     this.fetchData()
   },
   methods: {
     fetchData() {
+      site.getList({}, 0).then((response) => {
+        this.sites = response.data.list
+      })
+
       this.listLoading = true
       getList(
+        this.siteId,
         this.query,
         this.page.current,
         this.page.size
@@ -123,6 +173,9 @@ export default {
         this.page.total = data.total
         this.listLoading = false
       })
+    },
+    selectChanged(id) {
+      this.siteId = id
     },
     queryData() {
       this.page.current = 1

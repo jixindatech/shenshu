@@ -17,7 +17,11 @@
       <el-form-item label="组名称：" prop="name">
         <el-input v-model="formData.name" maxlength="30" />
       </el-form-item>
-
+      <el-form-item label="规则类型：" prop="type">
+        <el-select v-model="formData.type" placeholder="请选择规则类型">
+          <el-option v-for="(item,index) in RULE_TYPES " :key="index" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />
       </el-form-item>
@@ -35,7 +39,7 @@
 
 <script>
 import { add, update } from '@/api/rulegroup'
-
+import { RULE_TYPES } from '@/utils/rule'
 export default {
   props: {
     title: {
@@ -58,8 +62,10 @@ export default {
 
   data() {
     return {
+      RULE_TYPES,
       rules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        type: [{ required: true, message: '请选择类型', trigger: 'blur' }]
       }
     }
   },

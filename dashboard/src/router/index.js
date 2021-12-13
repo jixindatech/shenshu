@@ -118,6 +118,12 @@ export const constantRoutes = [
         name: 'Item',
         component: () => import('@/views/shenshu/rule/item'),
         meta: { title: '规则配置', icon: 'dashboard' }
+      },
+      {
+        path: 'batch',
+        name: 'Batch',
+        component: () => import('@/views/shenshu/rule/batch'),
+        meta: { title: 'Batch规则', icon: 'dashboard' }
       }],
       meta: { title: '规则管理', icon: 'dashboard' }
     }]

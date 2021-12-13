@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      await rulegroup.getList({}, 0).then((response) => {
+      await rulegroup.getList({ type: 2 }, 0).then((response) => {
         this.group = response.data.list
       })
       if (this.group.length === 0) {

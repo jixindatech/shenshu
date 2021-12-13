@@ -103,6 +103,15 @@ const ARGS_TEXT = {
   post: '请求体参数',
   cookie: 'Cookie参数'
 }
+const RULE_TYPES = [
+  { value: 1, label: '批规则' },
+  { value: 2, label: '复杂规则' }
+]
+const RULE_TYPES_TEXT = {
+  1: '批规则',
+  2: '复杂规则'
+}
+
 export {
   ACTION_TYPES,
   REQ_HEADER_OPERATORS,
@@ -119,6 +128,8 @@ export {
   CC_ACTION_TEXT,
   ACTION_TEXT,
   ARGS_OPTIONS,
-  ARGS_TEXT
+  ARGS_TEXT,
+  RULE_TYPES,
+  RULE_TYPES_TEXT
 }
 

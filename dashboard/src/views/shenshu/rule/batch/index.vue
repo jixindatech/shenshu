@@ -3,7 +3,12 @@
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
-      <el-form-item label="规则组名称:">
+      <el-form-item label="组名称:">
+        <el-select v-model="groupId" placeholder="请选择域名" @change="selectChanged">
+          <el-option v-for="(item,index) in group" :key="index" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="规则名称:">
         <el-input v-model.trim="query.name" />
       </el-form-item>
       <el-form-item>
@@ -17,7 +22,6 @@
           @click="reload"
         >重置</el-button>
         <el-button
-          v-permission="['POST:/system/user']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
@@ -37,11 +41,6 @@
       row-key="id"
     >
       <el-table-column prop="name" label="规则组名称" />
-      <el-table-column prop="type" label="规则类型">
-        <template slot-scope="scope">
-          <span>{{ RULE_TYPES_TEXT[scope.row.type] }}</span>
-        </template>
-      </el-table-column>
       <el-table-column prop="createdAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -62,13 +61,9 @@
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
-            type="primary"
-            size="mini"
-            @click="handleRule(scope.row.type, scope.row.id)"
-          >规则管理</el-button>
-          <el-button
             type="danger"
             size="mini"
+            :disabled="scope.row.id === 1"
             @click="handleDelete(scope.row.id)"
           >删除</el-button>
         </template>
@@ -90,19 +85,21 @@
       :visible="edit.visible"
       :remote-close="remoteClose"
     />
+
   </div>
 </template>
 
 <script>
-import { getList, deleteById, getById } from '@/api/rulegroup'
+import * as rulegroup from '@/api/rulegroup'
+import { getList, deleteById, getById } from '@/api/rule'
 import Edit from './edit'
-import { RULE_TYPES_TEXT } from '@/utils/rule'
 export default {
-  name: 'RuleGroup',
+  name: 'RuleBatch',
   components: { Edit },
   data() {
     return {
-      RULE_TYPES_TEXT,
+      groupId: 0,
+      group: [],
       query: {},
       edit: {
         title: '',
@@ -115,11 +112,19 @@ export default {
         total: 0
       },
       list: [],
-      listLoading: true,
-      rule: {
-        id: 0,
-        title: '规则管理',
-        visible: false
+      listLoading: false
+    }
+  },
+  watch: {
+    '$route.path': {
+      immediate: true,
+      handler() {
+        const id = this.$route.params.rule
+        if (id === undefined) {
+          this.fetchData()
+        } else {
+          this.siteId = id
+        }
       }
     }
   },
@@ -127,9 +132,21 @@ export default {
     this.fetchData()
   },
   methods: {
-    fetchData() {
+    async fetchData() {
+      await rulegroup.getList({ type: 1 }, 0).then((response) => {
+        this.group = response.data.list
+      })
+      if (this.group.length === 0) {
+        return
+      }
+
+      if (this.groupId === 0 && this.group.length > 0) {
+        this.groupId = this.group[0].id
+      }
+
       this.listLoading = true
       getList(
+        this.groupId,
         this.query,
         this.page.current,
         this.page.size
@@ -139,6 +156,9 @@ export default {
         this.page.total = data.total
         this.listLoading = false
       })
+    },
+    selectChanged(id) {
+      this.groupId = id
     },
     queryData() {
       this.page.current = 1
@@ -191,12 +211,8 @@ export default {
         .catch(() => {
         })
     },
-    handleRule(type, id) {
-      if (type === 1) {
-        this.$router.push({ name: 'Batch', params: { rule: id }})
-      } else if (type === 2) {
-        this.$router.push({ name: 'Item', params: { rule: id }})
-      }
+    handleClose() {
+      this.remoteClose()
     }
   }
 }

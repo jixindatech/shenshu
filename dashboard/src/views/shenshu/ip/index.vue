@@ -48,7 +48,12 @@ export default {
     '$route.path': {
       immediate: true,
       handler() {
-        this.siteId = this.$route.params.site
+        const id = this.$route.params.site
+        if (id === undefined) {
+          this.siteId = 1
+        } else {
+          this.siteId = id
+        }
       }
     }
   },

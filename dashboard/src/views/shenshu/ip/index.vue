@@ -48,7 +48,7 @@ export default {
     '$route.path': {
       immediate: true,
       handler() {
-        this.site = this.$route.params.site
+        this.siteId = this.$route.params.site
       }
     }
   },

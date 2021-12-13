@@ -42,4 +42,9 @@ const (
 	IPGetFailed    = 90002
 	IPPutFailed    = 90003
 	IPDeleteFailed = 90004
+
+	CCAddFailed    = 11001
+	CCGetFailed    = 11002
+	CCPutFailed    = 11003
+	CCDeleteFailed = 11004
 )

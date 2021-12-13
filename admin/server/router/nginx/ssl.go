@@ -87,8 +87,8 @@ func GetSSL(c *gin.Context) {
 
 type querySSLForm struct {
 	Name     string `form:"name" validate:"max=254"`
-	Page     int    `form:"page" validate:"required,min=1,max=50"`
-	PageSize int    `form:"size" validate:"required,min=1"`
+	Page     int    `form:"page" validate:"required,min=1"`
+	PageSize int    `form:"size" validate:"required,min=1,max=50"`
 }
 
 func GetSSLs(c *gin.Context) {

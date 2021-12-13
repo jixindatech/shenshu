@@ -53,6 +53,7 @@ func Setup(cfg *config.DataBase) error {
 		Site{},
 
 		IP{},
+		CC{},
 	)
 
 	return nil

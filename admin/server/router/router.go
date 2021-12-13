@@ -94,11 +94,16 @@ func Setup(mode string) (g *gin.Engine, err error) {
 
 	shenshuApis := r.Group("/shenshu", auth())
 	{
-		shenshuApis.POST("/ip", shenshu.AddIP)
-		shenshuApis.GET("/ip", shenshu.GetIPs)
-		shenshuApis.GET("/ip/:id", shenshu.GetIP)
-		shenshuApis.PUT("/ip/:id", shenshu.UpdateIP)
-		shenshuApis.DELETE("/ip/:id", shenshu.DeleteIP)
+		shenshuApis.POST("site/:id/ip", shenshu.AddIP)
+		shenshuApis.GET("site/:id/ip", shenshu.GetIPs)
+		shenshuApis.GET("site/ip/:id", shenshu.GetIP)
+		shenshuApis.PUT("site/ip/:id", shenshu.UpdateIP)
+		shenshuApis.DELETE("site/ip/:id", shenshu.DeleteIP)
+
+		shenshuApis.POST("/cc", shenshu.AddCC)
+		shenshuApis.GET("/cc", shenshu.GetCCs)
+		shenshuApis.GET("/cc/:id", shenshu.GetCC)
+		shenshuApis.PUT("/cc/:id", shenshu.UpdateCC)
 	}
 	return r, nil
 }

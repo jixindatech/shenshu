@@ -8,6 +8,7 @@ import (
 type IP struct {
 	ID uint
 
+	Site   uint
 	Name   string
 	Type   int
 	IP     []string
@@ -21,13 +22,6 @@ type IP struct {
 
 func (i *IP) Save() (err error) {
 	data := make(map[string]interface{})
-
-	if i.ID > 0 {
-		data["sites"] = i.Sites
-		return models.UpdateIP(i.ID, data)
-	}
-
-	data["name"] = i.Name
 	data["type"] = i.Type
 
 	ip, err := json.Marshal(&i.IP)
@@ -36,7 +30,13 @@ func (i *IP) Save() (err error) {
 	}
 	data["ip"] = ip
 	data["remark"] = i.Remark
+
+	if i.ID > 0 {
+		return models.UpdateIP(i.ID, data)
+	}
+
 	data["name"] = i.Name
+	data["site"] = i.Site
 	err = models.AddIP(data)
 
 	if err != nil {
@@ -49,6 +49,7 @@ func (i *IP) Save() (err error) {
 
 func (i *IP) GetList() ([]*models.IP, int, error) {
 	data := make(map[string]interface{})
+	data["site"] = i.Site
 	data["name"] = i.Name
 	data["type"] = i.Type
 	data["page"] = i.Page

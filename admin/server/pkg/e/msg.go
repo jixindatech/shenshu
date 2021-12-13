@@ -33,19 +33,24 @@ var MsgFlags = map[int]string{
 	SiteDeleteFailed: "删除站点失败",
 
 	SSLAddFailed:    "添加SSL失败",
-	SSLGetFailed:    "添加SSL失败",
-	SSLPutFailed:    "添加SSL失败",
-	SSLDeleteFailed: "添加SSL失败",
+	SSLGetFailed:    "获取SSL失败",
+	SSLPutFailed:    "更新SSL失败",
+	SSLDeleteFailed: "删除SSL失败",
 
 	UpstreamAddFailed:    "添加Upstream失败",
-	UpstreamGetFailed:    "添加Upstream失败",
-	UpstreamPutFailed:    "添加Upstream失败",
-	UpstreamDeleteFailed: "添加Upstream失败",
+	UpstreamGetFailed:    "获取Upstream失败",
+	UpstreamPutFailed:    "更新Upstream失败",
+	UpstreamDeleteFailed: "删除Upstream失败",
 
 	IPAddFailed:    "添加IP失败",
-	IPGetFailed:    "添加IP失败",
-	IPPutFailed:    "添加IP失败",
-	IPDeleteFailed: "添加IP失败",
+	IPGetFailed:    "获取IP失败",
+	IPPutFailed:    "更新IP失败",
+	IPDeleteFailed: "删除IP失败",
+
+	CCAddFailed:    "添加CC失败",
+	CCGetFailed:    "获取CC失败",
+	CCPutFailed:    "更新CC失败",
+	CCDeleteFailed: "删除CC失败",
 }
 
 func GetMsg(code int) string {

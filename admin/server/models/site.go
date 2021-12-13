@@ -11,6 +11,7 @@ type Site struct {
 	Remark string `json:"remark" gorm:"column:remark"`
 
 	Upstreams []*Upstream `json:"upstreamRef" gorm:"many2many:site_upstream;"`
+	IPs       []IP        `json:"ips"`
 }
 
 func AddSite(data map[string]interface{}) error {
@@ -24,6 +25,12 @@ func AddSite(data map[string]interface{}) error {
 	err := db.Create(&site).Error
 	if err != nil {
 		return err
+	}
+
+	/* for global site */
+	_, ok := data["upstreamRef"]
+	if !ok {
+		return nil
 	}
 
 	var upstreams []*Upstream
@@ -44,6 +51,9 @@ func DeleteSite(id uint) error {
 	site.Model.ID = id
 	/* clear Associations with upstreams*/
 	db.Model(&site).Association("Upstreams").Clear()
+
+	/* clear Associations with upstreams*/
+	db.Model(&site).Association("IPs").Clear()
 
 	err := db.Delete(&site).Error
 	if err != nil {

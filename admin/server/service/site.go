@@ -6,6 +6,7 @@ import (
 	"admin/server/models"
 	"encoding/json"
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 	"time"
 )
@@ -33,6 +34,10 @@ func (r *Site) Save() (err error) {
 	data["remark"] = r.Remark
 
 	if r.ID > 0 {
+		if r.ID == 1 {
+			return fmt.Errorf("%s", "invalid id for site")
+		}
+
 		err = models.UpdateSite(r.ID, data)
 	} else {
 		data["name"] = r.Name
@@ -60,12 +65,40 @@ func (r *Site) GetList() ([]*models.Site, int, error) {
 }
 
 func (r *Site) Delete() error {
+	if r.ID == 1 {
+		return fmt.Errorf("%s", "invalid id for site")
+	}
+
 	err := models.DeleteSite(r.ID)
 	if err != nil {
 		return err
 	}
 
 	return SetupSites()
+}
+
+func SetupGlobalSite() error {
+	var id uint = 1
+	site, err := models.GetSite(id)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return err
+	}
+
+	if err == gorm.ErrRecordNotFound {
+		data := make(map[string]interface{})
+		data["name"] = "global"
+		data["host"] = "global"
+		data["path"] = "/*"
+		data["remark"] = "do not delete global"
+
+		return models.AddSite(data)
+	}
+
+	if site != nil && site.Name != "global" {
+		return fmt.Errorf("%s", "default global config is wrong")
+	}
+
+	return nil
 }
 
 func SetupSites() error {
@@ -100,6 +133,12 @@ func SetupSites() error {
 		route["id"] = item.ID
 		route["host"] = item.Host
 		route["uri"] = item.Path
+
+		/* skip global without upstream */
+		if item.ID == 1 && item.Host == "global" {
+			continue
+		}
+
 		if len(item.Upstreams) != 1 {
 			return fmt.Errorf("%s", "invalid site upstream")
 		}

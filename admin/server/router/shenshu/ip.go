@@ -20,12 +20,21 @@ type ipForm struct {
 func AddIP(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
+		formId   app.IDForm
 		form     ipForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
 
-	err := app.BindAndValid(c, &form)
+	err := app.BindUriAndValid(c, &formId)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	err = app.BindAndValid(c, &form)
 	if err != nil {
 		httpCode = e.InvalidParams
 		errCode = e.ERROR
@@ -34,6 +43,7 @@ func AddIP(c *gin.Context) {
 	}
 
 	ip := service.IP{
+		Site: formId.ID,
 		Name: form.Name,
 		Type: form.Type,
 		IP:   form.IP,
@@ -63,49 +73,8 @@ type queryIPForm struct {
 func GetIPs(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		form     queryIPForm
-		httpCode = http.StatusOK
-		errCode  = e.SUCCESS
-	)
-
-	err := app.BindAndValid(c, &form)
-	if err != nil {
-		httpCode = e.InvalidParams
-		errCode = e.ERROR
-		appG.Response(httpCode, errCode, err.Error(), nil)
-		return
-	}
-
-	ipSrv := service.IP{
-		Name:     form.Name,
-		Type:     form.Type,
-		Page:     form.Page,
-		PageSize: form.PageSize,
-	}
-	ips, count, err := ipSrv.GetList()
-	if err != nil {
-		log.Logger.Error("IP", zap.String("get", err.Error()))
-		httpCode = http.StatusInternalServerError
-		errCode = e.IPGetFailed
-		appG.Response(httpCode, errCode, "", nil)
-		return
-	}
-
-	data := make(map[string]interface{})
-	data["list"] = ips
-	data["total"] = count
-	appG.Response(httpCode, errCode, "", data)
-}
-
-type updateIPForm struct {
-	Sites []uint `form:"sites" validate:"required,dive,min=1"`
-}
-
-func UpdateIP(c *gin.Context) {
-	var (
-		appG     = app.Gin{C: c}
 		formId   app.IDForm
-		form     updateIPForm
+		form     queryIPForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -127,9 +96,61 @@ func UpdateIP(c *gin.Context) {
 	}
 
 	ipSrv := service.IP{
-		ID:    formId.ID,
-		Sites: form.Sites,
+		Site:     formId.ID,
+		Name:     form.Name,
+		Type:     form.Type,
+		Page:     form.Page,
+		PageSize: form.PageSize,
 	}
+	ips, count, err := ipSrv.GetList()
+	if err != nil {
+		log.Logger.Error("IP", zap.String("get", err.Error()))
+		httpCode = http.StatusInternalServerError
+		errCode = e.IPGetFailed
+		appG.Response(httpCode, errCode, "", nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["list"] = ips
+	data["total"] = count
+	appG.Response(httpCode, errCode, "", data)
+}
+
+func UpdateIP(c *gin.Context) {
+	var (
+		appG     = app.Gin{C: c}
+		formId   app.IDForm
+		form     ipForm
+		httpCode = http.StatusOK
+		errCode  = e.SUCCESS
+	)
+
+	err := app.BindUriAndValid(c, &formId)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	err = app.BindAndValid(c, &form)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	ipSrv := service.IP{
+		ID:   formId.ID,
+		Name: form.Name,
+		Type: form.Type,
+		IP:   form.IP,
+
+		Remark: form.Remark,
+	}
+
 	err = ipSrv.Save()
 	if err != nil {
 		log.Logger.Error("IP", zap.String("put", err.Error()))

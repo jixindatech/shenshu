@@ -1,9 +1,9 @@
 <template>
-  <div class="app-container">
+  <div
+    class="app-container"
+  >
     <el-form :inline="true" :model="query" size="mini">
-      <el-form-item
-        label="Site名称:"
-      >
+      <el-form-item label="规则组名称:">
         <el-input v-model.trim="query.name" />
       </el-form-item>
       <el-form-item>
@@ -17,63 +17,59 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-permission="['POST:/system/user']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
         >新增</el-button>
       </el-form-item>
     </el-form>
+
     <el-table
-      ref="dataTable"
+      v-loading="listLoading"
       :data="list"
-      stripe
+      element-loading-text="Loading"
+      :header-cell-style="{'text-align':'center'}"
+      :cell-style="{'text-align':'center'}"
       border
-      style="width: 100%"
+      fit
+      highlight-current-row
       row-key="id"
     >
-      <el-table-column align="center" type="index" label="序号" width="60px" />
-      <el-table-column align="center" prop="name" label="名称" width="150px" />
-      <el-table-column align="center" prop="host" label="域名" width="200px" />
-      <el-table-column align="center" prop="path" label="路径" width="150px" />
-      <el-table-column align="center" prop="upstreamRef" label="Upstream" width="100px">
-        <template v-if="scope.row.upstreamRef.length === 1" slot-scope="scope">
-          {{ scope.row.upstreamRef[0].name }}
+      <el-table-column prop="name" label="规则组名称" />
+      <el-table-column prop="createdAt" label="创建时间" width="220">
+        <template slot-scope="scope">
+          <i class="el-icon-time" />
+          <span>{{ scope.row.createdAt }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="remark" label="备注" width="200px" />
-      <el-table-column align="center" label="操作">
+      <el-table-column prop="updateAt" label="更新时间" width="220">
+        <template slot-scope="scope">
+          <i class="el-icon-time" />
+          <span>{{ scope.row.updateAt }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
-            :disabled="scope.row.id === 1"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
-            type="primary"
+            type="success"
             size="mini"
-            @click="ipConfig(scope.row.id)"
-          >IP管理</el-button>
+            @click="handleRule(scope.row.id)"
+          >规则管理</el-button>
           <el-button
-            type="primary"
-            size="mini"
-            @click="ccConfig(scope.row.id)"
-          >CC配置</el-button>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="ccConfig(scope.row.id)"
-          >基础配置</el-button>
-          <el-button
-            :disabled="scope.row.id === 1"
             type="danger"
             size="mini"
+            :disabled="scope.row.id === 1"
             @click="handleDelete(scope.row.id)"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
     <el-pagination
       :current-page="page.current"
       :page-sizes="[10, 20, 50]"
@@ -83,75 +79,94 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <Edit
+
+    <edit
       :title="edit.title"
       :form-data="edit.formData"
       :visible="edit.visible"
       :remote-close="remoteClose"
     />
-
   </div>
 </template>
 
 <script>
-import * as api from '@/api/site'
+import { getList, deleteById, getById } from '@/api/rulegroup'
 import Edit from './edit'
-
 export default {
-  name: 'Site',
+  name: 'RuleGroup',
   components: { Edit },
   data() {
     return {
-      list: [],
-      page: {
-        current: 1,
-        size: 20,
-        total: 0
-      },
       query: {},
       edit: {
         title: '',
         visible: false,
         formData: {}
       },
-      checkedSitesList: []
+      page: {
+        current: 1,
+        size: 10,
+        total: 0
+      },
+      list: [],
+      listLoading: true,
+      rule: {
+        id: 0,
+        title: '规则管理',
+        visible: false
+      }
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
-    async fetchData() {
-      const { data } = await api.getList(
+    fetchData() {
+      this.listLoading = true
+      getList(
         this.query,
         this.page.current,
         this.page.size
-      )
-
-      this.list = data.list
-      this.page.total = data.total
+      ).then(response => {
+        const { data } = response
+        this.list = data.list
+        this.page.total = data.total
+        this.listLoading = false
+      })
     },
-
-    handleSizeChange(val) {
-      this.page.size = val
-      this.fetchData()
-    },
-
-    handleCurrentChange(val) {
-      this.page.current = val
-      this.fetchData()
-    },
-
     queryData() {
       this.page.current = 1
       this.fetchData()
     },
-
     reload() {
       this.query = {}
       this.fetchData()
     },
-
+    openAdd() {
+      this.edit.title = '新增'
+      this.edit.visible = true
+    },
+    remoteClose() {
+      this.edit.formData = {}
+      this.edit.visible = false
+      this.fetchData()
+    },
+    handleSizeChange(val) {
+      this.page.size = val
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.page.current = val
+      this.fetchData()
+    },
+    handleEdit(id) {
+      getById(id).then((response) => {
+        const { data } = response
+        this.edit.formData = data.item
+        this.edit.title = '编辑'
+        this.edit.visible = true
+      })
+    },
     handleDelete(id) {
       this.$confirm('确认删除这条记录吗?', '提示', {
         confirmButtonText: '确定',
@@ -159,9 +174,9 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          api.deleteById(id).then((response) => {
+          deleteById(id).then((response) => {
             this.$message({
-              type: 'success',
+              type: response.code === 0 ? 'success' : 'error',
               message: '删除成功!'
             })
             this.fetchData()
@@ -170,33 +185,14 @@ export default {
         .catch(() => {
         })
     },
-
-    openAdd() {
-      this.edit.title = '新增'
-      this.edit.visible = true
-    },
-
-    handleEdit(id) {
-      api.get(id).then((response) => {
-        this.edit.formData = response.data.item
-        this.edit.title = '编辑'
-        this.edit.visible = true
-      })
-    },
-    remoteClose() {
-      this.edit.formData = {}
-      this.edit.visible = false
-      this.fetchData()
-    },
-    ipConfig(id) {
-      this.$router.push({ name: 'IP', params: { site: id }})
-    },
-    ccConfig(id) {
-      this.$router.push({ name: 'CC', params: { site: id }})
-    },
-    basicConfig(id) {
-      console.log('rule config:', id)
+    handleRule(id) {
+      this.$router.push({ name: 'Item', params: { rule: id }})
     }
   }
 }
 </script>
+
+<style scoped>
+::v-deep .input_size .el-input { width: 250px; }
+
+</style>

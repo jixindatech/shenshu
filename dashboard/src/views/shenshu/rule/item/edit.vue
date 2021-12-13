@@ -14,8 +14,8 @@
       style="width: 400px"
       status-icon
     >
-      <el-form-item label="站点名称：" prop="username">
-        <el-input v-model="formData.username" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
+      <el-form-item label="组名称：" prop="name">
+        <el-input v-model="formData.name" maxlength="30" />
       </el-form-item>
 
       <el-form-item label="备注：" prop="remark">
@@ -80,7 +80,6 @@ export default {
       if (this.formData.id) {
         response = await update(this.formData.id, this.formData)
       } else {
-        this.formData.password = this.formData.username
         response = await add(this.formData)
       }
 

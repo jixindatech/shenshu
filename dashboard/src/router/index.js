@@ -95,16 +95,30 @@ export const constantRoutes = [
       component: () => import('@/views/shenshu/cc'),
       meta: { title: 'CC配置', icon: 'dashboard' }
     },
+    /*
     {
       path: 'bot',
       name: 'Bot',
       component: () => import('@/views/shenshu/bot'),
       meta: { title: 'Bot管理', icon: 'dashboard' }
     },
+    */
     {
       path: 'rule',
       name: 'Rule',
-      component: () => import('@/views/shenshu/rule'),
+      component: () => import('@/views/shenshu/rule/index'),
+      children: [{
+        path: 'group',
+        name: 'Group',
+        component: () => import('@/views/shenshu/rule/group'),
+        meta: { title: '组配置', icon: 'dashboard' }
+      },
+      {
+        path: 'item',
+        name: 'Item',
+        component: () => import('@/views/shenshu/rule/item'),
+        meta: { title: '规则配置', icon: 'dashboard' }
+      }],
       meta: { title: '规则管理', icon: 'dashboard' }
     }]
   },

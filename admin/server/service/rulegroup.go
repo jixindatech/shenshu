@@ -8,6 +8,7 @@ type RuleGroup struct {
 	ID uint
 
 	Name   string
+	Type   int
 	Remark string
 
 	Page     int
@@ -24,6 +25,7 @@ func (r *RuleGroup) Save() error {
 		return models.UpdateRuleGroup(r.ID, data)
 	}
 
+	data["type"] = r.Type
 	return models.AddRuleGroup(data)
 }
 
@@ -39,6 +41,9 @@ func (r *RuleGroup) GetList() ([]*models.RuleGroup, uint, error) {
 	var query = make(map[string]interface{})
 	if len(r.Name) > 0 {
 		query["name"] = r.Name
+	}
+	if r.Type != 0 {
+		query["type"] = r.Type
 	}
 
 	return models.GetRuleGroups(query, r.Page, r.PageSize)

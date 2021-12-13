@@ -12,6 +12,7 @@ import (
 
 type ruleGroupForm struct {
 	Name   string `json:"name" validate:"required"`
+	Type   int    `json:"type" validate:"required,min=1,max=2"`
 	Remark string `json:"remark"`
 }
 
@@ -32,6 +33,7 @@ func AddRuleGroup(c *gin.Context) {
 
 	rgSrv := service.RuleGroup{
 		Name:   form.Name,
+		Type:   form.Type,
 		Remark: form.Remark,
 	}
 	err = rgSrv.Save()
@@ -74,6 +76,7 @@ func DeleteRuleGroup(c *gin.Context) {
 
 type queryRuleGroupForm struct {
 	Name     string `form:"name" validate:"omitempty,max=254"`
+	Type     int    `form:"type" validate:"omitempty,min=1,max=2"`
 	Page     int    `form:"page" validate:"min=0"`
 	PageSize int    `form:"size" validate:"required,gte=10,lte=50"`
 }
@@ -95,6 +98,7 @@ func GetRuleGroups(c *gin.Context) {
 
 	rgSrv := service.RuleGroup{
 		Name:     form.Name,
+		Type:     form.Type,
 		PageSize: form.PageSize,
 		Page:     form.Page,
 	}

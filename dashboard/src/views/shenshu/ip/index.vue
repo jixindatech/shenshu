@@ -67,7 +67,7 @@ export default {
       })
     },
     selectChanged(id) {
-      this.site = id
+      this.siteId = id
     },
     queryData() {
       console.log('query data')

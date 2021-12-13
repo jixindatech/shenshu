@@ -17,17 +17,10 @@
           @click="reload"
         >重置</el-button>
         <el-button
-          v-if="ids === null"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
         >新增</el-button>
-        <el-button
-          v-if="ids !== null"
-          icon="el-icon-circle-plus-outline"
-          type="success"
-          @click="ipdateIpSites"
-        >关联站点</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -37,15 +30,7 @@
       border
       style="width: 100%"
       row-key="id"
-      @selection-change="handleSelectionChange"
     >
-      <el-table-column
-        v-if="ids !== null"
-        align="center"
-        reserve-selection
-        type="selection"
-        width="55"
-      />
       <el-table-column align="center" type="index" label="序号" width="60px" />
       <el-table-column align="center" prop="name" label="名称" width="150px" />
       <el-table-column align="center" prop="host" label="域名" width="200px" />
@@ -56,9 +41,10 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="remark" label="备注" width="200px" />
-      <el-table-column v-if="ids === null" align="center" label="操作">
+      <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button
+            :disabled="scope.row.id === 1"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
@@ -66,9 +52,15 @@
           <el-button
             type="primary"
             size="mini"
-            @click="handleDelete(scope.row.id)"
-          >规则管理</el-button>
+            @click="ipConfig(scope.row.id)"
+          >IP管理</el-button>
           <el-button
+            type="primary"
+            size="mini"
+            @click="basicConfig(scope.row.id)"
+          >基础配置</el-button>
+          <el-button
+            :disabled="scope.row.id === 1"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"
@@ -103,12 +95,6 @@ import Edit from './edit'
 export default {
   name: 'Site',
   components: { Edit },
-  props: {
-    ids: {
-      type: Array,
-      default: function() { return null }
-    }
-  },
   data() {
     return {
       list: [],
@@ -126,12 +112,6 @@ export default {
       checkedSitesList: []
     }
   },
-  watch: {
-    ids() {
-      this.query = {}
-      this.queryData()
-    }
-  },
   created() {
     this.fetchData()
   },
@@ -145,8 +125,6 @@ export default {
 
       this.list = data.list
       this.page.total = data.total
-
-      this.chekedSites()
     },
 
     handleSizeChange(val) {
@@ -178,7 +156,7 @@ export default {
         .then(() => {
           api.deleteById(id).then((response) => {
             this.$message({
-              type: response.code === 200 ? 'success' : 'error',
+              type: 'success',
               message: '删除成功!'
             })
             this.fetchData()
@@ -205,27 +183,12 @@ export default {
       this.edit.visible = false
       this.fetchData()
     },
-    chekedSites() {
-      this.$refs.dataTable.clearSelection()
-      if (this.ids) {
-        this.list.forEach((item) => {
-          if (this.ids.indexOf(item.id) !== -1) {
-            this.$refs.dataTable.toggleRowSelection(item, true)
-          }
-        })
-      }
+    ipConfig(id) {
+      console.log('ip config:', id)
+      this.$router.push({ name: 'IP', params: { site: id }})
     },
-    handleSelectionChange(val) {
-      this.checkedSitesList = val
-    },
-    ipdateIpSites() {
-      const checkedSites = []
-      this.checkedSitesList.forEach((item) => {
-        checkedSites.push(item.id)
-      })
-
-      this.checkedSitesList = []
-      this.$emit('updateIpSites', checkedSites)
+    basicConfig(id) {
+      console.log('rule config:', id)
     }
   }
 }

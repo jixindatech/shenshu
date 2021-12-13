@@ -3,8 +3,8 @@
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
-      <el-form-item label="站点名称:">
-        <el-input v-model.trim="query.username" />
+      <el-form-item label="规则名称:">
+        <el-input v-model.trim="query.name" />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -17,8 +17,6 @@
           @click="reload"
         >重置</el-button>
         <el-button
-          v-if="msgId == 0"
-          v-permission="['POST:/system/user']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
@@ -36,29 +34,21 @@
       fit
       highlight-current-row
       row-key="id"
-      @selection-change="handleSelectionChange"
     >
-      <el-table-column
-        v-if="msgId != 0"
-        align="center"
-        reserve-selection
-        type="selection"
-        width="55"
-      />
-      <el-table-column prop="name" label="用户名" />
-      <el-table-column v-if="msgId == 0" prop="createdAt" label="创建时间" width="220">
+      <el-table-column prop="name" label="规则名" />
+      <el-table-column prop="createdAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
           <span>{{ scope.row.createdAt }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="msgId == 0" prop="updateAt" label="更新时间" width="220">
+      <el-table-column prop="updateAt" label="更新时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
           <span>{{ scope.row.updateAt }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="msgId == 0" align="center" label="操作" width="250">
+      <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
             type="success"
@@ -68,7 +58,6 @@
           <el-button
             type="danger"
             size="mini"
-            :disabled="scope.row.id === 1"
             @click="handleDelete(scope.row.id)"
           >删除</el-button>
         </template>
@@ -100,12 +89,6 @@ import Edit from './edit'
 export default {
   name: 'CC',
   components: { Edit },
-  props: {
-    msgId: {
-      type: Number,
-      default: 0
-    }
-  },
   data() {
     return {
       query: {},
@@ -122,14 +105,6 @@ export default {
       list: [],
       listLoading: true,
       checkedUserList: []
-    }
-  },
-  watch: {
-    msgId(newVal, oldVal) {
-      if (newVal !== 0) {
-        this.query = {}
-        this.queryData()
-      }
     }
   },
   created() {
@@ -158,7 +133,7 @@ export default {
       this.fetchData()
     },
     openAdd() {
-      this.edit.title = '新增用户'
+      this.edit.title = '新增'
       this.edit.visible = true
     },
     remoteClose() {
@@ -174,9 +149,12 @@ export default {
       this.page.current = val
       this.fetchData()
     },
-    handleEdit(id) {
+    async handleEdit(id) {
       getById(id).then((response) => {
         const { data } = response
+        if (data.item.Site !== undefined) {
+          delete data.item.Site
+        }
         this.edit.formData = data.item
         this.edit.title = '编辑'
         this.edit.visible = true
@@ -199,18 +177,6 @@ export default {
         })
         .catch(() => {
         })
-    },
-    handleSelectionChange(val) {
-      this.checkedUserList = val
-    },
-    handleUserMsg() {
-      const checkedUserIds = []
-      this.checkedUserList.forEach((item) => {
-        checkedUserIds.push(item.id)
-      })
-
-      this.$emit('sendUserMsg', checkedUserIds)
-      this.checkedUserList = []
     }
   }
 }

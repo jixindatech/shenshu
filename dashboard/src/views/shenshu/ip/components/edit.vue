@@ -69,7 +69,7 @@
 <script>
 import { add, update } from '@/api/ip'
 
-import { validateIP } from '@/utils/validate'
+// import { validateIP } from '@/utils/validate'
 
 export default {
   props: {
@@ -80,6 +80,10 @@ export default {
     type: {
       type: String,
       default: ''
+    },
+    site: {
+      type: Number,
+      default: 0
     },
     visible: {
       type: Boolean,
@@ -117,7 +121,7 @@ export default {
           const item = { ip: '' }
           this.ips.push(item)
         } else {
-          this.formData.ip.array.forEach(element => {
+          this.formData.ip.forEach(element => {
             const item = { ip: element }
             this.ips.push(item)
           })
@@ -139,17 +143,17 @@ export default {
     },
 
     async submitData() {
-      let response = null
       this.formData.ip = []
       this.ips.forEach(element => {
         this.formData.ip.push(element.ip)
       })
 
+      let response = null
       if (this.formData.id) {
         response = await update(this.formData.id, this.formData)
       } else {
         this.formData.type = Number(this.type)
-        response = await add(this.formData)
+        response = await add(this.site, this.formData)
       }
 
       if ((response.code === 0)) {

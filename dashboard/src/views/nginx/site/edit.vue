@@ -108,13 +108,6 @@ export default {
   watch: {
     visible(newVal, oldVal) {
       if (newVal) {
-        /*
-        if (this.formData.backend === undefined) {
-          this.formData.backend = []
-          const item = { ip: '', port: '', weight: '' }
-          this.formData.backend.push(item)
-        }
-        */
         if (this.formData.id !== undefined) {
           this.formData.upstreamRef = this.formData.upstreamRef[0].id
         }

@@ -58,14 +58,13 @@
       <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
-            type="success"
+            type="primary"
             size="mini"
-            @click="relateIPWithSites(scope.row.id)"
-          >关联域名</el-button>
+            @click="handleEdit(scope.row.id)"
+          >编辑</el-button>
           <el-button
             type="danger"
             size="mini"
-            :disabled="scope.row.id === 1"
             @click="handleDelete(scope.row.id)"
           >删除</el-button>
         </template>
@@ -83,30 +82,30 @@
 
     <edit
       :title="edit.title"
+      :site="siteId"
       :form-data="edit.formData"
       :type="type"
       :visible="edit.visible"
       :remote-close="remoteClose"
     />
 
-    <el-dialog title="关联站点" :visible.sync="site.visible" width="65%">
-      <Site :ids="site.ids" @updateIpSites="updateIpSites" />
-    </el-dialog>
-
   </div>
 </template>
 
 <script>
-import { getList, deleteById, getById, update } from '@/api/ip'
+import { getList, deleteById, getById } from '@/api/ip'
 import Edit from './edit'
-import Site from '@/views/nginx/site'
 
 export default {
-  components: { Edit, Site },
+  components: { Edit },
   props: {
     params: {
       type: String,
       default: '1'
+    },
+    siteId: {
+      type: Number,
+      default: 0
     },
     type: {
       type: String,
@@ -142,6 +141,9 @@ export default {
       if (newVal === this.type) {
         this.fetchData()
       }
+    },
+    siteId(newVal, oldVal) {
+      this.fetchData()
     }
   },
   created() {
@@ -152,6 +154,7 @@ export default {
       this.query.type = Number(this.type)
       this.listLoading = true
       getList(
+        this.siteId,
         this.query,
         this.page.current,
         this.page.size
@@ -205,27 +208,11 @@ export default {
         .catch(() => {
         })
     },
-    relateIPWithSites(id) {
-      this.site.ip = id
-      this.site.ids = []
-      this.site.visible = true
-
+    handleEdit(id) {
       getById(id).then((response) => {
-        console.log(response)
-        const ip = response.data.item
-        ip.sites.forEach(element => {
-          this.site.ids.push(element.id)
-        })
-        this.site.visible = true
-      })
-    },
-    updateIpSites(ids) {
-      const data = { sites: ids }
-      update(this.site.ip, data).then((response) => {
-        if (response.code === 0) {
-          this.$message({ message: '关联成功', type: 'success' })
-          this.site.visible = false
-        }
+        this.edit.formData = response.data.item
+        this.edit.title = '编辑'
+        this.edit.visible = true
       })
     }
   }

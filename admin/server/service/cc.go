@@ -1,6 +1,8 @@
 package service
 
-import "admin/server/models"
+import (
+	"admin/server/models"
+)
 
 type CC struct {
 	ID uint
@@ -54,4 +56,8 @@ func (c *CC) GetList() ([]*models.CC, int, error) {
 	data["pagesize"] = c.PageSize
 
 	return models.GetCCs(data)
+}
+
+func (c *CC) Delete() error {
+	return models.DeleteCC(c.ID)
 }

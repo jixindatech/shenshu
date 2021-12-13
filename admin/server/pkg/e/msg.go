@@ -51,6 +51,16 @@ var MsgFlags = map[int]string{
 	CCGetFailed:    "获取CC失败",
 	CCPutFailed:    "更新CC失败",
 	CCDeleteFailed: "删除CC失败",
+
+	RuleGroupAddFailed:    "添加RuleGroup失败",
+	RuleGroupGetFailed:    "获取RuleGroup失败",
+	RuleGroupPutFailed:    "更新RuleGroup失败",
+	RuleGroupDeleteFailed: "删除RuleGroup失败",
+
+	RuleAddFailed:    "添加Rule失败",
+	RuleGetFailed:    "获取Rule失败",
+	RulePutFailed:    "更新Rule失败",
+	RuleDeleteFailed: "删除Rule失败",
 }
 
 func GetMsg(code int) string {

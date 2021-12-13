@@ -10,23 +10,16 @@ import (
 	"net/http"
 )
 
-type ccForm struct {
-	Name      string `json:"name" validate:"required,max=254"`
-	Mode      string `json:"mode" validate:"required"`
-	Method    string `json:"method" validate:"required"`
-	URI       string `json:"uri" validate:"required"`
-	Match     string `json:"match" validate:"required"`
-	Threshold int    `json:"threshold" validate:"required,min=1"`
-	Duration  int    `json:"duration" validate:"required,min=1"`
-	Action    string `json:"action" validate:"required"`
-	Remark    string `json:"remark" validate:"max=254"`
+type ruleForm struct {
+	Name   string `json:"name" validate:"required,max=254"`
+	Remark string `json:"remark" validate:"max=254"`
 }
 
-func AddCC(c *gin.Context) {
+func AddRule(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		formId   app.IDForm
-		form     ccForm
+		form     ruleForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -47,24 +40,17 @@ func AddCC(c *gin.Context) {
 		return
 	}
 
-	ccSrv := service.CC{
+	ruleSrv := service.Rule{
+		RuleGroup: formId.ID,
 		Name:      form.Name,
-		Site:      formId.ID,
-		Mode:      form.Mode,
-		Method:    form.Method,
-		URI:       form.URI,
-		Match:     form.Match,
-		Threshold: form.Threshold,
-		Duration:  form.Duration,
-		Action:    form.Action,
 		Remark:    form.Remark,
 	}
 
-	err = ccSrv.Save()
+	err = ruleSrv.Save()
 	if err != nil {
-		log.Logger.Error("CC", zap.String("add", err.Error()))
+		log.Logger.Error("Rule", zap.String("add", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.CCAddFailed
+		errCode = e.RuleAddFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}
@@ -72,7 +58,7 @@ func AddCC(c *gin.Context) {
 	appG.Response(httpCode, errCode, "", nil)
 }
 
-func GetCC(c *gin.Context) {
+func GetRule(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		httpCode = http.StatusOK
@@ -88,34 +74,34 @@ func GetCC(c *gin.Context) {
 		return
 	}
 
-	ccSrv := service.CC{
+	ruleSrv := service.Rule{
 		ID: formId.ID,
 	}
-	cc, err := ccSrv.Get()
+	rule, err := ruleSrv.Get()
 	if err != nil {
-		log.Logger.Error("CC", zap.String("get", err.Error()))
+		log.Logger.Error("Rule", zap.String("get", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.CCGetFailed
+		errCode = e.RuleGetFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}
 
 	data := make(map[string]interface{})
-	data["item"] = cc
+	data["item"] = rule
 	appG.Response(httpCode, errCode, "", data)
 }
 
-type queryCCForm struct {
+type queryRuleForm struct {
 	Name     string `form:"name" validate:"max=254"`
 	Page     int    `form:"page" validate:"min=1"`
 	PageSize int    `form:"size" validate:"required,min=1,max=50"`
 }
 
-func GetCCs(c *gin.Context) {
+func GetRules(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		formId   app.IDForm
-		form     queryCCForm
+		form     queryRuleForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -136,32 +122,32 @@ func GetCCs(c *gin.Context) {
 		return
 	}
 
-	ccSrv := service.CC{
-		Site:     formId.ID,
-		Name:     form.Name,
-		Page:     form.Page,
-		PageSize: form.PageSize,
+	ruleSrv := service.Rule{
+		RuleGroup: formId.ID,
+		Name:      form.Name,
+		Page:      form.Page,
+		PageSize:  form.PageSize,
 	}
-	ccs, count, err := ccSrv.GetList()
+	rules, count, err := ruleSrv.GetList()
 	if err != nil {
-		log.Logger.Error("CC", zap.String("get", err.Error()))
+		log.Logger.Error("Rule", zap.String("get", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.CCGetFailed
+		errCode = e.RuleGetFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}
 
 	data := make(map[string]interface{})
-	data["list"] = ccs
+	data["list"] = rules
 	data["total"] = count
 	appG.Response(httpCode, errCode, "", data)
 }
 
-func UpdateCC(c *gin.Context) {
+func UpdateRule(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		formId   app.IDForm
-		form     ccForm
+		form     ruleForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -182,24 +168,17 @@ func UpdateCC(c *gin.Context) {
 		return
 	}
 
-	ccSrv := service.CC{
-		ID:        formId.ID,
-		Name:      form.Name,
-		Mode:      form.Mode,
-		Method:    form.Method,
-		URI:       form.URI,
-		Match:     form.Match,
-		Threshold: form.Threshold,
-		Duration:  form.Duration,
-		Action:    form.Action,
-		Remark:    form.Remark,
+	ruleSrv := service.Rule{
+		ID:     formId.ID,
+		Name:   form.Name,
+		Remark: form.Remark,
 	}
 
-	err = ccSrv.Save()
+	err = ruleSrv.Save()
 	if err != nil {
-		log.Logger.Error("CC", zap.String("add", err.Error()))
+		log.Logger.Error("Rule", zap.String("add", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.CCAddFailed
+		errCode = e.RuleAddFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}
@@ -207,7 +186,7 @@ func UpdateCC(c *gin.Context) {
 	appG.Response(httpCode, errCode, "", nil)
 }
 
-func DeleteCC(c *gin.Context) {
+func DeleteRule(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		httpCode = http.StatusOK
@@ -223,14 +202,14 @@ func DeleteCC(c *gin.Context) {
 		return
 	}
 
-	ccSrv := service.CC{
+	ruleSrv := service.Rule{
 		ID: formId.ID,
 	}
-	err = ccSrv.Delete()
+	err = ruleSrv.Delete()
 	if err != nil {
-		log.Logger.Error("CC", zap.String("delete", err.Error()))
+		log.Logger.Error("Rule", zap.String("delete", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.CCDeleteFailed
+		errCode = e.RuleDeleteFailed
 		appG.Response(httpCode, errCode, "", nil)
 		return
 	}

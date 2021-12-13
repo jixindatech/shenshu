@@ -46,3 +46,16 @@ p, admin, ^/shenshu/site/\+?[1-9][0-9]*/cc$, GET
 p, admin, ^/shenshu/site/cc/\+?[1-9][0-9]*$, GET
 p, admin, ^/shenshu/site/cc/\+?[1-9][0-9]*$, PUT
 p, admin, ^/shenshu/site/cc/\+?[1-9][0-9]*$, DELETE
+
+p, admin, ^/shenshu/rulegroup$, POST
+p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*$, DELETE
+p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*$, PUT
+p, admin, ^/shenshu/rulegroup$, GET
+p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*$, GET
+
+p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*/rule$, POST
+p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*/rule$, GET
+p, admin, ^/shenshu/rulegroup/rule/\+?[1-9][0-9]*$, GET
+p, admin, ^/shenshu/rulegroup/rule/\+?[1-9][0-9]*$, PUT
+p, admin, ^/shenshu/rulegroup/rule/\+?[1-9][0-9]*$, DELETE
+

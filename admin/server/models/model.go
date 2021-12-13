@@ -54,6 +54,8 @@ func Setup(cfg *config.DataBase) error {
 
 		IP{},
 		CC{},
+		RuleGroup{},
+		Rule{},
 	)
 
 	return nil

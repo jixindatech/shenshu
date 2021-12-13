@@ -81,3 +81,7 @@ func GetCCs(data map[string]interface{}) ([]*CC, int, error) {
 
 	return ccs, count, nil
 }
+
+func DeleteCC(id uint) error {
+	return db.Where("id = ?", id).Delete(CC{}).Error
+}

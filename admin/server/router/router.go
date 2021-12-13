@@ -94,17 +94,30 @@ func Setup(mode string) (g *gin.Engine, err error) {
 
 	shenshuApis := r.Group("/shenshu", auth())
 	{
-		shenshuApis.POST("site/:id/ip", shenshu.AddIP)
-		shenshuApis.GET("site/:id/ip", shenshu.GetIPs)
-		shenshuApis.GET("site/ip/:id", shenshu.GetIP)
-		shenshuApis.PUT("site/ip/:id", shenshu.UpdateIP)
-		shenshuApis.DELETE("site/ip/:id", shenshu.DeleteIP)
+		shenshuApis.POST("/site/:id/ip", shenshu.AddIP)
+		shenshuApis.GET("/site/:id/ip", shenshu.GetIPs)
+		shenshuApis.GET("/site/ip/:id", shenshu.GetIP)
+		shenshuApis.PUT("/site/ip/:id", shenshu.UpdateIP)
+		shenshuApis.DELETE("/site/ip/:id", shenshu.DeleteIP)
 
-		shenshuApis.POST("site/:id/cc", shenshu.AddCC)
-		shenshuApis.GET("site/:id/cc", shenshu.GetCCs)
-		shenshuApis.GET("site/cc/:id", shenshu.GetCC)
-		shenshuApis.PUT("site/cc/:id", shenshu.UpdateCC)
-		shenshuApis.DELETE("site/cc/:id", shenshu.DeleteIP)
+		shenshuApis.POST("/site/:id/cc", shenshu.AddCC)
+		shenshuApis.GET("/site/:id/cc", shenshu.GetCCs)
+		shenshuApis.GET("/site/cc/:id", shenshu.GetCC)
+		shenshuApis.PUT("/site/cc/:id", shenshu.UpdateCC)
+		shenshuApis.DELETE("/site/cc/:id", shenshu.DeleteCC)
+
+		shenshuApis.POST("/rulegroup", shenshu.AddRuleGroup)
+		shenshuApis.GET("/rulegroup", shenshu.GetRuleGroups)
+		shenshuApis.GET("/rulegroup/:id", shenshu.GetRuleGroup)
+		shenshuApis.PUT("/rulegroup/:id", shenshu.UpdateRuleGroup)
+		shenshuApis.DELETE("/rulegroup/:id", shenshu.DeleteRuleGroup)
+
+		shenshuApis.POST("/rulegroup/:id/rule", shenshu.AddRule)
+		shenshuApis.GET("/rulegroup/:id/rule", shenshu.GetRules)
+		shenshuApis.GET("/rulegroup/rule/:id", shenshu.GetRule)
+		shenshuApis.PUT("/rulegroup/rule/:id", shenshu.UpdateRule)
+		shenshuApis.DELETE("/rulegroup/rule/:id", shenshu.DeleteRule)
+
 	}
 	return r, nil
 }

@@ -47,4 +47,14 @@ const (
 	CCGetFailed    = 11002
 	CCPutFailed    = 11003
 	CCDeleteFailed = 11004
+
+	RuleGroupAddFailed    = 12001
+	RuleGroupGetFailed    = 12002
+	RuleGroupPutFailed    = 12003
+	RuleGroupDeleteFailed = 12004
+
+	RuleAddFailed    = 13001
+	RuleGetFailed    = 13002
+	RulePutFailed    = 13003
+	RuleDeleteFailed = 13004
 )

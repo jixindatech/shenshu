@@ -22,6 +22,7 @@ type IP struct {
 
 func (i *IP) Save() (err error) {
 	data := make(map[string]interface{})
+	data["name"] = i.Name
 	data["type"] = i.Type
 
 	ip, err := json.Marshal(&i.IP)
@@ -35,7 +36,6 @@ func (i *IP) Save() (err error) {
 		return models.UpdateIP(i.ID, data)
 	}
 
-	data["name"] = i.Name
 	data["site"] = i.Site
 	err = models.AddIP(data)
 

@@ -12,6 +12,7 @@ type Site struct {
 
 	Upstreams []*Upstream `json:"upstreamRef" gorm:"many2many:site_upstream;"`
 	IPs       []IP        `json:"ips"`
+	CCs       []*CC       `json:"ccs"`
 }
 
 func AddSite(data map[string]interface{}) error {

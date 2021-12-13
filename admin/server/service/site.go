@@ -28,6 +28,7 @@ type Site struct {
 
 func (r *Site) Save() (err error) {
 	data := make(map[string]interface{})
+	data["name"] = r.Name
 	data["host"] = r.Host
 	data["path"] = r.Path
 	data["upstreamRef"] = r.UpstreamRef
@@ -40,7 +41,6 @@ func (r *Site) Save() (err error) {
 
 		err = models.UpdateSite(r.ID, data)
 	} else {
-		data["name"] = r.Name
 		err = models.AddSite(data)
 	}
 

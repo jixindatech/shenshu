@@ -100,10 +100,11 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		shenshuApis.PUT("site/ip/:id", shenshu.UpdateIP)
 		shenshuApis.DELETE("site/ip/:id", shenshu.DeleteIP)
 
-		shenshuApis.POST("/cc", shenshu.AddCC)
-		shenshuApis.GET("/cc", shenshu.GetCCs)
-		shenshuApis.GET("/cc/:id", shenshu.GetCC)
-		shenshuApis.PUT("/cc/:id", shenshu.UpdateCC)
+		shenshuApis.POST("site/:id/cc", shenshu.AddCC)
+		shenshuApis.GET("site/:id/cc", shenshu.GetCCs)
+		shenshuApis.GET("site/cc/:id", shenshu.GetCC)
+		shenshuApis.PUT("site/cc/:id", shenshu.UpdateCC)
+		shenshuApis.DELETE("site/cc/:id", shenshu.DeleteIP)
 	}
 	return r, nil
 }

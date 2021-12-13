@@ -12,7 +12,6 @@ import (
 
 type ccForm struct {
 	Name      string `json:"name" validate:"required,max=254"`
-	Site      uint   `json:"site" validate:"required,min=1"`
 	Mode      string `json:"mode" validate:"required"`
 	Method    string `json:"method" validate:"required"`
 	URI       string `json:"uri" validate:"required"`
@@ -26,12 +25,21 @@ type ccForm struct {
 func AddCC(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
+		formId   app.IDForm
 		form     ccForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
 
-	err := app.BindAndValid(c, &form)
+	err := app.BindUriAndValid(c, &formId)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	err = app.BindAndValid(c, &form)
 	if err != nil {
 		httpCode = e.InvalidParams
 		errCode = e.ERROR
@@ -41,7 +49,7 @@ func AddCC(c *gin.Context) {
 
 	ccSrv := service.CC{
 		Name:      form.Name,
-		Site:      form.Site,
+		Site:      formId.ID,
 		Mode:      form.Mode,
 		Method:    form.Method,
 		URI:       form.URI,
@@ -106,12 +114,21 @@ type queryCCForm struct {
 func GetCCs(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
+		formId   app.IDForm
 		form     queryCCForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
 
-	err := app.BindAndValid(c, &form)
+	err := app.BindUriAndValid(c, &formId)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	err = app.BindAndValid(c, &form)
 	if err != nil {
 		httpCode = e.InvalidParams
 		errCode = e.ERROR
@@ -120,6 +137,7 @@ func GetCCs(c *gin.Context) {
 	}
 
 	ccSrv := service.CC{
+		Site:     formId.ID,
 		Name:     form.Name,
 		Page:     form.Page,
 		PageSize: form.PageSize,
@@ -167,7 +185,6 @@ func UpdateCC(c *gin.Context) {
 	ccSrv := service.CC{
 		ID:        formId.ID,
 		Name:      form.Name,
-		Site:      form.Site,
 		Mode:      form.Mode,
 		Method:    form.Method,
 		URI:       form.URI,

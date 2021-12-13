@@ -8,7 +8,7 @@ type CC struct {
 	Model
 
 	Name      string `json:"name" gorm:"column:name;not null"`
-	SiteRefer uint   `json:"site" gorm:"column:site;not null"`
+	SiteId    uint   `json:"site" gorm:"not null"`
 	Mode      string `json:"mode" gorm:"column:mode;not null"`
 	Method    string `json:"method" gorm:"column:method;not null"`
 	URI       string `json:"uri" gorm:"column:uri;not null"`
@@ -17,12 +17,12 @@ type CC struct {
 	Duration  int    `json:"duration" gorm:"column:duration;not null"`
 	Action    string `json:"action" gorm:"column:action;not null"`
 	Remark    string `json:"remark" gorm:"column:remark;not null"`
-
-	Site Site `gorm:"foreignKey:SiteRefer"`
 }
 
 func AddCC(data map[string]interface{}) error {
-	cc := &CC{
+	var site Site
+	site.Model.ID = data["site"].(uint)
+	return db.Model(&site).Association("CCs").Append(&CC{
 		Name:      data["name"].(string),
 		Mode:      data["mode"].(string),
 		Method:    data["method"].(string),
@@ -31,11 +31,8 @@ func AddCC(data map[string]interface{}) error {
 		Threshold: data["threshold"].(int),
 		Duration:  data["duration"].(int),
 		Action:    data["action"].(string),
-		SiteRefer: data["site"].(uint),
 		Remark:    data["remark"].(string),
-	}
-
-	return db.Create(&cc).Error
+	}).Error
 }
 
 func UpdateCC(id uint, data map[string]interface{}) error {
@@ -45,7 +42,7 @@ func UpdateCC(id uint, data map[string]interface{}) error {
 func GetCC(id uint) (*CC, error) {
 	var cc CC
 
-	err := db.Preload("Site").Where("id = ?", id).Find(&cc).Error
+	err := db.Where("id = ?", id).Find(&cc).Error
 	if err != nil {
 		return &cc, err
 	}
@@ -55,30 +52,31 @@ func GetCC(id uint) (*CC, error) {
 
 func GetCCs(data map[string]interface{}) ([]*CC, int, error) {
 	var ccs []*CC
+	site := data["site"].(uint)
 	name := data["name"].(string)
 	page := data["page"].(int)
 	pageSize := data["pagesize"].(int)
 
+	var err error
 	var count int
 	if page > 0 {
 		offset := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err := db.Preload("Site").Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&ccs).Count(&count).Error
-			if err != nil {
-				return nil, 0, err
-			}
+			err = db.Where("site_id = ?", site).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&ccs).Count(&count).Error
 		} else {
-			err := db.Preload("Site").Offset(offset).Limit(pageSize).Find(&ccs).Count(&count).Error
-			if err != nil {
-				return nil, 0, err
-			}
+			err = db.Where("site_id = ?", site).Offset(offset).Limit(pageSize).Find(&ccs).Count(&count).Error
 		}
 	} else {
-		err := db.Preload("Site").Find(&ccs).Count(&count).Error
-		if err != nil && err != gorm.ErrRecordNotFound {
-			return nil, 0, err
-		}
+		err = db.Where("site_id = ?", site).Find(&ccs).Count(&count).Error
+	}
+
+	if err == gorm.ErrRecordNotFound {
+		return []*CC{}, 0, nil
+	}
+
+	if err != nil {
+		return nil, 0, err
 	}
 
 	return ccs, count, nil

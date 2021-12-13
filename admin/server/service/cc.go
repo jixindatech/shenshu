@@ -22,7 +22,7 @@ type CC struct {
 
 func (c *CC) Save() (err error) {
 	data := make(map[string]interface{})
-	data["site"] = c.Site
+	data["name"] = c.Name
 	data["mode"] = c.Mode
 	data["method"] = c.Method
 	data["uri"] = c.URI
@@ -35,7 +35,6 @@ func (c *CC) Save() (err error) {
 	if c.ID > 0 {
 		err = models.UpdateCC(c.ID, data)
 	} else {
-		data["name"] = c.Name
 		err = models.AddCC(data)
 	}
 
@@ -49,6 +48,7 @@ func (c *CC) Get() (*models.CC, error) {
 
 func (c *CC) GetList() ([]*models.CC, int, error) {
 	data := make(map[string]interface{})
+	data["site"] = c.Site
 	data["name"] = c.Name
 	data["page"] = c.Page
 	data["pagesize"] = c.PageSize

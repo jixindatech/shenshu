@@ -41,8 +41,8 @@ p, admin, ^/shenshu/site/ip/\+?[1-9][0-9]*$, GET
 p, admin, ^/shenshu/site/ip/\+?[1-9][0-9]*$, PUT
 p, admin, ^/shenshu/site/ip/\+?[1-9][0-9]*$, DELETE
 
-p, admin, ^/shenshu/cc$, POST
-p, admin, ^/shenshu/cc$, GET
-p, admin, ^/shenshu/cc/\+?[1-9][0-9]*$, GET
-p, admin, ^/shenshu/cc/\+?[1-9][0-9]*$, PUT
-p, admin, ^/shenshu/cc/\+?[1-9][0-9]*$, DELETE
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*/cc$, POST
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*/cc$, GET
+p, admin, ^/shenshu/site/cc/\+?[1-9][0-9]*$, GET
+p, admin, ^/shenshu/site/cc/\+?[1-9][0-9]*$, PUT
+p, admin, ^/shenshu/site/cc/\+?[1-9][0-9]*$, DELETE

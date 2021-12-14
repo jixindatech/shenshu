@@ -7,9 +7,10 @@ import (
 type RuleGroup struct {
 	ID uint
 
-	Name   string
-	Type   int
-	Remark string
+	Name     string
+	Type     int
+	Priority int
+	Remark   string
 
 	Page     int
 	PageSize int
@@ -17,8 +18,9 @@ type RuleGroup struct {
 
 func (r *RuleGroup) Save() error {
 	data := map[string]interface{}{
-		"name":   r.Name,
-		"remark": r.Remark,
+		"name":     r.Name,
+		"priority": r.Priority,
+		"remark":   r.Remark,
 	}
 
 	if r.ID > 0 {

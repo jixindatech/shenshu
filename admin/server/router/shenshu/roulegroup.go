@@ -11,9 +11,10 @@ import (
 )
 
 type ruleGroupForm struct {
-	Name   string `json:"name" validate:"required"`
-	Type   int    `json:"type" validate:"required,min=1,max=2"`
-	Remark string `json:"remark"`
+	Name     string `json:"name" validate:"required"`
+	Type     int    `json:"type" validate:"required,min=1,max=2"`
+	Priority int    `json:"priority" validate:"required,min=1"`
+	Remark   string `json:"remark"`
 }
 
 func AddRuleGroup(c *gin.Context) {
@@ -32,9 +33,10 @@ func AddRuleGroup(c *gin.Context) {
 	}
 
 	rgSrv := service.RuleGroup{
-		Name:   form.Name,
-		Type:   form.Type,
-		Remark: form.Remark,
+		Name:     form.Name,
+		Type:     form.Type,
+		Priority: form.Priority,
+		Remark:   form.Remark,
 	}
 	err = rgSrv.Save()
 	if err != nil {
@@ -177,9 +179,10 @@ func UpdateRuleGroup(c *gin.Context) {
 	}
 
 	rgSrv := service.RuleGroup{
-		ID:     formId.ID,
-		Name:   form.Name,
-		Remark: form.Remark,
+		ID:       formId.ID,
+		Name:     form.Name,
+		Priority: form.Priority,
+		Remark:   form.Remark,
 	}
 
 	err = rgSrv.Save()

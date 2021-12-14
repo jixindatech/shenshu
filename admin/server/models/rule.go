@@ -2,22 +2,34 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
+	"gorm.io/datatypes"
 )
 
 type Rule struct {
 	Model
 	Name        string `json:"name" gorm:"column:name;not null"`
 	RuleGroupId uint   `json:"ruleGroup" gorm:"not null"`
-	Remark      string `json:"remark" gorm:"column:remark;"`
+
+	Rules    datatypes.JSON `json:"rules" gorm:"column:rules;type:VARBINARY(1024);not null;comment:'规则'"`
+	Action   int            `json:"action" gorm:"column:action;default:'0'"` // deny score
+	Priority int            `json:"priority" gorm:"column:priority;default:'0'"`
+	Status   int            `json:"status" gorm:"column:status;default:'0'"`
+	Remark   string         `json:"remark" gorm:"column:remark;"`
 }
 
 func AddRule(data map[string]interface{}) error {
 	var ruleGroup RuleGroup
 	ruleGroup.Model.ID = data["rulegroup"].(uint)
-	return db.Model(&ruleGroup).Association("Rules").Append(&Rule{
-		Name:   data["name"].(string),
-		Remark: data["remark"].(string),
-	}).Error
+	rule := Rule{
+		Name:     data["name"].(string),
+		Rules:    data["rules"].(datatypes.JSON),
+		Priority: data["priority"].(int),
+		Action:   data["action"].(int),
+		Status:   data["status"].(int),
+		Remark:   data["remark"].(string),
+	}
+
+	return db.Model(&ruleGroup).Association("Rules").Append(&rule).Error
 }
 
 func UpdateRule(id uint, data map[string]interface{}) error {

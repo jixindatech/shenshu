@@ -5,17 +5,19 @@ import "github.com/jinzhu/gorm"
 type RuleGroup struct {
 	Model
 
-	Name   string `json:"name" gorm:"column:name;not null"`
-	Type   int    `json:"type" gorm:"column:type;not null"`
-	Remark string `json:"remark" gorm:"column:remark;"`
-	Rules  []*Rule
+	Name     string `json:"name" gorm:"column:name;not null"`
+	Type     int    `json:"type" gorm:"column:type;not null"`
+	Priority int    `json:"priority" gorm:"column:priority;not null"`
+	Remark   string `json:"remark" gorm:"column:remark;"`
+	Rules    []*Rule
 }
 
 func AddRuleGroup(data map[string]interface{}) error {
 	ruleGroup := RuleGroup{
-		Name:   data["name"].(string),
-		Type:   data["type"].(int),
-		Remark: data["remark"].(string),
+		Name:     data["name"].(string),
+		Type:     data["type"].(int),
+		Priority: data["priority"].(int),
+		Remark:   data["remark"].(string),
 	}
 	return db.Create(&ruleGroup).Error
 }
@@ -57,15 +59,15 @@ func GetRuleGroups(query map[string]interface{}, page int, pageSize int) ([]*Rul
 	if len(name) > 0 {
 		name = "%" + name + "%"
 		if ruleType != 0 {
-			err = db.Where("type = ?", ruleType).Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Count(&count).Error
+			err = db.Where("type = ?", ruleType).Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Order("priority").Count(&count).Error
 		} else {
-			err = db.Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Count(&count).Error
+			err = db.Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Order("priority").Count(&count).Error
 		}
 	} else {
 		if ruleType != 0 {
-			err = db.Where("type = ?", ruleType).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Count(&count).Error
+			err = db.Where("type = ?", ruleType).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Order("priority").Count(&count).Error
 		} else {
-			err = db.Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Count(&count).Error
+			err = db.Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Order("priority").Count(&count).Error
 		}
 	}
 

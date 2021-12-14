@@ -4,7 +4,7 @@
   >
     <el-form :inline="true" :model="query" size="mini">
       <el-form-item label="组名称:">
-        <el-select v-model="groupId" placeholder="请选择域名" @change="selectChanged">
+        <el-select v-model="groupId" placeholder="请选择组名称" @change="selectChanged">
           <el-option v-for="(item,index) in group" :key="index" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
@@ -40,7 +40,22 @@
       highlight-current-row
       row-key="id"
     >
-      <el-table-column prop="name" label="规则组名称" />
+      <el-table-column prop="name" label="规则名称" />
+      <el-table-column prop="pattern" label="匹配内容" />
+      <el-table-column align="center" prop="action" label="匹配动作">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.action === 1" type="success">允许</el-tag>
+          <el-tag v-if="scope.row.action === 2" type="danger">阻断</el-tag>
+          <el-tag v-if="scope.row.action === 4" type="primary">日志</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="status" label="状态">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">启用</el-tag>
+          <el-tag v-if="scope.row.status === 2" type="danger">停用</el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="createdAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -63,7 +78,6 @@
           <el-button
             type="danger"
             size="mini"
-            :disabled="scope.row.id === 1"
             @click="handleDelete(scope.row.id)"
           >删除</el-button>
         </template>
@@ -80,6 +94,7 @@
     />
 
     <edit
+      :id="groupId"
       :title="edit.title"
       :form-data="edit.formData"
       :visible="edit.visible"
@@ -90,8 +105,8 @@
 </template>
 
 <script>
-import * as rulegroup from '@/api/rulegroup'
-import { getList, deleteById, getById } from '@/api/rule'
+import * as ruleGroup from '@/api/rulegroup'
+import { getList, deleteById, getById } from '@/api/rulebatch'
 import Edit from './edit'
 export default {
   name: 'RuleBatch',
@@ -123,7 +138,7 @@ export default {
         if (id === undefined) {
           this.fetchData()
         } else {
-          this.siteId = id
+          this.groupId = id
         }
       }
     }
@@ -133,7 +148,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      await rulegroup.getList({ type: 1 }, 0).then((response) => {
+      await ruleGroup.getList({ type: 1 }, 0).then((response) => {
         this.group = response.data.list
       })
       if (this.group.length === 0) {
@@ -159,6 +174,7 @@ export default {
     },
     selectChanged(id) {
       this.groupId = id
+      this.fetchData()
     },
     queryData() {
       this.page.current = 1

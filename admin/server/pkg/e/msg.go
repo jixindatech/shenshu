@@ -61,6 +61,11 @@ var MsgFlags = map[int]string{
 	RuleGetFailed:    "获取Rule失败",
 	RulePutFailed:    "更新Rule失败",
 	RuleDeleteFailed: "删除Rule失败",
+
+	RuleBatchAddFailed:    "添加RuleBatch失败",
+	RuleBatchGetFailed:    "获取RuleBatch失败",
+	RuleBatchPutFailed:    "更新RuleBatch失败",
+	RuleBatchDeleteFailed: "删除RuleBatch失败",
 }
 
 func GetMsg(code int) string {

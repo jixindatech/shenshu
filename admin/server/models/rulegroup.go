@@ -1,15 +1,19 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"fmt"
+	"github.com/jinzhu/gorm"
+)
 
 type RuleGroup struct {
 	Model
 
-	Name     string `json:"name" gorm:"column:name;not null"`
-	Type     int    `json:"type" gorm:"column:type;not null"`
-	Priority int    `json:"priority" gorm:"column:priority;not null"`
-	Remark   string `json:"remark" gorm:"column:remark;"`
-	Rules    []*Rule
+	Name       string `json:"name" gorm:"column:name;not null"`
+	Type       int    `json:"type" gorm:"column:type;not null"`
+	Priority   int    `json:"priority" gorm:"column:priority;not null"`
+	Remark     string `json:"remark" gorm:"column:remark;"`
+	Rules      []*Rule
+	RuleBatchs []*RuleBatch
 }
 
 func AddRuleGroup(data map[string]interface{}) error {
@@ -23,8 +27,15 @@ func AddRuleGroup(data map[string]interface{}) error {
 }
 
 func DeleteRuleGroup(id uint) error {
-	// association delete rules
-	return db.Where("id = ?", id).Delete(RuleGroup{}).Error
+	var ruleGroup RuleGroup
+	ruleGroup.Model.ID = id
+	ruleCount := db.Model(&ruleGroup).Association("Rules").Count()
+	ruleBatchCount := db.Model(&ruleGroup).Association("RuleBatchs").Count()
+	if ruleCount != 0 || ruleBatchCount != 0 {
+		return fmt.Errorf("%s", "rule exist in this group")
+	}
+
+	return db.Delete(&ruleGroup).Error
 }
 
 func UpdateRuleGroup(id uint, data map[string]interface{}) error {

@@ -118,6 +118,11 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		shenshuApis.PUT("/rulegroup/rule/:id", shenshu.UpdateRule)
 		shenshuApis.DELETE("/rulegroup/rule/:id", shenshu.DeleteRule)
 
+		shenshuApis.POST("/rulegroup/:id/rulebatch", shenshu.AddRuleBatch)
+		shenshuApis.GET("/rulegroup/:id/rulebatch", shenshu.GetRuleBatchs)
+		shenshuApis.GET("/rulegroup/rulebatch/:id", shenshu.GetRuleBatch)
+		shenshuApis.PUT("/rulegroup/rulebatch/:id", shenshu.UpdateRuleBatch)
+		shenshuApis.DELETE("/rulegroup/rulebatch/:id", shenshu.DeleteRuleBatch)
 	}
 	return r, nil
 }

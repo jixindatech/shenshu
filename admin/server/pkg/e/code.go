@@ -57,4 +57,9 @@ const (
 	RuleGetFailed    = 13002
 	RulePutFailed    = 13003
 	RuleDeleteFailed = 13004
+
+	RuleBatchAddFailed    = 14001
+	RuleBatchGetFailed    = 14002
+	RuleBatchPutFailed    = 14003
+	RuleBatchDeleteFailed = 14004
 )

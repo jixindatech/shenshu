@@ -40,7 +40,29 @@
       highlight-current-row
       row-key="id"
     >
-      <el-table-column prop="name" label="规则组名称" />
+      <el-table-column prop="name" label="规则名称" />
+            <el-table-column align="left" prop="rules" label="规则内容" width="200">
+        <template slot-scope="scope">
+          <div v-for="(item, index) in scope.row.rules" :key="index">
+            <el-input v-if="item.variable === 'REQ_HEADER'" :value="VARIABLES_TEXT[item.variable] + ':' + item.header + ' ' + OPERATORS_TEXT[item.operator] + ' ' + item.pattern" size="mini" />
+            <el-input v-else type="success" size="mini" :value="VARIABLES_TEXT[item.variable] + ' ' + OPERATORS_TEXT[item.operator] + ' ' + item.pattern" />
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="action" label="匹配动作">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.action === 1" type="success">允许</el-tag>
+          <el-tag v-if="scope.row.action === 2" type="danger">阻断</el-tag>
+          <el-tag v-if="scope.row.action === 4" type="primary">日志</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="status" label="状态">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">启用</el-tag>
+          <el-tag v-if="scope.row.status === 2" type="danger">停用</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="priority" label="优先级" />
       <el-table-column prop="createdAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -80,6 +102,7 @@
     />
 
     <edit
+      :id="groupId"
       :title="edit.title"
       :form-data="edit.formData"
       :visible="edit.visible"
@@ -93,11 +116,17 @@
 import * as rulegroup from '@/api/rulegroup'
 import { getList, deleteById, getById } from '@/api/rule'
 import Edit from './edit'
+import { ACTION_TYPES, OPERATORS_TEXT, VARIABLES_TEXT } from '@/utils/rule'
+
 export default {
   name: 'RuleItem',
   components: { Edit },
   data() {
     return {
+      ACTION_TYPES,
+      OPERATORS_TEXT,
+      VARIABLES_TEXT,
+
       groupId: 0,
       group: [],
       query: {},

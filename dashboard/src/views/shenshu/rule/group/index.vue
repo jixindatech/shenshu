@@ -42,6 +42,7 @@
           <span>{{ RULE_TYPES_TEXT[scope.row.type] }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="priority" label="优先级" />
       <el-table-column prop="createdAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />

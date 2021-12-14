@@ -22,6 +22,9 @@
           <el-option v-for="(item,index) in RULE_TYPES " :key="index" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
+      <el-form-item label="规则类型：" prop="priority">
+        <el-input v-model.number="formData.priority" maxlength="30" type="number" />
+      </el-form-item>
       <el-form-item label="备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />
       </el-form-item>
@@ -40,6 +43,8 @@
 <script>
 import { add, update } from '@/api/rulegroup'
 import { RULE_TYPES } from '@/utils/rule'
+import { isInteger } from '@/utils/validate'
+
 export default {
   props: {
     title: {
@@ -65,7 +70,10 @@ export default {
       RULE_TYPES,
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        type: [{ required: true, message: '请选择类型', trigger: 'blur' }]
+        type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
+        priority: [
+          { required: true, message: '请选择类型', trigger: 'blur' },
+          { validator: isInteger }]
       }
     }
   },

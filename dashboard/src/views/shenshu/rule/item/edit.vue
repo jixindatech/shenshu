@@ -13,8 +13,8 @@
       label-width="80px"
       status-icon
     >
-      <el-form-item label="规则类型：" prop="type" style="width: 300px">
-        <el-input v-model="formData.type" placeholder="请输入规则类别" />
+      <el-form-item label="规则名称：" prop="name" style="width: 300px">
+        <el-input v-model="formData.name" placeholder="请输入规则类别" />
       </el-form-item>
       <p style="line-height: 40px;color: #606266; font-weight: bold; margin-bottom: 0; margin-top: 0; display: inline-block"><span style="color: red;display: inline-block;">*</span>匹配条件</p>
       <el-tooltip content="支持CIDR类型IP,多个IP以英文逗号(,)分割" placement="right" effect="light">
@@ -110,7 +110,16 @@
         </el-select>
       </el-form-item>
       <el-form-item label="优先级：" prop="priority" style="width: 300px">
-        <el-input v-model.number="formData.priority" />
+        <el-input v-model.number="formData.priority" type="number" />
+      </el-form-item>
+      <el-form-item label="状态：" prop="status">
+        <el-switch
+          v-model="formData.status"
+          active-text="开"
+          :active-value="1"
+          inactive-text="关"
+          :inactive-value="2"
+        />
       </el-form-item>
       <el-form-item label="规则备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />
@@ -130,6 +139,7 @@
 <script>
 import * as api from '@/api/rule'
 import { ACTION_TYPES, REQ_HEADER_OPERATORS, IP_OPERATORS, METHOD_OPERATORS, URI_OPERATORS, QUERY_OPERATORS, POST_BODY_OPERATORS, FILE_OPERATORS, FILE_NAMES_OPERATORS } from '@/utils/rule'
+import { isInteger } from '@/utils/validate'
 
 export default {
   props: {
@@ -140,6 +150,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    id: {
+      type: Number,
+      default: 0
     },
     formData: {
       type: Object,
@@ -168,40 +182,31 @@ export default {
       FILE_NAMES_OPERATORS,
       rules: {
         type: [
-          // prop值
           { required: true, message: '请输入类型', trigger: 'change' }
         ],
         variable: [
-          // prop值
           { required: true, message: '请选择匹配字段', trigger: 'change' }
         ],
         operator: [
-          // prop值
           { required: true, message: '请选择匹配方式', trigger: 'change' }
         ],
         pattern: [
-          // prop值
           { required: true, message: '请输入匹配内容', trigger: 'change' }
         ],
         header: [
-          // prop值
           { required: true, message: '请输入请求头', trigger: 'change' }
         ],
         file: [
-          // prop值
           { required: true, message: '请输入文件匹配内容', trigger: 'change' }
         ],
         fileName: [
-          // prop值
           { required: true, message: '请输入文件名称', trigger: 'change' }
         ],
         action: [
-          // prop值
           { required: true, message: '请选择规则动作', trigger: 'change' }
         ],
         priority: [
-          // prop值
-          { required: true, message: '请输入权重', trigger: 'blur' }
+          { required: true, message: '请输入权重', trigger: 'blur', validator: isInteger }
         ]
       }
     }
@@ -232,16 +237,14 @@ export default {
     async submitData() {
       let response = null
       if (this.formData.id) {
-        response = await api.update(this.formData)
+        response = await api.update(this.formData.id, this.formData)
       } else {
-        response = await api.add(this.formData)
+        response = await api.add(this.id, this.formData)
       }
 
-      if (response.code === 20000) {
+      if (response.code === 0) {
         this.$message({ message: '保存成功', type: 'success' })
         this.handleClose()
-      } else {
-        this.$message({ message: '保存失败', type: 'error' })
       }
     },
     handleClose() {

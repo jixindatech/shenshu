@@ -41,7 +41,7 @@
       row-key="id"
     >
       <el-table-column prop="name" label="规则名称" />
-            <el-table-column align="left" prop="rules" label="规则内容" width="200">
+      <el-table-column align="left" prop="rules" label="规则内容" width="200">
         <template slot-scope="scope">
           <div v-for="(item, index) in scope.row.rules" :key="index">
             <el-input v-if="item.variable === 'REQ_HEADER'" :value="VARIABLES_TEXT[item.variable] + ':' + item.header + ' ' + OPERATORS_TEXT[item.operator] + ' ' + item.pattern" size="mini" />
@@ -152,7 +152,7 @@ export default {
         if (id === undefined) {
           this.fetchData()
         } else {
-          this.siteId = id
+          this.groupId = id
         }
       }
     }
@@ -188,6 +188,7 @@ export default {
     },
     selectChanged(id) {
       this.groupId = id
+      this.fetchData()
     },
     queryData() {
       this.page.current = 1

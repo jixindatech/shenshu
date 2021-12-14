@@ -2,7 +2,11 @@
   <div
     class="app-container"
   >
-    <el-form :inline="true" size="mini">
+    <el-form
+      v-permission="['GET:/nginx/site']"
+      :inline="true"
+      size="mini"
+    >
       <el-form-item label="域名:">
         <el-select v-model="siteId" placeholder="请选择域名" @change="selectChanged">
           <el-option v-for="(item,index) in sites" :key="index" :label="item.name" :value="item.id" />
@@ -17,7 +21,7 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
+    <el-tabs v-model="activeName" v-permission="['GET:/shenshu/site/:id/ip', 'PUT:/shenshu/site/ip/:id']" type="border-card" @tab-click="handleClick">
       <el-tab-pane label="Allow名单" name="1">
         <Item :params="activeName" :site-id="siteId" :type="IP_TYPE.ALLOW" />
       </el-tab-pane>

@@ -17,6 +17,7 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-permission="['POST:/shenshu/site/:id/ip']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
@@ -58,11 +59,13 @@
       <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
+            v-permission="['PUT:/shenshu/site/ip/:id']"
             type="primary"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
+            v-permission="['DELETE:/shenshu/site/ip/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"

@@ -1,5 +1,8 @@
 <template>
-  <div class="app-container">
+  <div
+    v-permission="['GET:/nginx/upstream', 'GET:/nginx/upstream/:id']"
+    class="app-container"
+  >
     <el-form :inline="true" :model="query" size="mini">
       <el-form-item
         label="名称:"
@@ -17,6 +20,7 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-permission="['POST:/nginx/upstream']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
@@ -50,11 +54,13 @@
       <el-table-column align="center" label="操作" width="330">
         <template slot-scope="scope">
           <el-button
+            v-permission="['PUT:/nginx/upstream/:id']"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
+            v-permission="['DELETE:/nginx/upstream/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"

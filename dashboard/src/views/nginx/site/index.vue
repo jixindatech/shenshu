@@ -1,5 +1,8 @@
 <template>
-  <div class="app-container">
+  <div
+    v-permission="['GET:/nginx/site', 'GET:/nginx/site/:id']"
+    class="app-container"
+  >
     <el-form :inline="true" :model="query" size="mini">
       <el-form-item
         label="Site名称:"
@@ -17,6 +20,7 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-permission="['POST:/nginx/site']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
@@ -44,17 +48,20 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button
+            v-permission="['PUT:/nginx/site/:id']"
             :disabled="scope.row.id === 1"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
+            v-permission="['GET:/shenshu/site/:id/ip', 'GET:/shenshu/site/ip/:id']"
             type="primary"
             size="mini"
             @click="ipConfig(scope.row.id)"
           >IP管理</el-button>
           <el-button
+            v-permission="['GET:/shenshu/site/:id/cc', 'GET:/shenshu/site/cc/:id']"
             type="primary"
             size="mini"
             @click="ccConfig(scope.row.id)"
@@ -65,7 +72,7 @@
             @click="ccConfig(scope.row.id)"
           >基础配置</el-button>
           <el-button
-            :disabled="scope.row.id === 1"
+            v-permission="['DELETE:/nginx/site/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"

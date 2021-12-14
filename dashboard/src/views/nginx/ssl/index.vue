@@ -1,5 +1,8 @@
 <template>
-  <div class="app-container">
+  <div
+    v-permission="['GET:/nginx/ssl', 'GET:/nginx/ssl/:id']"
+    class="app-container"
+  >
     <el-form :inline="true" :model="query" size="mini">
       <el-form-item
         label="服务器名称:"
@@ -17,6 +20,7 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-permission="['POST:/nginx/ssl']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
@@ -41,6 +45,7 @@
       <el-table-column align="center" label="操作" width="330">
         <template slot-scope="scope">
           <el-button
+            v-permission="['PUT:/nginx/site']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"

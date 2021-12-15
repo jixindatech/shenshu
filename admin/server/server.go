@@ -39,11 +39,6 @@ func (s *Server) Setup(cfg *config.Config) error {
 		}
 	}
 
-	err = service.SetupGlobalSite()
-	if err != nil {
-		return err
-	}
-
 	err = rbac.Setup(cfg.Rbac)
 	if err != nil {
 		return fmt.Errorf("rbac error: %s", err)

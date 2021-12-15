@@ -7,14 +7,19 @@ import (
 	"admin/server/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"gorm.io/datatypes"
 	"net/http"
 )
 
 type ruleGroupForm struct {
-	Name     string `json:"name" validate:"required"`
-	Type     int    `json:"type" validate:"required,min=1,max=2"`
-	Priority int    `json:"priority" validate:"required,min=1"`
-	Remark   string `json:"remark"`
+	Name     string         `json:"name" validate:"required"`
+	Type     int            `json:"type" validate:"required,min=1,max=2"`
+	Priority int            `json:"priority" validate:"required,min=1"`
+	Status   int            `json:"status" validate:"required,min=1,max=4"`
+	Level    int            `json:"level"`
+	Decoder  datatypes.JSON `json:"decoder" validate:"required"`
+
+	Remark string `json:"remark"`
 }
 
 func AddRuleGroup(c *gin.Context) {
@@ -36,6 +41,9 @@ func AddRuleGroup(c *gin.Context) {
 		Name:     form.Name,
 		Type:     form.Type,
 		Priority: form.Priority,
+		Status:   form.Status,
+		Level:    form.Level,
+		Decoder:  form.Decoder,
 		Remark:   form.Remark,
 	}
 	err = rgSrv.Save()
@@ -182,6 +190,9 @@ func UpdateRuleGroup(c *gin.Context) {
 		ID:       formId.ID,
 		Name:     form.Name,
 		Priority: form.Priority,
+		Status:   form.Status,
+		Level:    form.Level,
+		Decoder:  form.Decoder,
 		Remark:   form.Remark,
 	}
 

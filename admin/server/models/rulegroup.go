@@ -3,15 +3,19 @@ package models
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"gorm.io/datatypes"
 )
 
 type RuleGroup struct {
 	Model
 
-	Name       string `json:"name" gorm:"column:name;not null"`
-	Type       int    `json:"type" gorm:"column:type;not null"`
-	Priority   int    `json:"priority" gorm:"column:priority;not null"`
-	Remark     string `json:"remark" gorm:"column:remark;"`
+	Name       string         `json:"name" gorm:"column:name;not null"`
+	Type       int            `json:"type" gorm:"column:type;not null"`
+	Status     int            `json:"status" gorm:"column:status;default:'0';comment:'模式'"`
+	Level      int            `json:"level" gorm:"column:level;default:'0';comment:'等级'"`
+	Decoder    datatypes.JSON `json:"decoder" gorm:"type:VARBINARY(1024);column:decoder"`
+	Priority   int            `json:"priority" gorm:"column:priority;not null"`
+	Remark     string         `json:"remark" gorm:"column:remark;"`
 	Rules      []*Rule
 	RuleBatchs []*RuleBatch
 }
@@ -21,7 +25,11 @@ func AddRuleGroup(data map[string]interface{}) error {
 		Name:     data["name"].(string),
 		Type:     data["type"].(int),
 		Priority: data["priority"].(int),
-		Remark:   data["remark"].(string),
+		Status:   data["status"].(int),
+		Level:    data["level"].(int),
+		Decoder:  data["decoder"].(datatypes.JSON),
+
+		Remark: data["remark"].(string),
 	}
 	return db.Create(&ruleGroup).Error
 }

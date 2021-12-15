@@ -2,6 +2,7 @@ package service
 
 import (
 	"admin/server/models"
+	"gorm.io/datatypes"
 )
 
 type RuleGroup struct {
@@ -10,7 +11,11 @@ type RuleGroup struct {
 	Name     string
 	Type     int
 	Priority int
-	Remark   string
+	Status   int
+	Level    int
+	Decoder  datatypes.JSON
+
+	Remark string
 
 	Page     int
 	PageSize int
@@ -20,7 +25,11 @@ func (r *RuleGroup) Save() error {
 	data := map[string]interface{}{
 		"name":     r.Name,
 		"priority": r.Priority,
-		"remark":   r.Remark,
+		"status":   r.Status,
+		"level":    r.Level,
+		"decoder":  r.Decoder,
+
+		"remark": r.Remark,
 	}
 
 	if r.ID > 0 {

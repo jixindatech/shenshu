@@ -35,10 +35,6 @@ func (r *Site) Save() (err error) {
 	data["remark"] = r.Remark
 
 	if r.ID > 0 {
-		if r.ID == 1 {
-			return fmt.Errorf("%s", "invalid id for site")
-		}
-
 		err = models.UpdateSite(r.ID, data)
 	} else {
 		err = models.AddSite(data)
@@ -65,10 +61,6 @@ func (r *Site) GetList() ([]*models.Site, int, error) {
 }
 
 func (r *Site) Delete() error {
-	if r.ID == 1 {
-		return fmt.Errorf("%s", "invalid id for site")
-	}
-
 	err := models.DeleteSite(r.ID)
 	if err != nil {
 		return err
@@ -133,11 +125,6 @@ func SetupSites() error {
 		route["id"] = item.ID
 		route["host"] = item.Host
 		route["uri"] = item.Path
-
-		/* skip global without upstream */
-		if item.ID == 1 && item.Host == "global" {
-			continue
-		}
 
 		if len(item.Upstreams) != 1 {
 			return fmt.Errorf("%s", "invalid site upstream")

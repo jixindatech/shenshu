@@ -43,6 +43,20 @@
           <span>{{ RULE_TYPES_TEXT[scope.row.type] }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="type" label="模式">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">阻断</el-tag>
+          <el-tag v-if="scope.row.status === 2" type="danger">关闭</el-tag>
+          <el-tag v-if="scope.row.status === 3" type="primary">日志</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="decoder" label="编码">
+        <template slot-scope="scope">
+          <div v-for="(item, index) in scope.row.decoder" :key="index">
+            <el-input type="success" size="mini" :value="item" />
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="priority" label="优先级" />
       <el-table-column prop="createdAt" label="创建时间" width="220">
         <template slot-scope="scope">
@@ -91,7 +105,7 @@
 
     <edit
       :title="edit.title"
-      :form-data="edit.formData"
+      :data="edit.formData"
       :visible="edit.visible"
       :remote-close="remoteClose"
     />

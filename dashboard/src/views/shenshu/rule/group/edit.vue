@@ -25,6 +25,18 @@
       <el-form-item label="规则权重：" prop="priority">
         <el-input v-model.number="formData.priority" maxlength="30" type="number" />
       </el-form-item>
+      <el-form-item label="模式：" prop="status">
+        <el-radio-group v-model="formData.status" size="mini">
+          <el-radio :label="1" border>阻断</el-radio>
+          <el-radio :label="2" border>关闭</el-radio>
+          <el-radio :label="4" border>日志</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="解码配置：" prop="decoder">
+        <el-checkbox-group v-model="formData.decoder" @change="handleCheckedDecoder">
+          <el-checkbox v-for="(item, index) in decoderOptions" :key="index" size="mini" :label="item.name">{{ item.value }}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
       <el-form-item label="备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />
       </el-form-item>
@@ -55,7 +67,7 @@ export default {
       type: Boolean,
       default: false
     },
-    formData: {
+    data: {
       type: Object,
       default: function() { return {} }
     },
@@ -68,16 +80,36 @@ export default {
   data() {
     return {
       RULE_TYPES,
+      formData: {
+        decoder: []
+      },
+      decoderOptions: [
+        { name: 'multipart', value: 'Multipart解析' },
+        { name: 'json', value: 'JSON解析' },
+        { name: 'form', value: 'Form解析' }],
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
         type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
         priority: [
           { required: true, message: '请选择类型', trigger: 'blur' },
-          { validator: isInteger }]
+          { validator: isInteger }],
+        status: [
+          { required: true, message: '请选择模式', trigger: 'change' }],
+        decoder: [
+          { type: 'array', required: true, message: '请选择解码方式', trigger: 'change' }
+        ]
       }
     }
   },
-
+  watch: {
+    visible(newVal, oldVal) {
+      if (newVal === true) {
+        if (this.data.id !== undefined) {
+          this.formData = JSON.parse(JSON.stringify(this.data))
+        }
+      }
+    }
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -102,10 +134,12 @@ export default {
         this.handleClose()
       }
     },
-
     handleClose() {
       this.$refs['formData'].resetFields()
       this.remoteClose()
+    },
+    handleCheckedDecoder(value) {
+      console.log(value)
     }
   }
 }

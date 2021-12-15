@@ -69,8 +69,13 @@
           <el-button
             type="primary"
             size="mini"
-            @click="ccConfig(scope.row.id)"
+            @click="basicConfig(scope.row)"
           >基础配置</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="enableConfig(scope.row.id)"
+          >配置下发</el-button>
           <el-button
             v-permission="['DELETE:/nginx/site/:id']"
             type="danger"
@@ -121,7 +126,14 @@ export default {
         visible: false,
         formData: {}
       },
-      checkedSitesList: []
+      checkedSitesList: [],
+
+      config: {
+        title: '',
+        site: 0,
+        visible: false,
+        formData: {}
+      }
     }
   },
   created() {
@@ -201,8 +213,8 @@ export default {
     ccConfig(id) {
       this.$router.push({ name: 'CC', params: { site: id }})
     },
-    basicConfig(id) {
-      console.log('rule config:', id)
+    enableConfig(id) {
+      console.log('enable config:', id)
     }
   }
 }

@@ -69,8 +69,8 @@
           <el-button
             type="primary"
             size="mini"
-            @click="basicConfig(scope.row)"
-          >基础配置</el-button>
+            @click="rulegroupConfig(scope.row.id)"
+          >规则配置</el-button>
           <el-button
             type="primary"
             size="mini"
@@ -102,16 +102,26 @@
       :remote-close="remoteClose"
     />
 
+    <el-dialog title="设置规则" :visible.sync="rulegroup.visible" width="65%">
+      <RuleGroup
+        :ids="rulegroup.ids"
+        :site="rulegroup.site"
+        @getRuleGroup="getRuleGroup"
+      />
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import * as api from '@/api/site'
 import Edit from './edit'
+import RuleGroup from '@/views/shenshu/rule/group'
+import * as rulegroup from '@/api/rulegroup'
 
 export default {
   name: 'Site',
-  components: { Edit },
+  components: { Edit, RuleGroup },
   data() {
     return {
       list: [],
@@ -127,12 +137,10 @@ export default {
         formData: {}
       },
       checkedSitesList: [],
-
-      config: {
-        title: '',
-        site: 0,
+      rulegroup: {
         visible: false,
-        formData: {}
+        ids: [],
+        site: 0
       }
     }
   },
@@ -213,8 +221,26 @@ export default {
     ccConfig(id) {
       this.$router.push({ name: 'CC', params: { site: id }})
     },
+    async rulegroupConfig(id) {
+      const { data } = await rulegroup.GetSiteRuleGroup(id)
+      this.rulegroup.site = id
+      this.rulegroup.ids = data.ids
+      this.rulegroup.visible = true
+    },
     enableConfig(id) {
       console.log('enable config:', id)
+    },
+    getRuleGroup(ids) {
+      const data = { ids: ids }
+      rulegroup.UpdateSiteRuleGroup(this.rulegroup.site, data).then((response) => {
+        this.$message({
+          type: 'success',
+          message: '更新成功!'
+        })
+      })
+      this.rulegroup.site = 0
+      this.rulegroup.visible = false
+      this.rulegroup.ids = []
     }
   }
 }

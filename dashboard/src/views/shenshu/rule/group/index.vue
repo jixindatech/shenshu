@@ -18,15 +18,25 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-if="!ids"
           v-permission="['POST:/shenshu/rulegroup']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
         >新增</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button
+          v-if="ids"
+          icon="el-icon-circle-plus-outline"
+          type="success"
+          @click="setRuleGroup"
+        >设置规则组</el-button>
+      </el-form-item>
     </el-form>
 
     <el-table
+      ref="dataTable"
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
@@ -36,7 +46,15 @@
       fit
       highlight-current-row
       row-key="id"
+      @selection-change="handleSelectionChange"
     >
+      <el-table-column
+        v-if="ids"
+        align="center"
+        reserve-selection
+        type="selection"
+        width="55"
+      />
       <el-table-column prop="name" label="规则组名称" />
       <el-table-column prop="type" label="规则类型">
         <template slot-scope="scope">
@@ -70,7 +88,7 @@
           <span>{{ scope.row.updateAt }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="250">
+      <el-table-column v-if="!ids" align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
             v-permission="['PUT:/shenshu/rulegroup/:id']"
@@ -119,6 +137,13 @@ import { RULE_TYPES_TEXT } from '@/utils/rule'
 export default {
   name: 'RuleGroup',
   components: { Edit },
+  props: {
+    ids: {
+      type: Array,
+      default: function() { return null }
+    }
+
+  },
   data() {
     return {
       RULE_TYPES_TEXT,
@@ -139,16 +164,23 @@ export default {
         id: 0,
         title: '规则管理',
         visible: false
-      }
+      },
+      checkedList: []
+    }
+  },
+  watch: {
+    ids() {
+      this.query = {}
+      this.queryData()
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
-    fetchData() {
+    async fetchData() {
       this.listLoading = true
-      getList(
+      await getList(
         this.query,
         this.page.current,
         this.page.size
@@ -158,6 +190,18 @@ export default {
         this.page.total = data.total
         this.listLoading = false
       })
+
+      this.chekedChoices()
+    },
+    chekedChoices() {
+      this.$refs.dataTable.clearSelection()
+      if (this.ids) {
+        this.list.forEach((item) => {
+          if (this.ids.indexOf(item.id) !== -1) {
+            this.$refs.dataTable.toggleRowSelection(item, true)
+          }
+        })
+      }
     },
     queryData() {
       this.page.current = 1
@@ -216,7 +260,19 @@ export default {
       } else if (type === 2) {
         this.$router.push({ name: 'Item', params: { rule: id }})
       }
+    },
+    handleSelectionChange(val) {
+      this.checkedList = val
+    },
+    setRuleGroup() {
+      const checkedIds = []
+      this.checkedList.forEach((item) => {
+        checkedIds.push(item.id)
+      })
+
+      this.$emit('getRuleGroup', checkedIds)
     }
+
   }
 }
 </script>

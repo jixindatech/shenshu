@@ -1,6 +1,9 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	"gorm.io/gorm/clause"
+)
 
 type Site struct {
 	Model
@@ -50,13 +53,11 @@ func AddSite(data map[string]interface{}) error {
 func DeleteSite(id uint) error {
 	site := Site{}
 	site.Model.ID = id
-	/* clear Associations with upstreams*/
+	/* clear Associations with upstreams
 	db.Model(&site).Association("Upstreams").Clear()
-
-	/* clear Associations with upstreams*/
 	db.Model(&site).Association("IPs").Clear()
-
-	err := db.Delete(&site).Error
+	*/
+	err := db.Select(clause.Associations).Delete(&site).Error
 	if err != nil {
 		return err
 	}

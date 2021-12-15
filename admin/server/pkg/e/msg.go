@@ -27,10 +27,12 @@ var MsgFlags = map[int]string{
 	MsgUpdateFailed: "更新msg失败",
 	MsgDeleteFailed: "删除msg失败",
 
-	SiteAddFailed:    "添加站点失败",
-	SiteGetFailed:    "获取站点失败",
-	SitePutFailed:    "更新站点失败",
-	SiteDeleteFailed: "删除站点失败",
+	SiteAddFailed:          "添加站点失败",
+	SiteGetFailed:          "获取站点失败",
+	SitePutFailed:          "更新站点失败",
+	SiteDeleteFailed:       "删除站点失败",
+	SitePutRuleGroupFailed: "更新站点规则失败",
+	SiteGetRuleGroupFailed: "获取站点规则失败",
 
 	SSLAddFailed:    "添加SSL失败",
 	SSLGetFailed:    "获取SSL失败",

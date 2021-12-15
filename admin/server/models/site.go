@@ -13,9 +13,10 @@ type Site struct {
 	Path   string `json:"path" gorm:"column:path;not null"`
 	Remark string `json:"remark" gorm:"column:remark"`
 
-	Upstreams []*Upstream `json:"upstreamRef" gorm:"many2many:site_upstream;"`
-	IPs       []IP        `json:"ips"`
-	CCs       []*CC       `json:"ccs"`
+	Upstreams  []*Upstream  `json:"upstreamRef" gorm:"many2many:site_upstream;"`
+	IPs        []IP         `json:"ips"`
+	CCs        []*CC        `json:"ccs"`
+	RuleGroups []*RuleGroup `json:"ruleGroups" gorm:"many2many:site_rulegroup;"`
 }
 
 func AddSite(data map[string]interface{}) error {
@@ -64,6 +65,34 @@ func DeleteSite(id uint) error {
 	return nil
 }
 
+func UpdateSiteRuleGroup(id uint, ids []uint) error {
+	site := Site{}
+	site.Model.ID = id
+	var rulegroups []*RuleGroup
+	for _, item := range ids {
+		temp := RuleGroup{}
+		temp.Model.ID = item
+		rulegroups = append(rulegroups, &temp)
+	}
+
+	err := db.Model(&site).Association("RuleGroups").Replace(rulegroups).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetSiteRuleGroup(id uint) ([]*RuleGroup, error) {
+	site := Site{}
+	site.Model.ID = id
+	var rulegroups []*RuleGroup
+	err := db.Model(&site).Association("RuleGroups").Find(&rulegroups).Error
+	if err != nil {
+		return nil, err
+	}
+	return rulegroups, nil
+}
 func UpdateSite(id uint, data map[string]interface{}) error {
 	site := Site{}
 	site.Model.ID = id

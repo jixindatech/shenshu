@@ -123,6 +123,10 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		shenshuApis.GET("/rulegroup/rulebatch/:id", shenshu.GetRuleBatch)
 		shenshuApis.PUT("/rulegroup/rulebatch/:id", shenshu.UpdateRuleBatch)
 		shenshuApis.DELETE("/rulegroup/rulebatch/:id", shenshu.DeleteRuleBatch)
+
+		shenshuApis.POST("/site/:id/rulegroup", shenshu.EnableSiteRuleGroup)
+		shenshuApis.PUT("/site/:id/rulegroup", shenshu.UpdateSiteRuleGroup)
+		shenshuApis.GET("/site/:id/rulegroup", shenshu.GetSiteRuleGroup)
 	}
 	return r, nil
 }

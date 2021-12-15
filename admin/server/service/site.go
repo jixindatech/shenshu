@@ -22,6 +22,8 @@ type Site struct {
 	UpstreamRef uint
 	Remark      string
 
+	Ids []uint
+
 	Page     int
 	PageSize int
 }
@@ -67,6 +69,28 @@ func (r *Site) Delete() error {
 	}
 
 	return SetupSites()
+}
+
+func (r *Site) UpdatRuleGroup() error {
+	err := models.UpdateSiteRuleGroup(r.ID, r.Ids)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *Site) GetRuleGroup() ([]uint, error) {
+	var ids []uint
+	rulegroups, err := models.GetSiteRuleGroup(r.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, item := range rulegroups {
+		ids = append(ids, item.ID)
+	}
+
+	return ids, nil
 }
 
 func SetupGlobalSite() error {
@@ -150,5 +174,9 @@ func SetupSites() error {
 		return err
 	}
 
+	return nil
+}
+
+func (r *Site) EnableConfig() error {
 	return nil
 }

@@ -23,10 +23,12 @@ const (
 	MsgUpdateFailed   = 50002
 	MsgDeleteFailed   = 50003
 
-	SiteAddFailed    = 60001
-	SiteGetFailed    = 60002
-	SitePutFailed    = 60003
-	SiteDeleteFailed = 60004
+	SiteAddFailed          = 60001
+	SiteGetFailed          = 60002
+	SitePutFailed          = 60003
+	SiteDeleteFailed       = 60004
+	SiteGetRuleGroupFailed = 60005
+	SitePutRuleGroupFailed = 60006
 
 	SSLAddFailed    = 70001
 	SSLGetFailed    = 70002

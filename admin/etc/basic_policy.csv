@@ -64,3 +64,7 @@ p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*/rulebatch$, GET
 p, admin, ^/shenshu/rulegroup/rulebatch/\+?[1-9][0-9]*$, GET
 p, admin, ^/shenshu/rulegroup/rulebatch/\+?[1-9][0-9]*$, PUT
 p, admin, ^/shenshu/rulegroup/rulebatch/\+?[1-9][0-9]*$, DELETE
+
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup$, POST
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup$, PUT
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup$, GET

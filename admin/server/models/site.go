@@ -1,6 +1,9 @@
 package models
 
 import (
+	"admin/server/util"
+	"encoding/json"
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -11,12 +14,14 @@ type Site struct {
 	Name   string `json:"name" gorm:"column:name;not null;unique"`
 	Host   string `json:"host" gorm:"column:host;not null;"`
 	Path   string `json:"path" gorm:"column:path;not null"`
+	Status int    `json:"status" gorm:"column:status;not null"`
 	Remark string `json:"remark" gorm:"column:remark"`
 
-	Upstreams  []*Upstream  `json:"upstreamRef" gorm:"many2many:site_upstream;"`
-	IPs        []IP         `json:"ips"`
-	CCs        []*CC        `json:"ccs"`
-	RuleGroups []*RuleGroup `json:"ruleGroups" gorm:"many2many:site_rulegroup;"`
+	Upstreams      []*Upstream      `json:"upstreamRef" gorm:"many2many:site_upstream;"`
+	IPs            []IP             `json:"ips"`
+	CCs            []*CC            `json:"ccs"`
+	BatchGroups    []*BatchGroup    `json:"batchgroup" gorm:"many2many:site_batchroup;"`
+	SpecificGroups []*SpecificGroup `json:"specificgroup" gorm:"many2many:site_specificgroup;"`
 }
 
 func AddSite(data map[string]interface{}) error {
@@ -24,6 +29,7 @@ func AddSite(data map[string]interface{}) error {
 		Name:   data["name"].(string),
 		Host:   data["host"].(string),
 		Path:   data["path"].(string),
+		Status: data["status"].(int),
 		Remark: data["remark"].(string),
 	}
 
@@ -68,14 +74,14 @@ func DeleteSite(id uint) error {
 func UpdateSiteRuleGroup(id uint, ids []uint) error {
 	site := Site{}
 	site.Model.ID = id
-	var rulegroups []*RuleGroup
+	var rulegroups []*BatchGroup
 	for _, item := range ids {
-		temp := RuleGroup{}
+		temp := BatchGroup{}
 		temp.Model.ID = item
 		rulegroups = append(rulegroups, &temp)
 	}
 
-	err := db.Model(&site).Association("RuleGroups").Replace(rulegroups).Error
+	err := db.Model(&site).Association("BatchGroups").Replace(rulegroups).Error
 	if err != nil {
 		return err
 	}
@@ -83,16 +89,17 @@ func UpdateSiteRuleGroup(id uint, ids []uint) error {
 	return nil
 }
 
-func GetSiteRuleGroup(id uint) ([]*RuleGroup, error) {
+func GetSiteBatchGroup(id uint) ([]*BatchGroup, error) {
 	site := Site{}
 	site.Model.ID = id
-	var rulegroups []*RuleGroup
-	err := db.Model(&site).Association("RuleGroups").Find(&rulegroups).Error
+	var rulegroups []*BatchGroup
+	err := db.Model(&site).Association("BatchGroups").Find(&rulegroups).Error
 	if err != nil {
 		return nil, err
 	}
 	return rulegroups, nil
 }
+
 func UpdateSite(id uint, data map[string]interface{}) error {
 	site := Site{}
 	site.Model.ID = id
@@ -126,6 +133,45 @@ func GetSite(id uint) (*Site, error) {
 	}
 
 	return &site, nil
+}
+
+func GetSiteConfig(id uint) (map[string]interface{}, error) {
+	var site Site
+	site.Model.ID = id
+	data := make(map[string]interface{})
+
+	var err error
+	var ips []*IP
+	err = db.Model(&site).Association("IPs").Find(&ips).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var ipsAllow []string
+	var ipsDeny []string
+	for _, ip := range ips {
+		fmt.Println(ip.ID, ip.Type, ip.IP)
+		var tmpIPs []string
+		err := json.Unmarshal(ip.IP, &tmpIPs)
+		if err != nil {
+			return nil, err
+		}
+
+		if ip.Type == util.IP_ACCEPT {
+			ipsAllow = append(ipsAllow, tmpIPs...)
+		} else if ip.Type == util.IP_DENY {
+			ipsDeny = append(ipsDeny, tmpIPs...)
+		} else {
+			return nil, fmt.Errorf("%s", "invalid ip type")
+		}
+	}
+	/*
+		err := db.Preload("BatchGroups").Preload("Upstreams").Where("id = ?", id).Find(&site).Error
+		if err != nil {
+			return &site, err
+		}
+	*/
+	return data, nil
 }
 
 func GetSites(data map[string]interface{}) ([]*Site, int, error) {

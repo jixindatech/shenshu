@@ -103,3 +103,35 @@ func GetSiteRuleGroup(c *gin.Context) {
 
 	appG.Response(httpCode, errCode, "", data)
 }
+
+func EnableSiteConfig(c *gin.Context) {
+	var (
+		appG     = app.Gin{C: c}
+		formId   app.IDForm
+		httpCode = http.StatusOK
+		errCode  = e.SUCCESS
+	)
+
+	err := app.BindUriAndValid(c, &formId)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	siteSrv := &service.Site{
+		ID: formId.ID,
+	}
+
+	err = siteSrv.Enable()
+	if err != nil {
+		log.Logger.Error("SiteRuleGroup", zap.String("enable", err.Error()))
+		httpCode = http.StatusInternalServerError
+		errCode = e.SiteEnableSiteConfig
+		appG.Response(httpCode, errCode, "", nil)
+		return
+	}
+
+	appG.Response(httpCode, errCode, "", nil)
+}

@@ -7,16 +7,16 @@ import (
 type RuleBatch struct {
 	Model
 
-	Name        string `json:"name" gorm:"column:name;not null"`
-	RuleGroupId uint   `json:"ruleGroup" gorm:"not null"`
-	Pattern     string `json:"pattern" gorm:"column:pattern;not null"`
-	Action      int    `json:"action" gorm:"column:action;not null;default 0"`
-	Status      int    `json:"status" gorm:"column:status;default:'0'"`
-	Remark      string `json:"remark" gorm:"column:remark;comment:'备注'"`
+	Name         string `json:"name" gorm:"column:name;not null"`
+	BatchGroupID uint   `json:"ruleGroup" gorm:"not null"`
+	Pattern      string `json:"pattern" gorm:"column:pattern;not null"`
+	Action       int    `json:"action" gorm:"column:action;not null;default 0"`
+	Status       int    `json:"status" gorm:"column:status;default:'0'"`
+	Remark       string `json:"remark" gorm:"column:remark;comment:'备注'"`
 }
 
 func AddBatchRule(data map[string]interface{}) error {
-	var ruleGroup RuleGroup
+	var ruleGroup BatchGroup
 	ruleGroup.Model.ID = data["rulegroup"].(uint)
 	rule := RuleBatch{
 		Name:    data["name"].(string),
@@ -57,12 +57,12 @@ func GetBatchRules(data map[string]interface{}) ([]*RuleBatch, int, error) {
 		offset := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err = db.Where("rule_group_id = ?", rulegroup).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+			err = db.Where("batch_group_id = ?", rulegroup).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 		} else {
-			err = db.Where("rule_group_id = ?", rulegroup).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+			err = db.Where("batch_group_id = ?", rulegroup).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 		}
 	} else {
-		err = db.Where("rule_group_id = ?", rulegroup).Find(&rules).Count(&count).Error
+		err = db.Where("batch_group_id = ?", rulegroup).Find(&rules).Count(&count).Error
 	}
 
 	if err == gorm.ErrRecordNotFound {

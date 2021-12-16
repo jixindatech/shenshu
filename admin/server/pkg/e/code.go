@@ -29,6 +29,7 @@ const (
 	SiteDeleteFailed       = 60004
 	SiteGetRuleGroupFailed = 60005
 	SitePutRuleGroupFailed = 60006
+	SiteEnableSiteConfig   = 60007
 
 	SSLAddFailed    = 70001
 	SSLGetFailed    = 70002
@@ -50,10 +51,15 @@ const (
 	CCPutFailed    = 11003
 	CCDeleteFailed = 11004
 
-	RuleGroupAddFailed    = 12001
-	RuleGroupGetFailed    = 12002
-	RuleGroupPutFailed    = 12003
-	RuleGroupDeleteFailed = 12004
+	BatchGroupAddFailed    = 12001
+	BatchGroupGetFailed    = 12002
+	BatchGroupPutFailed    = 12003
+	BatchGroupDeleteFailed = 12004
+
+	SpecificGroupAddFailed    = 15001
+	SpecificGroupGetFailed    = 15002
+	SpecificGroupPutFailed    = 15003
+	SpecificGroupDeleteFailed = 15004
 
 	RuleAddFailed    = 13001
 	RuleGetFailed    = 13002

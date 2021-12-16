@@ -106,27 +106,40 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		shenshuApis.PUT("/site/cc/:id", shenshu.UpdateCC)
 		shenshuApis.DELETE("/site/cc/:id", shenshu.DeleteCC)
 
-		shenshuApis.POST("/rulegroup", shenshu.AddRuleGroup)
-		shenshuApis.GET("/rulegroup", shenshu.GetRuleGroups)
-		shenshuApis.GET("/rulegroup/:id", shenshu.GetRuleGroup)
-		shenshuApis.PUT("/rulegroup/:id", shenshu.UpdateRuleGroup)
-		shenshuApis.DELETE("/rulegroup/:id", shenshu.DeleteRuleGroup)
+		shenshuApis.POST("/batchgroup", shenshu.AddBatchGroup)
+		shenshuApis.GET("/batchgroup", shenshu.GetBatchGroups)
+		shenshuApis.GET("/batchgroup/:id", shenshu.GetBatchGroup)
+		shenshuApis.PUT("/batchgroup/:id", shenshu.UpdateBatchGroup)
+		shenshuApis.DELETE("/batchgroup/:id", shenshu.DeleteBatchGroup)
 
-		shenshuApis.POST("/rulegroup/:id/rule", shenshu.AddRule)
-		shenshuApis.GET("/rulegroup/:id/rule", shenshu.GetRules)
-		shenshuApis.GET("/rulegroup/rule/:id", shenshu.GetRule)
-		shenshuApis.PUT("/rulegroup/rule/:id", shenshu.UpdateRule)
-		shenshuApis.DELETE("/rulegroup/rule/:id", shenshu.DeleteRule)
+		shenshuApis.POST("/batchgroup/:id/rule", shenshu.AddRuleBatch)
+		shenshuApis.GET("/batchgroup/:id/rule", shenshu.GetRuleBatchs)
+		shenshuApis.GET("/batchgroup/rule/:id", shenshu.GetRuleBatch)
+		shenshuApis.PUT("/batchgroup/rule/:id", shenshu.UpdateRuleBatch)
+		shenshuApis.DELETE("/batchgroup/rule/:id", shenshu.DeleteRuleBatch)
 
+		shenshuApis.POST("/specificgroup", shenshu.AddSpecificGroup)
+		shenshuApis.GET("/specificgroup", shenshu.GetSpecificGroups)
+		shenshuApis.GET("/specificgroup/:id", shenshu.GetSpecificGroup)
+		shenshuApis.PUT("/specificgroup/:id", shenshu.UpdateSpecificGroup)
+		shenshuApis.DELETE("/specificgroup/:id", shenshu.DeleteSpecificGroup)
+		/*
+			shenshuApis.POST("/rulegroup/:id/rule", shenshu.AddRule)
+			shenshuApis.GET("/rulegroup/:id/rule", shenshu.GetRules)
+			shenshuApis.GET("/rulegroup/rule/:id", shenshu.GetRule)
+			shenshuApis.PUT("/rulegroup/rule/:id", shenshu.UpdateRule)
+			shenshuApis.DELETE("/rulegroup/rule/:id", shenshu.DeleteRule)
+		*/
 		shenshuApis.POST("/rulegroup/:id/rulebatch", shenshu.AddRuleBatch)
 		shenshuApis.GET("/rulegroup/:id/rulebatch", shenshu.GetRuleBatchs)
 		shenshuApis.GET("/rulegroup/rulebatch/:id", shenshu.GetRuleBatch)
 		shenshuApis.PUT("/rulegroup/rulebatch/:id", shenshu.UpdateRuleBatch)
 		shenshuApis.DELETE("/rulegroup/rulebatch/:id", shenshu.DeleteRuleBatch)
 
-		shenshuApis.POST("/site/:id/rulegroup", shenshu.EnableSiteRuleGroup)
 		shenshuApis.PUT("/site/:id/rulegroup", shenshu.UpdateSiteRuleGroup)
 		shenshuApis.GET("/site/:id/rulegroup", shenshu.GetSiteRuleGroup)
+
+		shenshuApis.POST("/site/:id/enable", shenshu.EnableSiteConfig)
 	}
 	return r, nil
 }

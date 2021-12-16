@@ -11,21 +11,22 @@ import (
 	"net/http"
 )
 
-type ruleGroupForm struct {
+type specificGroupForm struct {
 	Name     string         `json:"name" validate:"required"`
 	Type     int            `json:"type" validate:"required,min=1,max=2"`
+	Action   int            `json:"action" validate:"required,min=1,max=4"`
 	Priority int            `json:"priority" validate:"required,min=1"`
-	Status   int            `json:"status" validate:"required,min=1,max=4"`
+	Status   int            `json:"status" validate:"required,min=1,max=2"`
 	Level    int            `json:"level"`
 	Decoder  datatypes.JSON `json:"decoder" validate:"required"`
 
 	Remark string `json:"remark"`
 }
 
-func AddRuleGroup(c *gin.Context) {
+func AddSpecificGroup(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		form     ruleGroupForm
+		form     specificGroupForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -37,9 +38,9 @@ func AddRuleGroup(c *gin.Context) {
 		return
 	}
 
-	rgSrv := service.RuleGroup{
+	rgSrv := service.SpecificGroup{
 		Name:     form.Name,
-		Type:     form.Type,
+		Action:   form.Action,
 		Priority: form.Priority,
 		Status:   form.Status,
 		Level:    form.Level,
@@ -49,14 +50,14 @@ func AddRuleGroup(c *gin.Context) {
 	err = rgSrv.Save()
 	if err != nil {
 		httpCode = http.StatusInternalServerError
-		errCode = e.RuleGroupAddFailed
-		log.Logger.Error("rulegroup", zap.String("err", err.Error()))
+		errCode = e.SpecificGroupAddFailed
+		log.Logger.Error("specificgroup", zap.String("err", err.Error()))
 	}
 
 	appG.Response(httpCode, errCode, "", nil)
 }
 
-func DeleteRuleGroup(c *gin.Context) {
+func DeleteSpecificGroup(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		formId   app.IDForm
@@ -71,30 +72,30 @@ func DeleteRuleGroup(c *gin.Context) {
 		return
 	}
 
-	rgSrv := service.RuleGroup{
+	rgSrv := service.SpecificGroup{
 		ID: formId.ID,
 	}
 	err = rgSrv.Delete()
 	if err != nil {
 		httpCode = http.StatusInternalServerError
-		errCode = e.RuleGroupDeleteFailed
-		log.Logger.Error("rulegroup", zap.String("err", err.Error()))
+		errCode = e.SpecificGroupDeleteFailed
+		log.Logger.Error("specificgroup", zap.String("err", err.Error()))
 	}
 
 	appG.Response(httpCode, errCode, "", nil)
 }
 
-type queryRuleGroupForm struct {
+type querySpecificGroupForm struct {
 	Name     string `form:"name" validate:"omitempty,max=254"`
 	Type     int    `form:"type" validate:"omitempty,min=1,max=2"`
 	Page     int    `form:"page" validate:"min=0"`
 	PageSize int    `form:"size" validate:"required,gte=10,lte=50"`
 }
 
-func GetRuleGroups(c *gin.Context) {
+func GetSpecificGroups(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		form     queryRuleGroupForm
+		form     querySpecificGroupForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -106,9 +107,8 @@ func GetRuleGroups(c *gin.Context) {
 		return
 	}
 
-	rgSrv := service.RuleGroup{
+	rgSrv := service.SpecificGroup{
 		Name:     form.Name,
-		Type:     form.Type,
 		PageSize: form.PageSize,
 		Page:     form.Page,
 	}
@@ -117,8 +117,8 @@ func GetRuleGroups(c *gin.Context) {
 	user, total, err := rgSrv.GetList()
 	if err != nil {
 		httpCode = http.StatusInternalServerError
-		errCode = e.RuleGroupAddFailed
-		log.Logger.Error("rulegroup", zap.String("err", err.Error()))
+		errCode = e.SpecificGroupAddFailed
+		log.Logger.Error("specificgroup", zap.String("err", err.Error()))
 	} else {
 		data["list"] = user
 		data["total"] = total
@@ -127,7 +127,7 @@ func GetRuleGroups(c *gin.Context) {
 	appG.Response(httpCode, errCode, "", data)
 }
 
-func GetRuleGroup(c *gin.Context) {
+func GetSpecificGroup(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		form     app.IDForm
@@ -142,20 +142,20 @@ func GetRuleGroup(c *gin.Context) {
 		return
 	}
 
-	rgSrv := service.RuleGroup{
+	rgSrv := service.SpecificGroup{
 		ID: form.ID,
 	}
 	user, err := rgSrv.Get()
 	if err != nil {
-		log.Logger.Error("rulegroup", zap.String("err", err.Error()))
+		log.Logger.Error("specificgroup", zap.String("err", err.Error()))
 		httpCode = http.StatusInternalServerError
-		errCode = e.UserGetFailed
+		errCode = e.SpecificGroupGetFailed
 	}
 
 	data := make(map[string]interface{})
 	if user != nil && user.ID == 0 {
 		httpCode = http.StatusInternalServerError
-		errCode = e.UserGetFailed
+		errCode = e.SpecificGroupGetFailed
 	} else {
 		data["item"] = user
 	}
@@ -163,11 +163,11 @@ func GetRuleGroup(c *gin.Context) {
 	appG.Response(httpCode, errCode, "", data)
 }
 
-func UpdateRuleGroup(c *gin.Context) {
+func UpdateSpecificGroup(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		formId   app.IDForm
-		form     ruleGroupForm
+		form     specificGroupForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -186,9 +186,10 @@ func UpdateRuleGroup(c *gin.Context) {
 		return
 	}
 
-	rgSrv := service.RuleGroup{
+	rgSrv := service.SpecificGroup{
 		ID:       formId.ID,
 		Name:     form.Name,
+		Action:   form.Action,
 		Priority: form.Priority,
 		Status:   form.Status,
 		Level:    form.Level,
@@ -199,8 +200,8 @@ func UpdateRuleGroup(c *gin.Context) {
 	err = rgSrv.Save()
 	if err != nil {
 		httpCode = http.StatusInternalServerError
-		errCode = e.RuleGroupPutFailed
-		log.Logger.Error("rulegroup", zap.String("err", err.Error()))
+		errCode = e.SpecificGroupPutFailed
+		log.Logger.Error("specificgroup", zap.String("err", err.Error()))
 	}
 
 	appG.Response(httpCode, errCode, "", nil)

@@ -6,7 +6,7 @@ import (
 	"gorm.io/datatypes"
 )
 
-type Rule struct {
+type RuleSpecific struct {
 	ID uint
 
 	RuleGroup uint
@@ -21,7 +21,7 @@ type Rule struct {
 	PageSize int
 }
 
-func (r *Rule) Save() (err error) {
+func (r *RuleSpecific) Save() (err error) {
 	data := make(map[string]interface{})
 	if err := rule.ValidateRule(r.Rules); err != nil {
 		return err
@@ -34,30 +34,29 @@ func (r *Rule) Save() (err error) {
 	data["remark"] = r.Remark
 
 	if r.ID > 0 {
-		err = models.UpdateRule(r.ID, data)
+		err = models.UpdateRuleSpecific(r.ID, data)
 	} else {
 		data["rulegroup"] = r.RuleGroup
-		err = models.AddRule(data)
+		err = models.AddRuleSpecific(data)
 	}
 
 	return err
 	// return SetupSites()
 }
 
-func (r *Rule) Get() (*models.Rule, error) {
-	return models.GetRule(r.ID)
+func (r *RuleSpecific) Get() (*models.RuleSpeicifc, error) {
+	return models.GetRuleSpecific(r.ID)
 }
 
-func (r *Rule) GetList() ([]*models.Rule, int, error) {
+func (r *RuleSpecific) GetList() ([]*models.RuleSpeicifc, int, error) {
 	data := make(map[string]interface{})
 	data["rulegroup"] = r.RuleGroup
 	data["name"] = r.Name
-	data["page"] = r.Page
-	data["pagesize"] = r.PageSize
+	data["status"] = r.Status
 
-	return models.GetRules(data)
+	return models.GetRuleSpecifics(data, r.Page, r.PageSize)
 }
 
-func (r *Rule) Delete() error {
-	return models.DeleteRule(r.ID)
+func (r *RuleSpecific) Delete() error {
+	return models.DeleteRuleSpecific(r.ID)
 }

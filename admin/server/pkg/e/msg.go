@@ -33,6 +33,7 @@ var MsgFlags = map[int]string{
 	SiteDeleteFailed:       "删除站点失败",
 	SitePutRuleGroupFailed: "更新站点规则失败",
 	SiteGetRuleGroupFailed: "获取站点规则失败",
+	SiteEnableSiteConfig:   "启用站点配置失败",
 
 	SSLAddFailed:    "添加SSL失败",
 	SSLGetFailed:    "获取SSL失败",
@@ -54,10 +55,15 @@ var MsgFlags = map[int]string{
 	CCPutFailed:    "更新CC失败",
 	CCDeleteFailed: "删除CC失败",
 
-	RuleGroupAddFailed:    "添加RuleGroup失败",
-	RuleGroupGetFailed:    "获取RuleGroup失败",
-	RuleGroupPutFailed:    "更新RuleGroup失败",
-	RuleGroupDeleteFailed: "删除RuleGroup失败",
+	BatchGroupAddFailed:    "添加BatchGroup失败",
+	BatchGroupGetFailed:    "获取BatchGroup失败",
+	BatchGroupPutFailed:    "更新BatchGroup失败",
+	BatchGroupDeleteFailed: "删除BatchGroup失败",
+
+	SpecificGroupAddFailed:    "添加SpeicificGroup失败",
+	SpecificGroupGetFailed:    "获取SpeicificGroup失败",
+	SpecificGroupPutFailed:    "更新SpeicificGroup失败",
+	SpecificGroupDeleteFailed: "删除SpeicificGroup失败",
 
 	RuleAddFailed:    "添加Rule失败",
 	RuleGetFailed:    "获取Rule失败",

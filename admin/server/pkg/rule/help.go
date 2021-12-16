@@ -48,6 +48,7 @@ var variable = map[string]bool{
 	"IP":         true,
 	"METHOD":     true,
 	"URI":        true,
+	"QUERY":      true,
 	"REQ_HEADER": true,
 	"FILE":       true,
 	"FILE_NAMES": true,

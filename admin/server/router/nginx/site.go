@@ -14,6 +14,7 @@ type siteForm struct {
 	Name       string `json:"name" validate:"required,max=254"`
 	Host       string `json:"host" validate:"required"`
 	Path       string `json:"path" validate:"required"`
+	Status     int    `json:"status" validate:"required,min=1,max=2"`
 	UptreamRef uint   `json:"upstreamRef" validate:"required"`
 	Remark     string `json:"remark" validate:"max=254"`
 }
@@ -38,6 +39,7 @@ func AddSite(c *gin.Context) {
 		Name:        form.Name,
 		Host:        form.Host,
 		Path:        form.Path,
+		Status:      form.Status,
 		UpstreamRef: form.UptreamRef,
 
 		Remark: form.Remark,
@@ -157,8 +159,10 @@ func UpdateSite(c *gin.Context) {
 
 	Site := service.Site{
 		ID:          formId.ID,
+		Name:        form.Name,
 		Host:        form.Host,
 		Path:        form.Path,
+		Status:      form.Status,
 		UpstreamRef: form.UptreamRef,
 
 		Remark: form.Remark,

@@ -13,8 +13,8 @@ import (
 type ruleBatchForm struct {
 	Name    string `json:"name" validate:"required,max=254"`
 	Pattern string `json:"pattern" validate:"required,max=254"`
-	Action  int    `json:"action" validate:"min=1,max=4"`
-	Status  int    `json:"status" validate:"min=1,max=2"`
+	Action  int    `json:"action" validate:"required,min=1,max=4"`
+	Status  int    `json:"status" validate:"required,min=1,max=2"`
 	Remark  string `json:"remark"`
 }
 
@@ -54,7 +54,7 @@ func AddRuleBatch(c *gin.Context) {
 
 	err = ruleSrv.Save()
 	if err != nil {
-		log.Logger.Error("RuleBatch", zap.String("add", err.Error()))
+		log.Logger.Error("rulebatch", zap.String("add", err.Error()))
 		httpCode = http.StatusInternalServerError
 		errCode = e.RuleBatchAddFailed
 		appG.Response(httpCode, errCode, "", nil)
@@ -85,7 +85,7 @@ func GetRuleBatch(c *gin.Context) {
 	}
 	rule, err := ruleSrv.Get()
 	if err != nil {
-		log.Logger.Error("RuleBatch", zap.String("get", err.Error()))
+		log.Logger.Error("rulebatch", zap.String("get", err.Error()))
 		httpCode = http.StatusInternalServerError
 		errCode = e.RuleBatchGetFailed
 		appG.Response(httpCode, errCode, "", nil)
@@ -136,7 +136,7 @@ func GetRuleBatchs(c *gin.Context) {
 	}
 	rules, count, err := ruleSrv.GetList()
 	if err != nil {
-		log.Logger.Error("RuleBatch", zap.String("get", err.Error()))
+		log.Logger.Error("rulebatch", zap.String("get", err.Error()))
 		httpCode = http.StatusInternalServerError
 		errCode = e.RuleBatchGetFailed
 		appG.Response(httpCode, errCode, "", nil)
@@ -185,7 +185,7 @@ func UpdateRuleBatch(c *gin.Context) {
 
 	err = ruleSrv.Save()
 	if err != nil {
-		log.Logger.Error("RuleBatch", zap.String("add", err.Error()))
+		log.Logger.Error("rulebatch", zap.String("add", err.Error()))
 		httpCode = http.StatusInternalServerError
 		errCode = e.RuleBatchAddFailed
 		appG.Response(httpCode, errCode, "", nil)
@@ -216,7 +216,7 @@ func DeleteRuleBatch(c *gin.Context) {
 	}
 	err = ruleSrv.Delete()
 	if err != nil {
-		log.Logger.Error("RuleBatch", zap.String("delete", err.Error()))
+		log.Logger.Error("rulebatch", zap.String("delete", err.Error()))
 		httpCode = http.StatusInternalServerError
 		errCode = e.RuleBatchDeleteFailed
 		appG.Response(httpCode, errCode, "", nil)

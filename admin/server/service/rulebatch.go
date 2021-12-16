@@ -34,7 +34,6 @@ func (b *RuleBatch) Save() (err error) {
 	}
 
 	return err
-	// return SetupSites()
 }
 
 func (b *RuleBatch) Get() (*models.RuleBatch, error) {

@@ -37,3 +37,10 @@ export function deleteById(id) {
     method: 'delete'
   })
 }
+
+export function enable(id) {
+  return request({
+    url: `/shenshu/site/${id}/enable`,
+    method: 'post'
+  })
+}

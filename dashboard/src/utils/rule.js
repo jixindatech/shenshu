@@ -6,6 +6,7 @@ const ACTION_TYPES = [
 const VARIABLES_TEXT = {
   URI: 'URI',
   METHOD: '请求方法',
+  QUERY: '请求参数',
   REQ_HEADER: '请求头',
   IP: 'IP',
   FILE: '上传文件',

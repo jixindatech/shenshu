@@ -1,10 +1,9 @@
 <template>
   <div
-    v-permission="['GET:/shenshu/rulegroup', 'GET:/shenshu/rulegroup/:id']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
-      <el-form-item label="规则组名称:">
+      <el-form-item label="规则名称:">
         <el-input v-model.trim="query.name" />
       </el-form-item>
       <el-form-item>
@@ -18,25 +17,14 @@
           @click="reload"
         >重置</el-button>
         <el-button
-          v-if="!ids"
-          v-permission="['POST:/shenshu/rulegroup']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
         >新增</el-button>
       </el-form-item>
-      <el-form-item>
-        <el-button
-          v-if="ids"
-          icon="el-icon-circle-plus-outline"
-          type="success"
-          @click="setRuleGroup"
-        >设置规则组</el-button>
-      </el-form-item>
     </el-form>
 
     <el-table
-      ref="dataTable"
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
@@ -46,36 +34,22 @@
       fit
       highlight-current-row
       row-key="id"
-      @selection-change="handleSelectionChange"
     >
-      <el-table-column
-        v-if="ids"
-        align="center"
-        reserve-selection
-        type="selection"
-        width="55"
-      />
-      <el-table-column prop="name" label="规则组名称" />
-      <el-table-column prop="type" label="规则类型">
+      <el-table-column prop="name" label="规则名称" />
+      <el-table-column prop="pattern" label="匹配内容" />
+      <el-table-column align="center" prop="action" label="匹配动作">
         <template slot-scope="scope">
-          <span>{{ RULE_TYPES_TEXT[scope.row.type] }}</span>
+          <el-tag v-if="scope.row.action === 1" type="success">允许</el-tag>
+          <el-tag v-if="scope.row.action === 2" type="danger">阻断</el-tag>
+          <el-tag v-if="scope.row.action === 4" type="primary">日志</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="type" label="模式">
+      <el-table-column align="center" prop="status" label="状态">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 1" type="success">阻断</el-tag>
-          <el-tag v-if="scope.row.status === 2" type="danger">关闭</el-tag>
-          <el-tag v-if="scope.row.status === 3" type="primary">日志</el-tag>
+          <el-tag v-if="scope.row.status === 1" type="success">启用</el-tag>
+          <el-tag v-if="scope.row.status === 2" type="danger">停用</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="decoder" label="编码">
-        <template slot-scope="scope">
-          <div v-for="(item, index) in scope.row.decoder" :key="index">
-            <el-input type="success" size="mini" :value="item" />
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="priority" label="优先级" />
       <el-table-column prop="createdAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -88,22 +62,15 @@
           <span>{{ scope.row.updateAt }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="!ids" align="center" label="操作" width="250">
+      <el-table-column prop="remark" label="备注" />
+      <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
-            v-permission="['PUT:/shenshu/rulegroup/:id']"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
-            v-permission="['GET:/shenshu/rulegroup/:id/rule', 'GET:/shenshu/rulegroup/:id/rulebatch']"
-            type="primary"
-            size="mini"
-            @click="handleRule(scope.row.type, scope.row.id)"
-          >规则管理</el-button>
-          <el-button
-            v-permission="['DELETE:/shenshu/rulegroup/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"
@@ -122,31 +89,25 @@
     />
 
     <edit
+      :id="edit.id"
       :title="edit.title"
-      :data="edit.formData"
+      :form-data="edit.formData"
       :visible="edit.visible"
       :remote-close="remoteClose"
     />
+
   </div>
 </template>
 
 <script>
-import { getList, deleteById, getById } from '@/api/rulegroup'
+import { getList, deleteById, getById } from '@/api/rulebatch'
 import Edit from './edit'
-import { RULE_TYPES_TEXT } from '@/utils/rule'
 export default {
-  name: 'RuleGroup',
+  name: 'BatchRule',
   components: { Edit },
-  props: {
-    ids: {
-      type: Array,
-      default: function() { return null }
-    }
-
-  },
   data() {
     return {
-      RULE_TYPES_TEXT,
+      groupId: 0,
       query: {},
       edit: {
         title: '',
@@ -159,19 +120,15 @@ export default {
         total: 0
       },
       list: [],
-      listLoading: true,
-      rule: {
-        id: 0,
-        title: '规则管理',
-        visible: false
-      },
-      checkedList: []
+      listLoading: false
     }
   },
   watch: {
-    ids() {
-      this.query = {}
-      this.queryData()
+    '$route.path': {
+      immediate: true,
+      handler() {
+        this.groupId = this.$route.params.groupId
+      }
     }
   },
   created() {
@@ -180,7 +137,8 @@ export default {
   methods: {
     async fetchData() {
       this.listLoading = true
-      await getList(
+      getList(
+        this.groupId,
         this.query,
         this.page.current,
         this.page.size
@@ -190,18 +148,6 @@ export default {
         this.page.total = data.total
         this.listLoading = false
       })
-
-      this.chekedChoices()
-    },
-    chekedChoices() {
-      this.$refs.dataTable.clearSelection()
-      if (this.ids) {
-        this.list.forEach((item) => {
-          if (this.ids.indexOf(item.id) !== -1) {
-            this.$refs.dataTable.toggleRowSelection(item, true)
-          }
-        })
-      }
     },
     queryData() {
       this.page.current = 1
@@ -231,6 +177,7 @@ export default {
     handleEdit(id) {
       getById(id).then((response) => {
         const { data } = response
+        this.edit.id = id
         this.edit.formData = data.item
         this.edit.title = '编辑'
         this.edit.visible = true
@@ -253,26 +200,7 @@ export default {
         })
         .catch(() => {
         })
-    },
-    handleRule(type, id) {
-      if (type === 1) {
-        this.$router.push({ name: 'Batch', params: { rule: id }})
-      } else if (type === 2) {
-        this.$router.push({ name: 'Item', params: { rule: id }})
-      }
-    },
-    handleSelectionChange(val) {
-      this.checkedList = val
-    },
-    setRuleGroup() {
-      const checkedIds = []
-      this.checkedList.forEach((item) => {
-        checkedIds.push(item.id)
-      })
-
-      this.$emit('getRuleGroup', checkedIds)
     }
-
   }
 }
 </script>

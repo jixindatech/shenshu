@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getList(id, query, current = 1, size = 10) {
   return request({
-    url: `/shenshu/rulegroup/${id}/rulebatch`,
+    url: `/shenshu/batchgroup/${id}/rule`,
     method: 'get',
     params: { ...query, page: current, size }
   })
@@ -10,7 +10,7 @@ export function getList(id, query, current = 1, size = 10) {
 
 export function add(id, data) {
   return request({
-    url: `/shenshu/rulegroup/${id}/rulebatch`,
+    url: `/shenshu/batchgroup/${id}/rule`,
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function add(id, data) {
 
 export function update(id, data) {
   return request({
-    url: `/shenshu/rulegroup/rulebatch/${id}`,
+    url: `/shenshu/batchgroup/rule/${id}`,
     method: 'put',
     data
   })
@@ -26,14 +26,14 @@ export function update(id, data) {
 
 export function getById(id) {
   return request({
-    url: `/shenshu/rulegroup/rulebatch/${id}`,
+    url: `/shenshu/batchgroup/rule/${id}`,
     method: 'get'
   })
 }
 
 export function deleteById(id) {
   return request({
-    url: `/shenshu/rulegroup/rulebatch/${id}`,
+    url: `/shenshu/batchgroup/rule/${id}`,
     method: 'delete'
   })
 }

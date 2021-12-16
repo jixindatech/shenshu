@@ -25,12 +25,30 @@
       <el-form-item label="规则权重：" prop="priority">
         <el-input v-model.number="formData.priority" maxlength="30" type="number" />
       </el-form-item>
-      <el-form-item label="模式：" prop="status">
-        <el-radio-group v-model="formData.status" size="mini">
-          <el-radio :label="1" border>阻断</el-radio>
-          <el-radio :label="2" border>关闭</el-radio>
-          <el-radio :label="4" border>日志</el-radio>
+      <el-form-item prop="action">
+        <span slot="label">动作
+          <el-tooltip placement="top" effect="light">
+            <div slot="content">
+              短路或全量标识规则短路判断或者规则全部判断，日志分别代表其短路/全量记录日志,规则组合并时，优先级：短路日志>全量日志>短路>全量
+            </div>
+            <i class="el-icon-question" />
+          </el-tooltip>
+        </span>
+        <el-radio-group v-model="formData.action" size="mini">
+          <el-radio-button :label="1" border>日志短路</el-radio-button>
+          <el-radio-button :label="2" border>日志全量</el-radio-button>
+          <el-radio-button :label="3" border>短路</el-radio-button>
+          <el-radio-button :label="4" border>全量</el-radio-button>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="状态：" prop="status">
+        <el-switch
+          v-model="formData.status"
+          active-text="开"
+          :active-value="1"
+          inactive-text="关"
+          :inactive-value="2"
+        />
       </el-form-item>
       <el-form-item label="解码配置：" prop="decoder">
         <el-checkbox-group v-model="formData.decoder" @change="handleCheckedDecoder">
@@ -53,7 +71,7 @@
 </template>
 
 <script>
-import { add, update } from '@/api/rulegroup'
+import { add, update } from '@/api/specificgroup'
 import { RULE_TYPES } from '@/utils/rule'
 import { isInteger } from '@/utils/validate'
 

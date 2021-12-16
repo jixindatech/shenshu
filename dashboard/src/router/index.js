@@ -106,26 +106,35 @@ export const constantRoutes = [
     {
       path: 'rule',
       name: 'Rule',
-      component: () => import('@/views/shenshu/rule/index'),
+      component: () => import('@/views/shenshu/rule'),
+      meta: { title: '规则管理', icon: 'dashboard' },
       children: [{
-        path: 'group',
-        name: 'Group',
-        component: () => import('@/views/shenshu/rule/group'),
-        meta: { title: '组配置', icon: 'dashboard' }
+        path: 'batchgroup',
+        name: 'BatchGroup',
+        component: () => import('@/views/shenshu/rule/batchgroup'),
+        meta: { title: 'Batch组配置', icon: 'dashboard' }
       },
       {
-        path: 'item',
-        name: 'Item',
-        component: () => import('@/views/shenshu/rule/item'),
-        meta: { title: '规则配置', icon: 'dashboard' }
-      },
-      {
-        path: 'batch',
-        name: 'Batch',
-        component: () => import('@/views/shenshu/rule/batch'),
+        path: 'batchrule',
+        name: 'BatchRule',
+        hidden: true,
+        component: () => import('@/views/shenshu/rule/batchrule'),
         meta: { title: 'Batch规则', icon: 'dashboard' }
-      }],
-      meta: { title: '规则管理', icon: 'dashboard' }
+      },
+      {
+        path: 'specificgroup',
+        name: 'SpeicifcGroup',
+        component: () => import('@/views/shenshu/rule/specificgroup'),
+        meta: { title: 'Specific组配置', icon: 'dashboard' }
+      }
+      /*
+      {
+        path: 'specificrule',
+        name: 'SpecifiRule',
+        component: () => import('@/views/shenshu/rule/specificrule'),
+        meta: { title: '规则配置', icon: 'dashboard' }
+      }*/
+      ]
     }]
   },
   {

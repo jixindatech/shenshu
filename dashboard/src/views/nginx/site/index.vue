@@ -39,17 +39,22 @@
       <el-table-column align="center" prop="name" label="名称" width="150px" />
       <el-table-column align="center" prop="host" label="域名" width="200px" />
       <el-table-column align="center" prop="path" label="路径" width="150px" />
-      <el-table-column align="center" prop="upstreamRef" label="Upstream" width="100px">
+      <el-table-column align="center" prop="upstreamRef" label="Upstream">
         <template v-if="scope.row.upstreamRef.length === 1" slot-scope="scope">
           {{ scope.row.upstreamRef[0].name }}
         </template>
       </el-table-column>
+      <el-table-column align="center" prop="status" label="状态">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">启用</el-tag>
+          <el-tag v-if="scope.row.status === 2" type="danger">停用</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column align="center" prop="remark" label="备注" width="200px" />
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作" width="500px">
         <template slot-scope="scope">
           <el-button
             v-permission="['PUT:/nginx/site/:id']"
-            :disabled="scope.row.id === 1"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
@@ -103,7 +108,7 @@
     />
 
     <el-dialog title="设置规则" :visible.sync="rulegroup.visible" width="65%">
-      <RuleGroup
+      <BatchRuleGroup
         :ids="rulegroup.ids"
         :site="rulegroup.site"
         @getRuleGroup="getRuleGroup"
@@ -116,12 +121,12 @@
 <script>
 import * as api from '@/api/site'
 import Edit from './edit'
-import RuleGroup from '@/views/shenshu/rule/group'
-import * as rulegroup from '@/api/rulegroup'
+import BatchRuleGroup from '@/views/shenshu/rule/batchgroup'
+import * as rulegroup from '@/api/batchgroup'
 
 export default {
   name: 'Site',
-  components: { Edit, RuleGroup },
+  components: { Edit, BatchRuleGroup },
   data() {
     return {
       list: [],
@@ -228,7 +233,12 @@ export default {
       this.rulegroup.visible = true
     },
     enableConfig(id) {
-      console.log('enable config:', id)
+      api.enable(id).then((response) => {
+        this.$message({
+          type: 'success',
+          message: '下发成功!'
+        })
+      })
     },
     getRuleGroup(ids) {
       const data = { ids: ids }

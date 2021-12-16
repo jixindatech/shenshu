@@ -53,6 +53,15 @@
           </el-select>
         </el-col>
       </el-form-item>
+      <el-form-item label="状态：" prop="status">
+        <el-switch
+          v-model="formData.status"
+          active-text="开"
+          :active-value="1"
+          inactive-text="关"
+          :inactive-value="2"
+        />
+      </el-form-item>
       <el-form-item label="备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />
       </el-form-item>

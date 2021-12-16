@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getList(query, current = 1, size = 10) {
   return request({
-    url: `/shenshu/rulegroup`,
+    url: `/shenshu/specificgroup`,
     method: 'get',
     params: { ...query, page: current, size }
   })
@@ -10,7 +10,7 @@ export function getList(query, current = 1, size = 10) {
 
 export function add(data) {
   return request({
-    url: `/shenshu/rulegroup`,
+    url: `/shenshu/specificgroup`,
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function add(data) {
 
 export function update(id, data) {
   return request({
-    url: `/shenshu/rulegroup/${id}`,
+    url: `/shenshu/specificgroup/${id}`,
     method: 'put',
     data
   })
@@ -26,36 +26,29 @@ export function update(id, data) {
 
 export function getById(id) {
   return request({
-    url: `/shenshu/rulegroup/${id}`,
+    url: `/shenshu/specificgroup/${id}`,
     method: 'get'
   })
 }
 
 export function deleteById(id) {
   return request({
-    url: `/shenshu/rulegroup/${id}`,
+    url: `/shenshu/specificgroup/${id}`,
     method: 'delete'
   })
 }
 
 export function GetSiteRuleGroup(id) {
   return request({
-    url: `/shenshu/site/${id}/rulegroup`,
+    url: `/shenshu/site/${id}/specificgroup`,
     method: 'get'
   })
 }
 
 export function UpdateSiteRuleGroup(id, data) {
   return request({
-    url: `/shenshu/site/${id}/rulegroup`,
+    url: `/shenshu/site/${id}/specificgroup`,
     method: 'put',
     data
-  })
-}
-
-export function EnableSiteRuleGroup(id) {
-  return request({
-    url: `/shenshu/site/${id}/rulegroup`,
-    method: 'post'
   })
 }

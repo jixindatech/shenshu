@@ -79,7 +79,6 @@ export default {
   data() {
     return {
       ACTION_TYPES,
-
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'change' }
@@ -110,8 +109,9 @@ export default {
 
     async submitData() {
       let response = null
+      console.log(this.id)
       if (this.formData.id) {
-        response = await api.update(this.formData)
+        response = await api.update(this.id, this.formData)
       } else {
         response = await api.add(this.id, this.formData)
       }

@@ -57,24 +57,28 @@ func GetRuleSpecifics(data map[string]interface{}, page, pageSize int) ([]*RuleS
 	if status != 0 {
 		search["status"] = status
 	}
+	if rulegroup != 0 {
+		search["specific_group_id"] = rulegroup
+	}
+
 	var err error
 	var count int
 	if page > 0 {
 		offset := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err = db.Order("priority DESC", true).Where(search).Where("specific_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+			err = db.Order("priority DESC", true).Where(search).Where("name LIKE ?", name).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 
 		} else {
-			err = db.Order("priority DESC", true).Where(search).Where("specific_group_id = ?", rulegroup).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+			err = db.Order("priority DESC", true).Where(search).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 		}
 	} else {
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err = db.Where("specific_group_id = ?", rulegroup).Where(search).Where("name LIKE ?", name).Order("priority DESC").Find(&rules).Count(&count).Error
+			err = db.Where(search).Where("name LIKE ?", name).Order("priority DESC").Find(&rules).Count(&count).Error
 
 		} else {
-			err = db.Order("priority DESC", true).Where(search).Where("specific_group_id = ?", rulegroup).Order("priority DESC").Find(&rules).Count(&count).Error
+			err = db.Order("priority DESC", true).Where(search).Order("priority DESC").Find(&rules).Count(&count).Error
 		}
 	}
 

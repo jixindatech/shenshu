@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go.uber.org/zap"
+	"strconv"
 	"time"
 )
 
@@ -61,6 +62,7 @@ func (r *Site) GetList() ([]*models.Site, int, error) {
 	data["name"] = r.Name
 	data["page"] = r.Page
 	data["pagesize"] = r.PageSize
+	data["status"] = r.Status
 
 	return models.GetSites(data)
 }
@@ -222,8 +224,8 @@ func getCCsConfig(id uint) ([]map[string]interface{}, error) {
 }
 
 func getRulesConfig(id uint) (map[string]interface{}, error) {
-
 	var err error
+	decoders := make(map[string]interface{})
 	batchgroup := BatchGroup{
 		ID:       id,
 		Status:   util.RULE_ENABLE,
@@ -243,6 +245,15 @@ func getRulesConfig(id uint) (map[string]interface{}, error) {
 			action = item.Action
 		}
 
+		var tmpDecoders []string
+		err = json.Unmarshal(item.Decoder, &tmpDecoders)
+		if err != nil {
+			return nil, err
+		}
+		for _, decoder := range tmpDecoders {
+			decoders[decoder] = true
+		}
+
 		ruleSrv := RuleBatch{
 			RuleGroup: item.ID,
 			Status:    util.RULE_ENABLE,
@@ -256,7 +267,6 @@ func getRulesConfig(id uint) (map[string]interface{}, error) {
 
 		var ids []uint
 		for _, rule := range rules {
-			fmt.Println(rule)
 			ids = append(ids, rule.ID)
 		}
 
@@ -276,7 +286,7 @@ func getRulesConfig(id uint) (map[string]interface{}, error) {
 	}
 
 	for _, item := range specificList {
-		if action < item.Action {
+		if action > item.Action {
 			action = item.Action
 		}
 
@@ -300,6 +310,7 @@ func getRulesConfig(id uint) (map[string]interface{}, error) {
 	}
 
 	data := make(map[string]interface{})
+	data["decoders"] = decoders
 	data["action"] = action
 	data["batch"] = batch
 	data["specific"] = specific
@@ -328,19 +339,66 @@ func (r *Site) Enable() error {
 	}
 	data["rules"] = rules
 
-	fmt.Println(rules)
+	siteStr, err := json.Marshal(data)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
 
+	err = cache.Set(cache.CONFIG, strconv.Itoa(int(r.ID)), string(siteStr), 0)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
 	return nil
 }
 
+func setupRules() error {
+	ruleBatchSrv := &RuleBatch{
+		Status: util.RULE_ENABLE,
+	}
+	batchList, _, err := ruleBatchSrv.GetList()
+	if err != nil {
+		return err
+	}
+
+	ruleSpecifcSrv := &RuleSpecific{
+		Status: util.RULE_ENABLE,
+	}
+	specificList, _, err := ruleSpecifcSrv.GetList()
+	if err != nil {
+		return err
+	}
+
+	data := make(map[string]interface{})
+	data["batch"] = batchList
+	data["specific"] = specificList
+
+	siteStr, err := json.Marshal(data)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
+	err = cache.Set(cache.CONFIG, "rules", string(siteStr), 0)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
+	return nil
+}
 func SetupSites() error {
-	site := Site{}
+	site := Site{
+		Status: util.SITE_ENABLE,
+	}
 	sites, count, err := site.GetList()
 	if err != nil {
 		return err
 	}
 	if count == 0 {
 		data := make(map[string]interface{})
+		data["id"] = 0
 		data["values"] = [][]struct{}{}
 		data["timestamp"] = time.Now().Unix()
 
@@ -372,6 +430,14 @@ func SetupSites() error {
 
 		route["upstream_id"] = item.Upstreams[0].ID
 		routesInfos = append(routesInfos, route)
+
+		ruleSite := &Site{
+			ID: item.ID,
+		}
+		err = ruleSite.Enable()
+		if err != nil {
+			return err
+		}
 	}
 
 	data := make(map[string]interface{})
@@ -390,5 +456,10 @@ func SetupSites() error {
 		return err
 	}
 
+	err = setupRules()
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
 	return nil
 }

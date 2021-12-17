@@ -209,23 +209,28 @@ func GetSites(data map[string]interface{}) ([]*Site, int, error) {
 	page := data["page"].(int)
 	pageSize := data["pagesize"].(int)
 
+	search := make(map[string]interface{})
+	if data["status"].(int) != 0 {
+		search["status"] = data["status"].(int)
+	}
+
 	var count int
 	if page > 0 {
 		offset := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err := db.Preload("Upstreams").Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&sites).Count(&count).Error
+			err := db.Preload("Upstreams").Where(search).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&sites).Count(&count).Error
 			if err != nil {
 				return nil, 0, err
 			}
 		} else {
-			err := db.Preload("Upstreams").Offset(offset).Limit(pageSize).Find(&sites).Count(&count).Error
+			err := db.Preload("Upstreams").Where(search).Offset(offset).Limit(pageSize).Find(&sites).Count(&count).Error
 			if err != nil {
 				return nil, 0, err
 			}
 		}
 	} else {
-		err := db.Preload("Upstreams").Find(&sites).Count(&count).Error
+		err := db.Preload("Upstreams").Where(search).Find(&sites).Count(&count).Error
 		if err != nil && err != gorm.ErrRecordNotFound {
 			return nil, 0, err
 		}

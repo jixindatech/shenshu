@@ -8,6 +8,11 @@ const (
 )
 
 const (
+	SITE_ENABLE  = 1
+	SITE_DISABLE = 2
+)
+
+const (
 	IP_ACCEPT = 1
 	IP_DENY   = 2
 )

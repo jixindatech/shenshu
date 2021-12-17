@@ -55,6 +55,9 @@ func GetBatchRules(data map[string]interface{}) ([]*RuleBatch, int, error) {
 	if data["status"] != nil {
 		search["status"] = data["status"].(int)
 	}
+	if rulegroup != 0 {
+		search["batch_group_id"] = rulegroup
+	}
 
 	var err error
 	var count int
@@ -62,12 +65,17 @@ func GetBatchRules(data map[string]interface{}) ([]*RuleBatch, int, error) {
 		offset := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err = db.Where(search).Where("batch_group_id = ?", rulegroup).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+			err = db.Where(search).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 		} else {
-			err = db.Where(search).Where("batch_group_id = ?", rulegroup).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+			err = db.Where(search).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 		}
 	} else {
-		err = db.Where(search).Where("batch_group_id = ?", rulegroup).Find(&rules).Count(&count).Error
+		if len(name) > 0 {
+			name = "%" + name + "%"
+			err = db.Where(search).Where("name LIKE ?", name).Find(&rules).Count(&count).Error
+		} else {
+			err = db.Where(search).Find(&rules).Count(&count).Error
+		}
 	}
 
 	if err == gorm.ErrRecordNotFound {

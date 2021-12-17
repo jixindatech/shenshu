@@ -23,7 +23,8 @@ type Site struct {
 	UpstreamRef uint
 	Remark      string
 
-	Ids []uint
+	Type int
+	Ids  []uint
 
 	Page     int
 	PageSize int
@@ -74,22 +75,38 @@ func (r *Site) Delete() error {
 }
 
 func (r *Site) UpdatRuleGroup() error {
-	err := models.UpdateSiteRuleGroup(r.ID, r.Ids)
-	if err != nil {
-		return err
+	var err error
+	if r.Type == util.TYPE_BATCH_GROUP {
+		err = models.UpdateSiteBatchRuleGroup(r.ID, r.Ids)
+	} else if r.Type == util.TYPE_SPECIFIC_GROUP {
+		err = models.UpdateSiteSpecificRuleGroup(r.ID, r.Ids)
 	}
-	return nil
+
+	return err
 }
 
 func (r *Site) GetRuleGroup() ([]uint, error) {
 	var ids []uint
-	rulegroups, err := models.GetSiteBatchGroup(r.ID)
-	if err != nil {
-		return nil, err
-	}
+	if r.Type == util.TYPE_BATCH_GROUP {
+		rulegroups, err := models.GetSiteBatchGroup(r.ID)
+		if err != nil {
+			return nil, err
+		}
 
-	for _, item := range rulegroups {
-		ids = append(ids, item.ID)
+		for _, item := range rulegroups {
+			ids = append(ids, item.ID)
+		}
+
+	} else if r.Type == util.TYPE_SPECIFIC_GROUP {
+		rulegroups, err := models.GetSiteSpecificGroup(r.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, item := range rulegroups {
+			ids = append(ids, item.ID)
+		}
+
 	}
 
 	return ids, nil

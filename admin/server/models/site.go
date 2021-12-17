@@ -71,7 +71,7 @@ func DeleteSite(id uint) error {
 	return nil
 }
 
-func UpdateSiteRuleGroup(id uint, ids []uint) error {
+func UpdateSiteBatchRuleGroup(id uint, ids []uint) error {
 	site := Site{}
 	site.Model.ID = id
 	var rulegroups []*BatchGroup
@@ -94,6 +94,35 @@ func GetSiteBatchGroup(id uint) ([]*BatchGroup, error) {
 	site.Model.ID = id
 	var rulegroups []*BatchGroup
 	err := db.Model(&site).Association("BatchGroups").Find(&rulegroups).Error
+	if err != nil {
+		return nil, err
+	}
+	return rulegroups, nil
+}
+
+func UpdateSiteSpecificRuleGroup(id uint, ids []uint) error {
+	site := Site{}
+	site.Model.ID = id
+	var rulegroups []*SpecificGroup
+	for _, item := range ids {
+		temp := SpecificGroup{}
+		temp.Model.ID = item
+		rulegroups = append(rulegroups, &temp)
+	}
+
+	err := db.Model(&site).Association("SpecificGroups").Replace(rulegroups).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetSiteSpecificGroup(id uint) ([]*SpecificGroup, error) {
+	site := Site{}
+	site.Model.ID = id
+	var rulegroups []*SpecificGroup
+	err := db.Model(&site).Association("SpecificGroups").Find(&rulegroups).Error
 	if err != nil {
 		return nil, err
 	}

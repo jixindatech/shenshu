@@ -71,9 +71,7 @@ p, admin, ^/shenshu/specificgroup/rule/\+?[1-9][0-9]*$, PUT
 p, admin, ^/shenshu/specificgroup/\+?[1-9][0-9]*/rule$, GET
 p, admin, ^/shenshu/specificgroup/rule/\+?[1-9][0-9]*$, GET
 
-
-p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup$, POST
-p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup$, PUT
-p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup$, GET
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup, PUT
+p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup, GET
 
 p, admin, ^/shenshu/site/\+?[1-9][0-9]*/enable$, POST

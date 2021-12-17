@@ -22,7 +22,8 @@ func EnableSiteRuleGroup(c *gin.Context) {
 }
 
 type siteRuleGroupForm struct {
-	IDs []uint `json:"ids" validate:"required,dive,min=1"`
+	Type int    `form:"type" validate:"required,min=1,max=2"`
+	IDs  []uint `form:"ids" validate:"dive,min=1"`
 }
 
 func UpdateSiteRuleGroup(c *gin.Context) {
@@ -51,12 +52,13 @@ func UpdateSiteRuleGroup(c *gin.Context) {
 	}
 
 	siteSrv := &service.Site{
-		ID:  formId.ID,
-		Ids: form.IDs,
+		ID:   formId.ID,
+		Ids:  form.IDs,
+		Type: form.Type,
 	}
 	err = siteSrv.UpdatRuleGroup()
 	if err != nil {
-		log.Logger.Error("SiteRuleGroup", zap.String("update", err.Error()))
+		log.Logger.Error("siterulegroup", zap.String("update", err.Error()))
 		httpCode = http.StatusInternalServerError
 		errCode = e.SitePutRuleGroupFailed
 		appG.Response(httpCode, errCode, "", nil)
@@ -69,6 +71,7 @@ func GetSiteRuleGroup(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		formId   app.IDForm
+		form     siteRuleGroupForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -81,13 +84,22 @@ func GetSiteRuleGroup(c *gin.Context) {
 		return
 	}
 
+	err = app.BindAndValid(c, &form)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
 	siteSrv := &service.Site{
-		ID: formId.ID,
+		ID:   formId.ID,
+		Type: form.Type,
 	}
 
 	ids, err := siteSrv.GetRuleGroup()
 	if err != nil {
-		log.Logger.Error("SiteRuleGroup", zap.String("get", err.Error()))
+		log.Logger.Error("siterulegroup", zap.String("get", err.Error()))
 		httpCode = http.StatusInternalServerError
 		errCode = e.SiteGetRuleGroupFailed
 		appG.Response(httpCode, errCode, "", nil)

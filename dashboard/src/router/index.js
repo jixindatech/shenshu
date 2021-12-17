@@ -134,13 +134,6 @@ export const constantRoutes = [
         component: () => import('@/views/shenshu/rule/specificrule'),
         meta: { title: 'Batch规则', icon: 'dashboard' }
       }
-      /*
-      {
-        path: 'specificrule',
-        name: 'SpecifiRule',
-        component: () => import('@/views/shenshu/rule/specificrule'),
-        meta: { title: '规则配置', icon: 'dashboard' }
-      }*/
       ]
     }]
   },

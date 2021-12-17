@@ -35,7 +35,6 @@
       style="width: 100%"
       row-key="id"
     >
-      <el-table-column align="center" type="index" label="序号" width="60px" />
       <el-table-column align="center" prop="name" label="名称" width="150px" />
       <el-table-column align="center" prop="host" label="域名" width="200px" />
       <el-table-column align="center" prop="path" label="路径" width="150px" />
@@ -50,8 +49,8 @@
           <el-tag v-if="scope.row.status === 2" type="danger">停用</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="remark" label="备注" width="200px" />
-      <el-table-column align="center" label="操作" width="500px">
+      <el-table-column align="center" prop="remark" label="备注" />
+      <el-table-column align="center" label="操作" width="700px">
         <template slot-scope="scope">
           <el-button
             v-permission="['PUT:/nginx/site/:id']"
@@ -72,16 +71,19 @@
             @click="ccConfig(scope.row.id)"
           >CC配置</el-button>
           <el-button
+            v-permission="['GET:/shenshu/batchgroup']"
             type="primary"
             size="mini"
             @click="rulegroupConfig(scope.row.id, TYPE_RULE_GROUP.TYPE_BATCH_GROUP)"
           >Batch规则</el-button>
           <el-button
+            v-permission="['GET:/shenshu/specificgroup']"
             type="primary"
             size="mini"
             @click="rulegroupConfig(scope.row.id, TYPE_RULE_GROUP.TYPE_SPECIFIC_GROUP)"
           >Sepcififc规则</el-button>
           <el-button
+            v-permission="['POST:/shenshu/site/:id/enable']"
             type="primary"
             size="mini"
             @click="enableConfig(scope.row.id)"

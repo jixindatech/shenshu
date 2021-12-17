@@ -38,17 +38,3 @@ export function deleteById(id) {
   })
 }
 
-export function GetSiteRuleGroup(id) {
-  return request({
-    url: `/shenshu/site/${id}/batchgroup`,
-    method: 'get'
-  })
-}
-
-export function UpdateSiteRuleGroup(id, data) {
-  return request({
-    url: `/shenshu/site/${id}/batchgroup`,
-    method: 'put',
-    data
-  })
-}

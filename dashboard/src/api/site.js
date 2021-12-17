@@ -44,3 +44,19 @@ export function enable(id) {
     method: 'post'
   })
 }
+
+export function GetSiteRuleGroup(id, query) {
+  return request({
+    url: `/shenshu/site/${id}/rulegroup`,
+    method: 'get',
+    params: query
+  })
+}
+
+export function UpdateSiteRuleGroup(id, data) {
+  return request({
+    url: `/shenshu/site/${id}/rulegroup`,
+    method: 'put',
+    data
+  })
+}

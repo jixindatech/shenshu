@@ -74,8 +74,13 @@
           <el-button
             type="primary"
             size="mini"
-            @click="rulegroupConfig(scope.row.id)"
-          >规则配置</el-button>
+            @click="rulegroupConfig(scope.row.id, TYPE_RULE_GROUP.TYPE_BATCH_GROUP)"
+          >Batch规则</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="rulegroupConfig(scope.row.id, TYPE_RULE_GROUP.TYPE_SPECIFIC_GROUP)"
+          >Sepcififc规则</el-button>
           <el-button
             type="primary"
             size="mini"
@@ -107,8 +112,16 @@
       :remote-close="remoteClose"
     />
 
-    <el-dialog title="设置规则" :visible.sync="rulegroup.visible" width="65%">
+    <el-dialog title="设置规则" :visible.sync="rulegroup.batchvisible" width="65%">
       <BatchRuleGroup
+        :ids="rulegroup.ids"
+        :site="rulegroup.site"
+        @getRuleGroup="getRuleGroup"
+      />
+    </el-dialog>
+
+    <el-dialog title="设置规则" :visible.sync="rulegroup.speicificvisible" width="65%">
+      <SpecificGroup
         :ids="rulegroup.ids"
         :site="rulegroup.site"
         @getRuleGroup="getRuleGroup"
@@ -122,13 +135,15 @@
 import * as api from '@/api/site'
 import Edit from './edit'
 import BatchRuleGroup from '@/views/shenshu/rule/batchgroup'
-import * as rulegroup from '@/api/batchgroup'
+import SpecificGroup from '@/views/shenshu/rule/specificgroup'
+import { TYPE_RULE_GROUP } from '@/utils/const'
 
 export default {
   name: 'Site',
-  components: { Edit, BatchRuleGroup },
+  components: { Edit, BatchRuleGroup, SpecificGroup },
   data() {
     return {
+      TYPE_RULE_GROUP,
       list: [],
       page: {
         current: 1,
@@ -143,7 +158,9 @@ export default {
       },
       checkedSitesList: [],
       rulegroup: {
-        visible: false,
+        type: 0,
+        batchvisible: false,
+        speicificvisible: false,
         ids: [],
         site: 0
       }
@@ -226,11 +243,16 @@ export default {
     ccConfig(id) {
       this.$router.push({ name: 'CC', params: { site: id }})
     },
-    async rulegroupConfig(id) {
-      const { data } = await rulegroup.GetSiteRuleGroup(id)
+    async rulegroupConfig(id, type) {
+      const { data } = await api.GetSiteRuleGroup(id, { type: type })
+      if (type === TYPE_RULE_GROUP.TYPE_BATCH_GROUP) {
+        this.rulegroup.batchvisible = true
+      } else {
+        this.rulegroup.speicificvisible = true
+      }
+      this.rulegroup.type = type
       this.rulegroup.site = id
       this.rulegroup.ids = data.ids
-      this.rulegroup.visible = true
     },
     enableConfig(id) {
       api.enable(id).then((response) => {
@@ -241,15 +263,20 @@ export default {
       })
     },
     getRuleGroup(ids) {
-      const data = { ids: ids }
-      rulegroup.UpdateSiteRuleGroup(this.rulegroup.site, data).then((response) => {
+      const data = { type: this.rulegroup.type, ids: ids }
+      api.UpdateSiteRuleGroup(this.rulegroup.site, data).then((response) => {
         this.$message({
           type: 'success',
           message: '更新成功!'
         })
       })
+      if (this.rulegroup.type === TYPE_RULE_GROUP.TYPE_BATCH_GROUP) {
+        this.rulegroup.batchvisible = false
+      } else {
+        this.rulegroup.speicificvisible = false
+      }
+      this.rulegroup.type = 0
       this.rulegroup.site = 0
-      this.rulegroup.visible = false
       this.rulegroup.ids = []
     }
   }

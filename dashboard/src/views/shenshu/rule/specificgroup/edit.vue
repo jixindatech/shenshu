@@ -17,14 +17,6 @@
       <el-form-item label="组名称：" prop="name">
         <el-input v-model="formData.name" maxlength="30" />
       </el-form-item>
-      <el-form-item label="规则类型：" prop="type">
-        <el-select v-model="formData.type" placeholder="请选择规则类型">
-          <el-option v-for="(item,index) in RULE_TYPES " :key="index" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="规则权重：" prop="priority">
-        <el-input v-model.number="formData.priority" maxlength="30" type="number" />
-      </el-form-item>
       <el-form-item prop="action">
         <span slot="label">动作
           <el-tooltip placement="top" effect="light">
@@ -41,6 +33,14 @@
           <el-radio-button :label="4" border>全量</el-radio-button>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="解码配置：" prop="decoder">
+        <el-checkbox-group v-model="formData.decoder" @change="handleCheckedDecoder">
+          <el-checkbox v-for="(item, index) in decoderOptions" :key="index" size="mini" :label="item.name">{{ item.value }}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="规则权重：" prop="priority">
+        <el-input v-model.number="formData.priority" maxlength="30" type="number" />
+      </el-form-item>
       <el-form-item label="状态：" prop="status">
         <el-switch
           v-model="formData.status"
@@ -49,11 +49,6 @@
           inactive-text="关"
           :inactive-value="2"
         />
-      </el-form-item>
-      <el-form-item label="解码配置：" prop="decoder">
-        <el-checkbox-group v-model="formData.decoder" @change="handleCheckedDecoder">
-          <el-checkbox v-for="(item, index) in decoderOptions" :key="index" size="mini" :label="item.name">{{ item.value }}</el-checkbox>
-        </el-checkbox-group>
       </el-form-item>
       <el-form-item label="备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />

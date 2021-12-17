@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import * as api from '@/api/rule'
+import * as api from '@/api/rulespecific'
 import { ACTION_TYPES, REQ_HEADER_OPERATORS, IP_OPERATORS, METHOD_OPERATORS, URI_OPERATORS, QUERY_OPERATORS, POST_BODY_OPERATORS, FILE_OPERATORS, FILE_NAMES_OPERATORS } from '@/utils/rule'
 import { isInteger } from '@/utils/validate'
 

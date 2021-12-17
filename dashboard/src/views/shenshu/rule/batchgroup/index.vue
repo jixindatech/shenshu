@@ -1,6 +1,5 @@
 <template>
   <div
-    v-permission="['GET:/shenshu/rulegroup', 'GET:/shenshu/rulegroup/:id']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
@@ -19,7 +18,6 @@
         >重置</el-button>
         <el-button
           v-if="!ids"
-          v-permission="['POST:/shenshu/rulegroup']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
@@ -94,19 +92,16 @@
       <el-table-column v-if="!ids" align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
-            v-permission="['PUT:/shenshu/rulegroup/:id']"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
-            v-permission="['GET:/shenshu/rulegroup/:id/rule', 'GET:/shenshu/rulegroup/:id/rulebatch']"
             type="primary"
             size="mini"
             @click="handleRule(scope.row.id)"
           >规则管理</el-button>
           <el-button
-            v-permission="['DELETE:/shenshu/rulegroup/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"

@@ -126,6 +126,13 @@ export const constantRoutes = [
         name: 'SpeicifcGroup',
         component: () => import('@/views/shenshu/rule/specificgroup'),
         meta: { title: 'Specific组配置', icon: 'dashboard' }
+      },
+      {
+        path: 'specificrule',
+        name: 'SpecificRule',
+        hidden: true,
+        component: () => import('@/views/shenshu/rule/specificrule'),
+        meta: { title: 'Batch规则', icon: 'dashboard' }
       }
       /*
       {

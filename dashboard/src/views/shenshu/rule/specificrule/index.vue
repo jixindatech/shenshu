@@ -1,14 +1,8 @@
 <template>
   <div
-    v-permission="['GET:/shenshu/rulegroup', 'GET:/shenshu/rulegroup/:id/rule']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
-      <el-form-item label="组名称:">
-        <el-select v-model="groupId" placeholder="请选择域名" @change="selectChanged">
-          <el-option v-for="(item,index) in group" :key="index" :label="item.name" :value="item.id" />
-        </el-select>
-      </el-form-item>
       <el-form-item label="规则名称:">
         <el-input v-model.trim="query.name" />
       </el-form-item>
@@ -23,7 +17,6 @@
           @click="reload"
         >重置</el-button>
         <el-button
-          v-permission="['POST:/shenshu/rulegroup/:id/rule']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
@@ -80,13 +73,11 @@
       <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
-            v-permission="['PUT:/shenshu/rulegroup/rule/:id']"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
-            v-permission="['DELETE:/shenshu/rulegroup/rule/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"
@@ -105,7 +96,7 @@
     />
 
     <edit
-      :id="groupId"
+      :id="edit.id"
       :title="edit.title"
       :form-data="edit.formData"
       :visible="edit.visible"
@@ -116,8 +107,7 @@
 </template>
 
 <script>
-import * as rulegroup from '@/api/rulegroup'
-import { getList, deleteById, getById } from '@/api/rule'
+import { getList, deleteById, getById } from '@/api/rulespecific'
 import Edit from './edit'
 import { ACTION_TYPES, OPERATORS_TEXT, VARIABLES_TEXT } from '@/utils/rule'
 
@@ -151,7 +141,7 @@ export default {
     '$route.path': {
       immediate: true,
       handler() {
-        const id = this.$route.params.rule
+        const id = this.$route.params.groupId
         if (id === undefined) {
           this.fetchData()
         } else {
@@ -165,17 +155,6 @@ export default {
   },
   methods: {
     async fetchData() {
-      await rulegroup.getList({ type: 2 }, 0).then((response) => {
-        this.group = response.data.list
-      })
-      if (this.group.length === 0) {
-        return
-      }
-
-      if (this.groupId === 0 && this.group.length > 0) {
-        this.groupId = this.group[0].id
-      }
-
       this.listLoading = true
       getList(
         this.groupId,
@@ -202,6 +181,7 @@ export default {
       this.fetchData()
     },
     openAdd() {
+      this.edit.id = this.groupId
       this.edit.title = '新增'
       this.edit.visible = true
     },
@@ -221,6 +201,7 @@ export default {
     handleEdit(id) {
       getById(id).then((response) => {
         const { data } = response
+        this.edit.id = id
         this.edit.formData = data.item
         this.edit.title = '编辑'
         this.edit.visible = true

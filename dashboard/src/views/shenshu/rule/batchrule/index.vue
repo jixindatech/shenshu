@@ -112,6 +112,7 @@ export default {
       edit: {
         title: '',
         visible: false,
+        id: 0,
         formData: {}
       },
       page: {

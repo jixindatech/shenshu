@@ -67,30 +67,26 @@ func GetBatchGroups(query map[string]interface{}, page int, pageSize int) ([]*Ba
 	if query["name"] != nil {
 		name = query["name"].(string)
 	}
-	var status int
+
+	search := make(map[string]interface{})
 	if query["status"] != nil {
-		status = query["status"].(int)
+		search["status"] = query["status"].(int)
 	}
 
 	if page == 0 {
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			if status != 0 {
-				err = db.Order("priority DESC", true).Where("status = ?", status).Where("name like ?", name).Find(&batchGroups).Count(&count).Error
-			} else {
-				err = db.Order("priority DESC", true).Where("name like ?", name).Find(&batchGroups).Count(&count).Error
-			}
+			err = db.Order("priority DESC", true).Where("name like ?", name).Where(search).Find(&batchGroups).Count(&count).Error
 		} else {
-			err = db.Order("priority DESC", true).Find(&batchGroups).Count(&count).Error
+			err = db.Order("priority DESC", true).Where(search).Find(&batchGroups).Count(&count).Error
 		}
 	} else {
 		pageNum := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err = db.Order("priority DESC", true).Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&batchGroups).Count(&count).Error
-
+			err = db.Order("priority DESC", true).Where("name like ?", name).Where(search).Offset(pageNum).Limit(pageSize).Find(&batchGroups).Count(&count).Error
 		} else {
-			err = db.Order("priority DESC", true).Offset(pageNum).Limit(pageSize).Find(&batchGroups).Count(&count).Error
+			err = db.Order("priority DESC", true).Where(search).Offset(pageNum).Limit(pageSize).Find(&batchGroups).Count(&count).Error
 		}
 	}
 

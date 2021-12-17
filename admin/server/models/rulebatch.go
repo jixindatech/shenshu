@@ -51,18 +51,23 @@ func GetBatchRules(data map[string]interface{}) ([]*RuleBatch, int, error) {
 	page := data["page"].(int)
 	pageSize := data["pagesize"].(int)
 
+	search := make(map[string]interface{})
+	if data["status"] != nil {
+		search["status"] = data["status"].(int)
+	}
+
 	var err error
 	var count int
 	if page > 0 {
 		offset := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err = db.Where("batch_group_id = ?", rulegroup).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+			err = db.Where(search).Where("batch_group_id = ?", rulegroup).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 		} else {
-			err = db.Where("batch_group_id = ?", rulegroup).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+			err = db.Where(search).Where("batch_group_id = ?", rulegroup).Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 		}
 	} else {
-		err = db.Where("batch_group_id = ?", rulegroup).Find(&rules).Count(&count).Error
+		err = db.Where(search).Where("batch_group_id = ?", rulegroup).Find(&rules).Count(&count).Error
 	}
 
 	if err == gorm.ErrRecordNotFound {

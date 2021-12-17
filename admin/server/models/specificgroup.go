@@ -68,31 +68,25 @@ func GetSpecificGroups(query map[string]interface{}, page int, pageSize int) ([]
 		name = query["name"].(string)
 	}
 
-	var status int
+	search := make(map[string]interface{})
 	if query["status"] != nil {
-		status = query["status"].(int)
+		search["status"] = query["status"].(int)
 	}
 
 	if page == 0 {
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			if status != 0 {
-				err = db.Order("priority DESC", true).Where("status = ?", status).Where("name like ?", name).Find(&ruleGroups).Order("priority DESC").Count(&count).Error
-			} else {
-				err = db.Order("priority DESC", true).Where("name like ?", name).Find(&ruleGroups).Order("priority DESC").Count(&count).Error
-			}
-
+			err = db.Order("priority DESC", true).Where("name like ?", name).Where(search).Find(&ruleGroups).Count(&count).Error
 		} else {
-			err = db.Order("priority DESC", true).Find(&ruleGroups).Order("priority DESC").Count(&count).Error
+			err = db.Order("priority DESC", true).Find(&ruleGroups).Count(&count).Error
 		}
 	} else {
 		pageNum := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err = db.Order("priority DESC", true).Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Order("priority DESC").Count(&count).Error
-
+			err = db.Order("priority DESC", true).Where("name like ?", name).Where(search).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Count(&count).Error
 		} else {
-			err = db.Order("priority DESC", true).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Order("priority DESC").Count(&count).Error
+			err = db.Order("priority DESC", true).Where(search).Offset(pageNum).Limit(pageSize).Find(&ruleGroups).Count(&count).Error
 		}
 	}
 

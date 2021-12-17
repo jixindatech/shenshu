@@ -222,75 +222,89 @@ func getCCsConfig(id uint) ([]map[string]interface{}, error) {
 }
 
 func getRulesConfig(id uint) (map[string]interface{}, error) {
-	/*
-		var err error
-		ruleGroup := RuleGroup{
-			ID:       id,
-			Status:   util.RULE_ENABLE,
-			Type:     0,
-			Page:     0,
-			PageSize: 0,
+
+	var err error
+	batchgroup := BatchGroup{
+		ID:       id,
+		Status:   util.RULE_ENABLE,
+		Page:     0,
+		PageSize: 0,
+	}
+	batchList, _, err := batchgroup.GetList()
+	if err != nil {
+		return nil, err
+	}
+
+	action := 255
+	var batch []uint
+	var specific []uint
+	for _, item := range batchList {
+		if action < item.Action {
+			action = item.Action
 		}
-		list, _, err := ruleGroup.GetList()
+
+		ruleSrv := RuleBatch{
+			RuleGroup: item.ID,
+			Status:    util.RULE_ENABLE,
+			Page:      0,
+			PageSize:  0,
+		}
+		rules, _, err := ruleSrv.GetList()
 		if err != nil {
 			return nil, err
 		}
 
-		action := 255
-		var batch []uint
-		var specific []uint
-		for _, item := range list {
-			if action < item.Action {
-				action = item.Action
-			}
-
-			if item.Type == util.RULE_BATCH {
-				ruleSrv := Rule{
-					RuleGroup: item.ID,
-					Status:    util.RULE_ENABLE,
-					Page:      0,
-					PageSize:  0,
-				}
-				rules, _, err := ruleSrv.GetList()
-				if err != nil {
-					return nil, err
-				}
-				var ids []uint
-				for _, rule := range rules {
-					ids = append(ids, rule.ID)
-				}
-
-				batch = append(batch, ids...)
-
-			} else if item.Type == util.RULE_SPECIFIC {
-				ruleSrv := Rule{
-					RuleGroup: item.ID,
-					Status:    util.RULE_ENABLE,
-					Page:      0,
-					PageSize:  0,
-				}
-				rules, _, err := ruleSrv.GetList()
-				if err != nil {
-					return nil, err
-				}
-				var ids []uint
-				for _, rule := range rules {
-					ids = append(ids, rule.ID)
-				}
-				specific = append(specific, ids...)
-			} else {
-				return nil, fmt.Errorf("%s", "invalid rule type")
-			}
+		var ids []uint
+		for _, rule := range rules {
+			fmt.Println(rule)
+			ids = append(ids, rule.ID)
 		}
 
-		data := make(map[string]interface{})
-		data["action"] = action
-		data["batch"] = batch
-		data["specific"] = specific
+		batch = append(batch, ids...)
+	}
 
-		return data, err
-	*/
-	return nil, nil
+	specificgroup := SpecificGroup{
+		ID:       id,
+		Status:   util.RULE_ENABLE,
+		Page:     0,
+		PageSize: 0,
+	}
+
+	specificList, _, err := specificgroup.GetList()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, item := range specificList {
+		if action < item.Action {
+			action = item.Action
+		}
+
+		ruleSrv := RuleSpecific{
+			RuleGroup: item.ID,
+			Status:    util.RULE_ENABLE,
+			Page:      0,
+			PageSize:  0,
+		}
+		rules, _, err := ruleSrv.GetList()
+		if err != nil {
+			return nil, err
+		}
+
+		var ids []uint
+		for _, rule := range rules {
+			ids = append(ids, rule.ID)
+		}
+
+		specific = append(specific, ids...)
+	}
+
+	data := make(map[string]interface{})
+	data["action"] = action
+	data["batch"] = batch
+	data["specific"] = specific
+
+	return data, err
 }
 
 func (r *Site) Enable() error {

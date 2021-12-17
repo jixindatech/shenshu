@@ -44,6 +44,9 @@ func (b *RuleBatch) GetList() ([]*models.RuleBatch, int, error) {
 	data := make(map[string]interface{})
 	data["rulegroup"] = b.RuleGroup
 	data["name"] = b.Name
+	if b.Status != 0 {
+		data["status"] = b.Status
+	}
 	data["page"] = b.Page
 	data["pagesize"] = b.PageSize
 

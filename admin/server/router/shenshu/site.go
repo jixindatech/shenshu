@@ -138,7 +138,7 @@ func EnableSiteConfig(c *gin.Context) {
 
 	err = siteSrv.Enable()
 	if err != nil {
-		log.Logger.Error("SiteRuleGroup", zap.String("enable", err.Error()))
+		log.Logger.Error("siteconfig", zap.String("enable", err.Error()))
 		httpCode = http.StatusInternalServerError
 		errCode = e.SiteEnableSiteConfig
 		appG.Response(httpCode, errCode, "", nil)

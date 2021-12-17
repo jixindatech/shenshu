@@ -65,17 +65,12 @@ p, admin, ^/shenshu/specificgroup/\+?[1-9][0-9]*$, PUT
 p, admin, ^/shenshu/specificgroup$, GET
 p, admin, ^/shenshu/specificgroup/\+?[1-9][0-9]*$, GET
 
-p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*/rule$, POST
-p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*/rule$, GET
-p, admin, ^/shenshu/rulegroup/rule/\+?[1-9][0-9]*$, GET
-p, admin, ^/shenshu/rulegroup/rule/\+?[1-9][0-9]*$, PUT
-p, admin, ^/shenshu/rulegroup/rule/\+?[1-9][0-9]*$, DELETE
+p, admin, ^/shenshu/specificgroup/\+?[1-9][0-9]*/rule$, POST
+p, admin, ^/shenshu/specificgroup/rule/\+?[1-9][0-9]*$, DELETE
+p, admin, ^/shenshu/specificgroup/rule/\+?[1-9][0-9]*$, PUT
+p, admin, ^/shenshu/specificgroup/\+?[1-9][0-9]*/rule$, GET
+p, admin, ^/shenshu/specificgroup/rule/\+?[1-9][0-9]*$, GET
 
-p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*/rulebatch$, POST
-p, admin, ^/shenshu/rulegroup/\+?[1-9][0-9]*/rulebatch$, GET
-p, admin, ^/shenshu/rulegroup/rulebatch/\+?[1-9][0-9]*$, GET
-p, admin, ^/shenshu/rulegroup/rulebatch/\+?[1-9][0-9]*$, PUT
-p, admin, ^/shenshu/rulegroup/rulebatch/\+?[1-9][0-9]*$, DELETE
 
 p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup$, POST
 p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup$, PUT

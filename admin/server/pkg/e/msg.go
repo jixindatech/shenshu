@@ -65,10 +65,10 @@ var MsgFlags = map[int]string{
 	SpecificGroupPutFailed:    "更新SpeicificGroup失败",
 	SpecificGroupDeleteFailed: "删除SpeicificGroup失败",
 
-	RuleAddFailed:    "添加Rule失败",
-	RuleGetFailed:    "获取Rule失败",
-	RulePutFailed:    "更新Rule失败",
-	RuleDeleteFailed: "删除Rule失败",
+	RuleSpecificAddFailed:    "添加RuleSpecific失败",
+	RuleSpecificGetFailed:    "获取RuleSpecific失败",
+	RuleSpecificPutFailed:    "更新RuleSpecific失败",
+	RuleSpecificDeleteFailed: "删除RuleSpecific失败",
 
 	RuleBatchAddFailed:    "添加RuleBatch失败",
 	RuleBatchGetFailed:    "获取RuleBatch失败",

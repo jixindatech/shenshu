@@ -61,10 +61,10 @@ const (
 	SpecificGroupPutFailed    = 15003
 	SpecificGroupDeleteFailed = 15004
 
-	RuleAddFailed    = 13001
-	RuleGetFailed    = 13002
-	RulePutFailed    = 13003
-	RuleDeleteFailed = 13004
+	RuleSpecificAddFailed    = 13001
+	RuleSpecificGetFailed    = 13002
+	RuleSpecificPutFailed    = 13003
+	RuleSpecificDeleteFailed = 13004
 
 	RuleBatchAddFailed    = 14001
 	RuleBatchGetFailed    = 14002

@@ -7,8 +7,8 @@ import (
 
 type RuleSpeicifc struct {
 	Model
-	Name        string `json:"name" gorm:"column:name;not null"`
-	RuleGroupId uint   `json:"ruleGroup" gorm:"not null"`
+	Name            string `json:"name" gorm:"column:name;not null"`
+	SpecificGroupId uint   `json:"ruleGroup" gorm:"not null"`
 
 	Rules    datatypes.JSON `json:"rules" gorm:"column:rules;type:VARBINARY(1024);not null;comment:'规则'"`
 	Action   int            `json:"action" gorm:"column:action;default:'0'"` // deny score
@@ -29,7 +29,7 @@ func AddRuleSpecific(data map[string]interface{}) error {
 		Remark:   data["remark"].(string),
 	}
 
-	return db.Model(&ruleGroup).Association("Rules").Append(&rule).Error
+	return db.Model(&ruleGroup).Association("RuleSpecifics").Append(&rule).Error
 }
 
 func UpdateRuleSpecific(id uint, data map[string]interface{}) error {
@@ -60,30 +60,30 @@ func GetRuleSpecifics(data map[string]interface{}, page, pageSize int) ([]*RuleS
 		if len(name) > 0 {
 			name = "%" + name + "%"
 			if status != 0 {
-				err = db.Where("status = ?", status).Where("rule_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+				err = db.Order("priority DESC", true).Where("status = ?", status).Where("specific_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 			} else {
-				err = db.Where("rule_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+				err = db.Order("priority DESC", true).Where("specific_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 			}
 		} else {
 			if status != 0 {
-				err = db.Where("status = ?", status).Where("rule_group_id = ?", rulegroup).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+				err = db.Order("priority DESC", true).Where("status = ?", status).Where("specific_group_id = ?", rulegroup).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 			} else {
-				err = db.Where("rule_group_id = ?", rulegroup).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
+				err = db.Order("priority DESC", true).Where("specific_group_id = ?", rulegroup).Order("priority DESC").Offset(offset).Limit(pageSize).Find(&rules).Count(&count).Error
 			}
 		}
 	} else {
 		if len(name) > 0 {
 			name = "%" + name + "%"
 			if status != 0 {
-				err = db.Where("status = ?", status).Where("rule_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Find(&rules).Count(&count).Error
+				err = db.Order("priority DESC", true).Where("status = ?", status).Where("specific_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Find(&rules).Count(&count).Error
 			} else {
-				err = db.Where("rule_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Find(&rules).Count(&count).Error
+				err = db.Where("specific_group_id = ?", rulegroup).Where("name LIKE ?", name).Order("priority DESC").Find(&rules).Count(&count).Error
 			}
 		} else {
 			if status != 0 {
-				err = db.Debug().Where("status = ?", status).Where("rule_group_id = ?", rulegroup).Order("priority DESC").Find(&rules).Count(&count).Error
+				err = db.Order("priority DESC", true).Where("status = ?", status).Where("specific_group_id = ?", rulegroup).Order("priority DESC").Find(&rules).Count(&count).Error
 			} else {
-				err = db.Where("rule_group_id = ?", rulegroup).Order("priority DESC").Find(&rules).Count(&count).Error
+				err = db.Order("priority DESC", true).Where("specific_group_id = ?", rulegroup).Order("priority DESC").Find(&rules).Count(&count).Error
 			}
 		}
 	}

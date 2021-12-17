@@ -41,7 +41,6 @@ func (r *RuleSpecific) Save() (err error) {
 	}
 
 	return err
-	// return SetupSites()
 }
 
 func (r *RuleSpecific) Get() (*models.RuleSpeicifc, error) {

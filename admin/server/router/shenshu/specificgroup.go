@@ -13,7 +13,6 @@ import (
 
 type specificGroupForm struct {
 	Name     string         `json:"name" validate:"required"`
-	Type     int            `json:"type" validate:"required,min=1,max=2"`
 	Action   int            `json:"action" validate:"required,min=1,max=4"`
 	Priority int            `json:"priority" validate:"required,min=1"`
 	Status   int            `json:"status" validate:"required,min=1,max=2"`
@@ -72,10 +71,10 @@ func DeleteSpecificGroup(c *gin.Context) {
 		return
 	}
 
-	rgSrv := service.SpecificGroup{
+	sgSrv := service.SpecificGroup{
 		ID: formId.ID,
 	}
-	err = rgSrv.Delete()
+	err = sgSrv.Delete()
 	if err != nil {
 		httpCode = http.StatusInternalServerError
 		errCode = e.SpecificGroupDeleteFailed

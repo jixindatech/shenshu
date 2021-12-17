@@ -123,18 +123,12 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		shenshuApis.GET("/specificgroup/:id", shenshu.GetSpecificGroup)
 		shenshuApis.PUT("/specificgroup/:id", shenshu.UpdateSpecificGroup)
 		shenshuApis.DELETE("/specificgroup/:id", shenshu.DeleteSpecificGroup)
-		/*
-			shenshuApis.POST("/rulegroup/:id/rule", shenshu.AddRule)
-			shenshuApis.GET("/rulegroup/:id/rule", shenshu.GetRules)
-			shenshuApis.GET("/rulegroup/rule/:id", shenshu.GetRule)
-			shenshuApis.PUT("/rulegroup/rule/:id", shenshu.UpdateRule)
-			shenshuApis.DELETE("/rulegroup/rule/:id", shenshu.DeleteRule)
-		*/
-		shenshuApis.POST("/rulegroup/:id/rulebatch", shenshu.AddRuleBatch)
-		shenshuApis.GET("/rulegroup/:id/rulebatch", shenshu.GetRuleBatchs)
-		shenshuApis.GET("/rulegroup/rulebatch/:id", shenshu.GetRuleBatch)
-		shenshuApis.PUT("/rulegroup/rulebatch/:id", shenshu.UpdateRuleBatch)
-		shenshuApis.DELETE("/rulegroup/rulebatch/:id", shenshu.DeleteRuleBatch)
+
+		shenshuApis.POST("/specificgroup/:id/rule", shenshu.AddRuleSpecific)
+		shenshuApis.GET("/specificgroup/:id/rule", shenshu.GetRuleSpecifics)
+		shenshuApis.GET("/specificgroup/rule/:id", shenshu.GetRuleSpecific)
+		shenshuApis.PUT("/specificgroup/rule/:id", shenshu.UpdateRuleSpecific)
+		shenshuApis.DELETE("/specificgroup/rule/:id", shenshu.DeleteRuleSpecific)
 
 		shenshuApis.PUT("/site/:id/rulegroup", shenshu.UpdateSiteRuleGroup)
 		shenshuApis.GET("/site/:id/rulegroup", shenshu.GetSiteRuleGroup)

@@ -37,12 +37,10 @@ func AddBatchGroup(data map[string]interface{}) error {
 func DeleteBatchGroup(id uint) error {
 	var batchGroup BatchGroup
 	batchGroup.Model.ID = id
-	ruleCount := db.Model(&batchGroup).Association("Rules").Count()
-	ruleBatchCount := db.Model(&batchGroup).Association("RuleBatchs").Count()
-	if ruleCount != 0 || ruleBatchCount != 0 {
+	ruleCount := db.Model(&batchGroup).Association("RuleBatchs").Count()
+	if ruleCount != 0 {
 		return fmt.Errorf("%s", "rule exist in this group")
 	}
-
 	return db.Delete(&batchGroup).Error
 }
 

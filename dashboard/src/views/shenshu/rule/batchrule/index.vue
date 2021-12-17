@@ -89,7 +89,7 @@
     />
 
     <edit
-      :id="edit.id"
+      :group-id="groupId"
       :title="edit.title"
       :form-data="edit.formData"
       :visible="edit.visible"
@@ -178,7 +178,6 @@ export default {
     handleEdit(id) {
       getById(id).then((response) => {
         const { data } = response
-        this.edit.id = id
         this.edit.formData = data.item
         this.edit.title = '编辑'
         this.edit.visible = true

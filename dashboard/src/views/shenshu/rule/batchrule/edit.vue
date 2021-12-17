@@ -62,7 +62,7 @@ export default {
       type: Boolean,
       default: false
     },
-    id: {
+    groupId: {
       type: Number,
       default: 0
     },
@@ -109,11 +109,10 @@ export default {
 
     async submitData() {
       let response = null
-      console.log(this.id)
       if (this.formData.id) {
-        response = await api.update(this.id, this.formData)
+        response = await api.update(this.formData.id, this.formData)
       } else {
-        response = await api.add(this.id, this.formData)
+        response = await api.add(this.groupId, this.formData)
       }
 
       if (response.code === 0) {

@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"go.uber.org/zap"
-	"strconv"
 	"time"
 )
 
@@ -148,7 +147,7 @@ func (r *Site) GetRuleGroup() ([]uint, error) {
 }
 */
 
-func getIPsConfig(id uint) (map[string]interface{}, error) {
+func getIPConfig(id uint) (map[string]interface{}, error) {
 	ipSrv := IP{
 		Site:     id,
 		Type:     util.IP_ACCEPT,
@@ -223,7 +222,113 @@ func getCCsConfig(id uint) ([]map[string]interface{}, error) {
 	return data, err
 }
 
-func getRulesConfig(id uint) (map[string]interface{}, error) {
+func setCache(key string, data interface{}) error {
+	siteStr, err := json.Marshal(data)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
+	err = cache.Set(cache.CONFIG, key, string(siteStr), 0)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
+	return nil
+}
+
+func getIPData(id uint) (map[string]interface{}, error) {
+	res, err := getIPConfig(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func setupIPs(key string, ids []uint) error {
+	var data []interface{}
+	for _, id := range ids {
+		ipConfig, err := getIPData(id)
+		if err != nil {
+			return err
+		}
+
+		item := make(map[string]interface{})
+		item["id"] = id
+		item["config"] = ipConfig
+
+		data = append(data, item)
+	}
+
+	if len(data) == 0 {
+		data = []interface{}{}
+	}
+
+	return setCache(key, data)
+}
+
+func setupCCs(key string, ids []uint) error {
+	var data []interface{}
+	for _, id := range ids {
+		ccConfig, err := getCCsConfig(id)
+		if err != nil {
+			return err
+		}
+
+		item := make(map[string]interface{})
+		item["id"] = id
+		item["config"] = ccConfig
+		data = append(data, item)
+	}
+
+	if len(data) == 0 {
+		data = []interface{}{}
+	}
+
+	return setCache(key, data)
+}
+
+func (r *Site) Enable() error {
+	return SetupSites()
+}
+
+func setupBatchRules(key string) error {
+	ruleBatchSrv := &RuleBatch{
+		Status: util.RULE_ENABLE,
+	}
+	batchList, _, err := ruleBatchSrv.GetList()
+	if err != nil {
+		return err
+	}
+
+	err = setCache(key, batchList)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func setupSpecificRules(key string) error {
+	ruleSpecifcSrv := &RuleSpecific{
+		Status: util.RULE_ENABLE,
+	}
+	specificList, _, err := ruleSpecifcSrv.GetList()
+	if err != nil {
+		return err
+	}
+
+	err = setCache(key, specificList)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getRuleConfig(id uint) (map[string]interface{}, error) {
 	var err error
 	decoders := make(map[string]interface{})
 	batchgroup := BatchGroup{
@@ -318,76 +423,27 @@ func getRulesConfig(id uint) (map[string]interface{}, error) {
 	return data, err
 }
 
-func (r *Site) Enable() error {
-	data := make(map[string]interface{})
+func setupRulesConfig(key string, ids []uint) error {
+	var data []interface{}
+	for _, id := range ids {
+		res, err := getRuleConfig(id)
+		if err != nil {
+			return nil
+		}
+		item := make(map[string]interface{})
+		item["id"] = id
+		item["config"] = res
 
-	res, err := getIPsConfig(r.ID)
-	if err != nil {
-		return err
-	}
-	data["ip"] = res
-
-	cc, err := getCCsConfig(r.ID)
-	if err != nil {
-		return err
-	}
-	data["cc"] = cc
-
-	rules, err := getRulesConfig(r.ID)
-	if err != nil {
-		return err
-	}
-	data["rules"] = rules
-
-	siteStr, err := json.Marshal(data)
-	if err != nil {
-		log.Logger.Error("site", zap.String("err", err.Error()))
-		return err
+		data = append(data, item)
 	}
 
-	err = cache.Set(cache.CONFIG, strconv.Itoa(int(r.ID)), string(siteStr), 0)
-	if err != nil {
-		log.Logger.Error("site", zap.String("err", err.Error()))
-		return err
+	if len(data) == 0 {
+		data = []interface{}{}
 	}
-	return nil
+
+	return setCache(key, data)
 }
 
-func setupRules() error {
-	ruleBatchSrv := &RuleBatch{
-		Status: util.RULE_ENABLE,
-	}
-	batchList, _, err := ruleBatchSrv.GetList()
-	if err != nil {
-		return err
-	}
-
-	ruleSpecifcSrv := &RuleSpecific{
-		Status: util.RULE_ENABLE,
-	}
-	specificList, _, err := ruleSpecifcSrv.GetList()
-	if err != nil {
-		return err
-	}
-
-	data := make(map[string]interface{})
-	data["batch"] = batchList
-	data["specific"] = specificList
-
-	siteStr, err := json.Marshal(data)
-	if err != nil {
-		log.Logger.Error("site", zap.String("err", err.Error()))
-		return err
-	}
-
-	err = cache.Set(cache.CONFIG, "rules", string(siteStr), 0)
-	if err != nil {
-		log.Logger.Error("site", zap.String("err", err.Error()))
-		return err
-	}
-
-	return nil
-}
 func SetupSites() error {
 	site := Site{
 		Status: util.SITE_ENABLE,
@@ -417,8 +473,11 @@ func SetupSites() error {
 		return nil
 	}
 
+	var ids []uint
 	routesInfos := []map[string]interface{}{}
 	for _, item := range sites {
+		ids = append(ids, item.ID)
+
 		route := make(map[string]interface{})
 		route["id"] = item.ID
 		route["host"] = item.Host
@@ -430,14 +489,6 @@ func SetupSites() error {
 
 		route["upstream_id"] = item.Upstreams[0].ID
 		routesInfos = append(routesInfos, route)
-
-		ruleSite := &Site{
-			ID: item.ID,
-		}
-		err = ruleSite.Enable()
-		if err != nil {
-			return err
-		}
 	}
 
 	data := make(map[string]interface{})
@@ -456,10 +507,35 @@ func SetupSites() error {
 		return err
 	}
 
-	err = setupRules()
+	err = setupIPs("ip", ids)
 	if err != nil {
 		log.Logger.Error("site", zap.String("err", err.Error()))
 		return err
 	}
+
+	err = setupCCs("cc", ids)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
+	err = setupBatchRules("batch_rules")
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
+	err = setupSpecificRules("specific_rules")
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
+	err = setupRulesConfig("rules", ids)
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+		return err
+	}
+
 	return nil
 }

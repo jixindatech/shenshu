@@ -25,6 +25,12 @@
           type="primary"
           @click="openAdd"
         >新增</el-button>
+        <el-button
+          v-permission="['POST:/shenshu/site/:id/enable']"
+          type="success"
+          size="mini"
+          @click="enableConfig()"
+        >配置下发</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -82,12 +88,6 @@
             size="mini"
             @click="rulegroupConfig(scope.row.id, TYPE_RULE_GROUP.TYPE_SPECIFIC_GROUP)"
           >Sepcififc规则</el-button>
-          <el-button
-            v-permission="['POST:/shenshu/site/:id/enable']"
-            type="primary"
-            size="mini"
-            @click="enableConfig(scope.row.id)"
-          >配置下发</el-button>
           <el-button
             v-permission="['DELETE:/nginx/site/:id']"
             type="danger"
@@ -256,7 +256,8 @@ export default {
       this.rulegroup.site = id
       this.rulegroup.ids = data.ids
     },
-    enableConfig(id) {
+    enableConfig() {
+      const id = 1
       api.enable(id).then((response) => {
         this.$message({
           type: 'success',

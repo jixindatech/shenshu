@@ -15,6 +15,16 @@ type IP struct {
 	Remark string         `json:"remark" gorm:"column:remark;"`
 }
 
+func (i *IP) AfterSave(tx *gorm.DB) (err error) {
+	changeSiteTimestamp(i.SiteId, "IPTimestamp")
+	return nil
+}
+
+func (i *IP) AfterDelete(tx *gorm.DB) (err error) {
+	changeSiteTimestamp(i.SiteId, "IPTimestamp")
+	return nil
+}
+
 func AddIP(data map[string]interface{}) error {
 	var site Site
 	site.Model.ID = data["site"].(uint)
@@ -60,21 +70,21 @@ func GetIPs(data map[string]interface{}) ([]*IP, int, error) {
 }
 
 func UpdateIP(id uint, data map[string]interface{}) error {
-	ip := IP{}
-	ip.Model.ID = id
+	ip, err := GetIP(id)
+	if err != nil {
+		return err
+	}
 
 	return db.Model(&ip).Update(data).Error
 }
 
 func DeleteIP(id uint) error {
-	ip := IP{}
-	ip.Model.ID = id
-
-	err := db.Delete(&ip).Error
+	ip, err := GetIP(id)
 	if err != nil {
 		return err
 	}
-	return nil
+
+	return db.Delete(&ip).Error
 }
 
 func GetIP(id uint) (*IP, error) {

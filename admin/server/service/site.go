@@ -258,7 +258,7 @@ func setupIPs(key string, ids []uint) error {
 		item := make(map[string]interface{})
 		item["id"] = id
 		item["config"] = ipConfig
-
+		item["timestamp"] = time.Now().Unix()
 		data = append(data, item)
 	}
 
@@ -280,6 +280,7 @@ func setupCCs(key string, ids []uint) error {
 		item := make(map[string]interface{})
 		item["id"] = id
 		item["config"] = ccConfig
+		item["timestamp"] = time.Now().Unix()
 		data = append(data, item)
 	}
 
@@ -433,6 +434,7 @@ func setupRulesConfig(key string, ids []uint) error {
 		item := make(map[string]interface{})
 		item["id"] = id
 		item["config"] = res
+		item["timestamp"] = time.Now().Unix()
 
 		data = append(data, item)
 	}

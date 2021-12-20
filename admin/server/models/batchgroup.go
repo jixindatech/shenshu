@@ -17,7 +17,35 @@ type BatchGroup struct {
 	Priority int            `json:"priority" gorm:"column:priority;not null"`
 	Remark   string         `json:"remark" gorm:"column:remark;"`
 
+	Sites      []*Site `json:"sites" gorm:"many2many:site_batchroup;"`
 	RuleBatchs []*RuleBatch
+}
+
+func (b *BatchGroup) AfterSave(tx *gorm.DB) (err error) {
+	return changeRulesBatchSiteTimestamp(b.ID)
+}
+
+func (b *BatchGroup) AfterDelete(tx *gorm.DB) (err error) {
+	return changeRulesBatchSiteTimestamp(b.ID)
+}
+
+func changeRulesBatchSiteTimestamp(id uint) error {
+	group, err := GetBatchGroup(id)
+	if err != nil {
+		return err
+	}
+
+	var sites []*Site
+	err = db.Model(&group).Association("Sites").Find(&sites).Error
+	if err != nil {
+		return err
+	}
+
+	for _, site := range sites {
+		changeSiteTimestamp(site.ID, "RuleTimestamp")
+	}
+
+	return nil
 }
 
 func AddBatchGroup(data map[string]interface{}) error {
@@ -35,8 +63,11 @@ func AddBatchGroup(data map[string]interface{}) error {
 }
 
 func DeleteBatchGroup(id uint) error {
-	var batchGroup BatchGroup
-	batchGroup.Model.ID = id
+	batchGroup, err := GetBatchGroup(id)
+	if err != nil {
+		return err
+	}
+
 	ruleCount := db.Model(&batchGroup).Association("RuleBatchs").Count()
 	if ruleCount != 0 {
 		return fmt.Errorf("%s", "rule exist in this group")
@@ -45,7 +76,12 @@ func DeleteBatchGroup(id uint) error {
 }
 
 func UpdateBatchGroup(id uint, data map[string]interface{}) error {
-	return db.Model(&BatchGroup{}).Where("id = ?", id).Update(data).Error
+	batchGroup, err := GetBatchGroup(id)
+	if err != nil {
+		return err
+	}
+
+	return db.Model(&batchGroup).Update(data).Error
 }
 
 func GetBatchGroup(id uint) (*BatchGroup, error) {

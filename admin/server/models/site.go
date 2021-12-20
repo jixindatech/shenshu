@@ -1,11 +1,14 @@
 package models
 
 import (
+	"admin/core/log"
 	"admin/server/util"
 	"encoding/json"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
 	"gorm.io/gorm/clause"
+	"time"
 )
 
 type Site struct {
@@ -17,11 +20,28 @@ type Site struct {
 	Status int    `json:"status" gorm:"column:status;not null"`
 	Remark string `json:"remark" gorm:"column:remark"`
 
+	UpstreamTimestamp int64 `json:"upstream_timestamp" gorm:"column:upstream_timestamp;default 0"`
+	IPTimestamp       int64 `json:"ip_timestamp" gorm:"column:ip_timestamp;default 0"`
+	CCTimestamp       int64 `json:"cc_timestamp" gorm:"column:cc_timestamp;default 0"`
+	RuleTimestamp     int64 `json:"rule_timestamp" gorm:"column:rule_timestamp;default 0"`
+
 	Upstreams      []*Upstream      `json:"upstreamRef" gorm:"many2many:site_upstream;"`
 	IPs            []IP             `json:"ips"`
 	CCs            []*CC            `json:"ccs"`
 	BatchGroups    []*BatchGroup    `json:"batchgroup" gorm:"many2many:site_batchroup;"`
 	SpecificGroups []*SpecificGroup `json:"specificgroup" gorm:"many2many:site_specificgroup;"`
+}
+
+func changeSiteTimestamp(id uint, column string) {
+	site := Site{}
+	site.Model.ID = id
+
+	data := make(map[string]interface{})
+	data[column] = time.Now().Unix()
+	err := db.Model(&site).Update(data).Error
+	if err != nil {
+		log.Logger.Error("site", zap.String("err", err.Error()))
+	}
 }
 
 func AddSite(data map[string]interface{}) error {
@@ -72,8 +92,10 @@ func DeleteSite(id uint) error {
 }
 
 func UpdateSiteBatchRuleGroup(id uint, ids []uint) error {
-	site := Site{}
-	site.Model.ID = id
+	site, err := GetSite(id)
+	if err != nil {
+		return err
+	}
 	var rulegroups []*BatchGroup
 	for _, item := range ids {
 		temp := BatchGroup{}
@@ -81,11 +103,12 @@ func UpdateSiteBatchRuleGroup(id uint, ids []uint) error {
 		rulegroups = append(rulegroups, &temp)
 	}
 
-	err := db.Model(&site).Association("BatchGroups").Replace(rulegroups).Error
+	err = db.Model(&site).Association("BatchGroups").Replace(rulegroups).Error
 	if err != nil {
 		return err
 	}
 
+	changeSiteTimestamp(site.ID, "RuleTimestamp")
 	return nil
 }
 
@@ -101,8 +124,11 @@ func GetSiteBatchGroup(id uint) ([]*BatchGroup, error) {
 }
 
 func UpdateSiteSpecificRuleGroup(id uint, ids []uint) error {
-	site := Site{}
-	site.Model.ID = id
+	site, err := GetSite(id)
+	if err != nil {
+		return err
+	}
+
 	var rulegroups []*SpecificGroup
 	for _, item := range ids {
 		temp := SpecificGroup{}
@@ -110,10 +136,12 @@ func UpdateSiteSpecificRuleGroup(id uint, ids []uint) error {
 		rulegroups = append(rulegroups, &temp)
 	}
 
-	err := db.Model(&site).Association("SpecificGroups").Replace(rulegroups).Error
+	err = db.Model(&site).Association("SpecificGroups").Replace(rulegroups).Error
 	if err != nil {
 		return err
 	}
+
+	changeSiteTimestamp(site.ID, "RuleTimestamp")
 
 	return nil
 }

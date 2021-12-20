@@ -19,6 +19,16 @@ type CC struct {
 	Remark    string `json:"remark" gorm:"column:remark;not null"`
 }
 
+func (c *CC) AfterSave(tx *gorm.DB) (err error) {
+	changeSiteTimestamp(c.SiteId, "CCTimestamp")
+	return nil
+}
+
+func (c *CC) AfterDelete(tx *gorm.DB) (err error) {
+	changeSiteTimestamp(c.SiteId, "CCTimestamp")
+	return nil
+}
+
 func AddCC(data map[string]interface{}) error {
 	var site Site
 	site.Model.ID = data["site"].(uint)
@@ -36,7 +46,12 @@ func AddCC(data map[string]interface{}) error {
 }
 
 func UpdateCC(id uint, data map[string]interface{}) error {
-	return db.Model(&CC{}).Where("id = ?", id).Update(data).Error
+	cc, err := GetCC(id)
+	if err != nil {
+		return err
+	}
+
+	return db.Model(&cc).Update(data).Error
 }
 
 func GetCC(id uint) (*CC, error) {
@@ -83,5 +98,10 @@ func GetCCs(data map[string]interface{}) ([]*CC, int, error) {
 }
 
 func DeleteCC(id uint) error {
-	return db.Where("id = ?", id).Delete(CC{}).Error
+	cc, err := GetCC(id)
+	if err != nil {
+		return err
+	}
+
+	return db.Delete(&cc).Error
 }

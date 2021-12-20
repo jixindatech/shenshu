@@ -24,7 +24,6 @@ type CC struct {
 
 func (c *CC) Save() (err error) {
 	data := make(map[string]interface{})
-	data["site"] = c.Site
 	data["name"] = c.Name
 	data["mode"] = c.Mode
 	data["method"] = c.Method
@@ -38,11 +37,11 @@ func (c *CC) Save() (err error) {
 	if c.ID > 0 {
 		err = models.UpdateCC(c.ID, data)
 	} else {
+		data["site"] = c.Site
 		err = models.AddCC(data)
 	}
 
 	return err
-	// return SetupSites()
 }
 
 func (c *CC) Get() (*models.CC, error) {

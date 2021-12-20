@@ -15,6 +15,14 @@ type RuleBatch struct {
 	Remark       string `json:"remark" gorm:"column:remark;comment:'备注'"`
 }
 
+func (r *RuleBatch) AfterSave(tx *gorm.DB) (err error) {
+	return changeRulesBatchSiteTimestamp(r.BatchGroupID)
+}
+
+func (r *RuleBatch) AfterDelete(tx *gorm.DB) (err error) {
+	return changeRulesBatchSiteTimestamp(r.BatchGroupID)
+}
+
 func AddBatchRule(data map[string]interface{}) error {
 	var ruleGroup BatchGroup
 	ruleGroup.Model.ID = data["rulegroup"].(uint)
@@ -30,7 +38,12 @@ func AddBatchRule(data map[string]interface{}) error {
 }
 
 func UpdateBatchRule(id uint, data map[string]interface{}) error {
-	return db.Model(&RuleBatch{}).Where("id = ?", id).Update(data).Error
+	rule, err := GetBatchRule(id)
+	if err != nil {
+		return err
+	}
+
+	return db.Model(&rule).Update(data).Error
 }
 
 func GetBatchRule(id uint) (*RuleBatch, error) {
@@ -90,5 +103,10 @@ func GetBatchRules(data map[string]interface{}) ([]*RuleBatch, int, error) {
 }
 
 func DeleteBatchRule(id uint) error {
-	return db.Where("id = ?", id).Delete(RuleBatch{}).Error
+	rule, err := GetBatchRule(id)
+	if err != nil {
+		return err
+	}
+
+	return db.Delete(&rule).Error
 }

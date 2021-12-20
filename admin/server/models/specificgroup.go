@@ -17,7 +17,35 @@ type SpecificGroup struct {
 	Priority int            `json:"priority" gorm:"column:priority;not null"`
 	Remark   string         `json:"remark" gorm:"column:remark;"`
 
+	Sites         []*Site `json:"sites" gorm:"many2many:site_specificgroup;"`
 	RuleSpecifics []*RuleSpeicifc
+}
+
+func (s *SpecificGroup) AfterSave(tx *gorm.DB) (err error) {
+	return changeRulesSpecificSiteTimestamp(s.ID)
+}
+
+func (s *SpecificGroup) AfterDelete(tx *gorm.DB) (err error) {
+	return changeRulesSpecificSiteTimestamp(s.ID)
+}
+
+func changeRulesSpecificSiteTimestamp(id uint) error {
+	group, err := GetBatchGroup(id)
+	if err != nil {
+		return err
+	}
+
+	var sites []*Site
+	err = db.Model(&group).Association("Sites").Find(&sites).Error
+	if err != nil {
+		return err
+	}
+
+	for _, site := range sites {
+		changeSiteTimestamp(site.ID, "RuleTimestamp")
+	}
+
+	return nil
 }
 
 func AddSpecificGroup(data map[string]interface{}) error {

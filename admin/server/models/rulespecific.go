@@ -17,6 +17,14 @@ type RuleSpeicifc struct {
 	Remark   string         `json:"remark" gorm:"column:remark;"`
 }
 
+func (r *RuleSpeicifc) AfterSave(tx *gorm.DB) (err error) {
+	return changeRulesSpecificSiteTimestamp(r.SpecificGroupId)
+}
+
+func (r *RuleSpeicifc) AfterDelete(tx *gorm.DB) (err error) {
+	return changeRulesSpecificSiteTimestamp(r.SpecificGroupId)
+}
+
 func AddRuleSpecific(data map[string]interface{}) error {
 	var ruleGroup SpecificGroup
 	ruleGroup.Model.ID = data["rulegroup"].(uint)
@@ -33,7 +41,12 @@ func AddRuleSpecific(data map[string]interface{}) error {
 }
 
 func UpdateRuleSpecific(id uint, data map[string]interface{}) error {
-	return db.Model(&RuleSpeicifc{}).Where("id = ?", id).Update(data).Error
+	rule, err := GetRuleSpecific(id)
+	if err != nil {
+		return err
+	}
+
+	return db.Model(&rule).Update(data).Error
 }
 
 func GetRuleSpecific(id uint) (*RuleSpeicifc, error) {
@@ -94,5 +107,10 @@ func GetRuleSpecifics(data map[string]interface{}, page, pageSize int) ([]*RuleS
 }
 
 func DeleteRuleSpecific(id uint) error {
-	return db.Where("id = ?", id).Delete(RuleSpeicifc{}).Error
+	rule, err := GetRuleSpecific(id)
+	if err != nil {
+		return err
+	}
+
+	return db.Delete(&rule).Error
 }

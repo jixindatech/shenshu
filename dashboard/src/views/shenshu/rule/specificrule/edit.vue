@@ -50,11 +50,13 @@
                 <el-option v-for="(item,index) in REQ_HEADER_OPERATORS " :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
+            <!--
             <el-form-item v-if="scope.row.variable === 'IP'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
               <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
                 <el-option v-for="(item,index) in IP_OPERATORS " :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
+            -->
             <el-form-item v-if="scope.row.variable === 'METHOD'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
               <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
                 <el-option v-for="(item,index) in METHOD_OPERATORS " :key="index" :label="item.label" :value="item.value" />

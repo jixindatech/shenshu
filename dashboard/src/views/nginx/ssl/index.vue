@@ -45,7 +45,7 @@
       <el-table-column align="center" label="操作" width="330">
         <template slot-scope="scope">
           <el-button
-            v-permission="['PUT:/nginx/site']"
+            v-permission="['PUT:/nginx/ssl/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"
@@ -156,7 +156,7 @@ export default {
         .then(() => {
           api.deleteById(id).then((response) => {
             this.$message({
-              type: response.code === 200 ? 'success' : 'error',
+              type: 'success',
               message: '删除成功!'
             })
             this.fetchData()

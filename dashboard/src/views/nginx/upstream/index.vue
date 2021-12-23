@@ -189,7 +189,7 @@ export default {
 
     handleEdit(id) {
       api.get(id).then((response) => {
-        this.edit.formData = response.data.record
+        this.edit.formData = response.data.item
         this.edit.title = '编辑'
         this.edit.visible = true
       })

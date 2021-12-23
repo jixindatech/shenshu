@@ -118,7 +118,9 @@ export default {
     visible(newVal, oldVal) {
       if (newVal) {
         if (this.formData.id !== undefined) {
-          this.formData.upstreamRef = this.formData.upstreamRef[0].id
+          if (this.formData.upstreamRef.length > 0) {
+            this.formData.upstreamRef = this.formData.upstreamRef[0].id
+          }
         }
         this.fetchUpstreams()
       }

@@ -283,12 +283,24 @@ func getBatchRules() (interface{}, error) {
 		Status: util.RULE_ENABLE,
 	}
 
+	var list []interface{}
 	batchList, _, err := ruleBatchSrv.GetList()
 	if err != nil {
 		return nil, err
 	}
+	for _, item := range batchList {
+		data := make(map[string]interface{})
+		data["id"] = item.ID
+		data["timestamp"] = item.UpdatedAt.Unix()
+		data["config"] = map[string]interface{}{
+			"pattern": item.Pattern,
+			"msg":     "batch msg",
+		}
 
-	return batchList, nil
+		list = append(list, data)
+	}
+
+	return list, nil
 }
 
 func getSpecificRules() (interface{}, error) {
@@ -299,8 +311,21 @@ func getSpecificRules() (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	var list []interface{}
+	for _, item := range specificList {
+		data := make(map[string]interface{})
+		data["id"] = item.ID
+		data["timestamp"] = item.UpdatedAt.Unix()
+		data["config"] = map[string]interface{}{
+			"action": item.Action,
+			"msg":    item.Remark,
+			"rules":  item.Rules,
+		}
 
-	return specificList, nil
+		list = append(list, data)
+	}
+
+	return list, nil
 }
 
 func getRuleData(id uint) (map[string]interface{}, error) {
@@ -422,6 +447,17 @@ func SetupSites() error {
 	site := Site{
 		Status: util.SITE_ENABLE,
 	}
+
+	err := SetupSSLs()
+	if err != nil {
+		return err
+	}
+
+	err = SetupUpstreams()
+	if err != nil {
+		return err
+	}
+
 	sites, count, err := site.GetList()
 	if err != nil {
 		return err
@@ -455,14 +491,18 @@ func SetupSites() error {
 	for _, item := range sites {
 		route := make(map[string]interface{})
 		route["id"] = item.ID
-		route["host"] = item.Host
-		route["uri"] = item.Path
+		route["timestamp"] = item.UpdatedAt.Unix()
 
 		if len(item.Upstreams) != 1 {
 			return fmt.Errorf("%s", "invalid site upstream")
 		}
 
-		route["upstream_id"] = item.Upstreams[0].ID
+		route["config"] = map[string]interface{}{
+			"host":        item.Host,
+			"uri":         item.Path,
+			"upstream_id": item.Upstreams[0].ID,
+		}
+
 		routesInfos = append(routesInfos, route)
 
 		ipConfig, err := getIPConfig(item.ID, item.IPTimestamp)

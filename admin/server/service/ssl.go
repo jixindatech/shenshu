@@ -74,7 +74,7 @@ func (c *SSL) Save() (err error) {
 		return err
 	}
 
-	return SetupSSLs()
+	return nil
 }
 
 func (c *SSL) Get() (*models.SSL, error) {
@@ -95,7 +95,7 @@ func (c *SSL) Delete() error {
 	if err != nil {
 		return err
 	}
-	return SetupSSLs()
+	return nil
 }
 
 func SetupSSLs() error {
@@ -126,8 +126,8 @@ func SetupSSLs() error {
 		return nil
 	}
 
+	iterID := 0
 	servers := []map[string]interface{}{}
-
 	for _, item := range certs {
 		pub := item.Pub
 		key := item.Pri
@@ -138,10 +138,15 @@ func SetupSSLs() error {
 		}
 		for _, name := range dnsNames {
 			if len(name) > 0 {
+				iterID = iterID + 1
 				ssl := make(map[string]interface{})
-				ssl["sni"] = name
-				ssl["cert"] = pub
-				ssl["key"] = key
+				ssl["id"] = iterID
+				ssl["timestamp"] = item.UpdatedAt.Unix()
+				ssl["config"] = map[string]interface{}{
+					"sni":  name,
+					"cert": pub,
+					"key":  key,
+				}
 				servers = append(servers, ssl)
 			} else {
 				return fmt.Errorf("%s", "invalid dnsname")

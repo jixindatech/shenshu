@@ -60,7 +60,7 @@ func (p *Upstream) Save() (err error) {
 		return err
 	}
 
-	return SetupUpstreams()
+	return nil
 }
 
 func (p *Upstream) Get() (*models.Upstream, error) {
@@ -82,7 +82,7 @@ func (p *Upstream) Delete() error {
 		return err
 	}
 
-	return SetupUpstreams()
+	return nil
 }
 
 func SetupUpstreams() error {
@@ -115,16 +115,12 @@ func SetupUpstreams() error {
 	for _, upstream := range upstreams {
 		item := make(map[string]interface{})
 		item["id"] = upstream.ID
-		item["type"] = upstream.Lb
-		item["name"] = upstream.Name
-		item["retry"] = upstream.Retry
+		item["timestamp"] = upstream.UpdatedAt.Unix()
 
 		timeout := make(map[string]interface{})
 		timeout["connect"] = upstream.TimeoutConnect
 		timeout["send"] = upstream.TimeoutSend
 		timeout["receive"] = upstream.TimeoutReceive
-
-		item["timeout"] = timeout
 
 		nodes := []Node{}
 		err := json.Unmarshal(upstream.Backend, &nodes)
@@ -139,7 +135,13 @@ func SetupUpstreams() error {
 			nodeInfos[nodeInfo] = node.Weight
 		}
 
-		item["nodes"] = nodeInfos
+		item["config"] = map[string]interface{}{
+			"type":    upstream.Lb,
+			"name":    upstream.Name,
+			"retry":   upstream.Retry,
+			"timeout": timeout,
+			"nodes":   nodeInfos,
+		}
 
 		upstreamInfos = append(upstreamInfos, item)
 	}

@@ -54,16 +54,6 @@ func (s *Server) Setup(cfg *config.Config) error {
 		return err
 	}
 
-	err = service.SetupUpstreams()
-	if err != nil {
-		return err
-	}
-
-	err = service.SetupSSLs()
-	if err != nil {
-		return err
-	}
-
 	err = service.SetupSites()
 	if err != nil {
 		return err

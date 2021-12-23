@@ -14,71 +14,70 @@ const VARIABLES_TEXT = {
 }
 
 const OPERATORS_TEXT = {
-  not_exist: '不存在',
-  ip_contains: '属于',
-  not_ip_contains: '不属于',
-  str_equal: '等于',
-  not_str_equal: '不等于',
-  str_contains: '包含',
-  not_str_contains: '不包含',
-  prefix_equal: '前缀匹配',
-  suffix_equal: '后缀匹配',
-  num_gt: '数值大于',
-  num_le: '数值小于',
-  num_equal: '数值等于',
-  re_equal: '正则匹配'
+  EXISTS: '存在',
+  CONTAINS: '属于',
+  // not_ip_contains: '不属于',
+  EQUALS: '等于',
+  // not_str_equal: '不等于',
+  STR_CONTAINS: '包含',
+  // not_str_contains: '不包含',
+  // prefix_equal: '前缀匹配',
+  // suffix_equal: '后缀匹配',
+  GREATER: '大于',
+  LESS: '小于',
+  REGEX: '正则匹配'
 }
 const IP_OPERATORS = [
   { value: 'ip_contains', label: '属于' },
   { value: 'not_ip_contains', label: '不属于' }
 ]
 const METHOD_OPERATORS = [
-  { value: 'str_equal', label: '等于' },
-  { value: 'not_str_equal', label: '不等于' }
+  { value: 'STR_CONTAINS', label: '等于' }
+  // { value: 'not_str_equal', label: '不等于' }
 ]
 const URI_OPERATORS = [
-  { value: 'str_equal', label: '等于' },
-  { value: 'prefix_equal', label: '前缀匹配' },
-  { value: 'suffix_equal', label: '后缀匹配' },
-  { value: 'str_contains', label: '包含' },
-  { value: 'not_str_contains', label: '不包含' },
-  { value: 're_equal', label: '正则匹配' }
+  { value: 'EQUALS', label: '等于' },
+  // { value: 'prefix_equal', label: '前缀匹配' },
+  // { value: 'suffix_equal', label: '后缀匹配' },
+  { value: 'STR_CONTAINS', label: '包含' },
+  // { value: 'not_str_contains', label: '不包含' },
+  { value: 'REGEX', label: '正则匹配' }
 ]
 const QUERY_OPERATORS = [
-  { value: 'str_equal', label: '等于' },
-  { value: 'str_contains', label: '包含' },
-  { value: 'not_str_contains', label: '不包含' },
-  { value: 're_equal', label: '正则匹配' }
+  { value: 'EQUALS', label: '等于' },
+  { value: 'STR_CONTAINS', label: '包含' },
+  // { value: 'not_str_contains', label: '不包含' },
+  { value: 'REGEX', label: '正则匹配' }
 ]
 
 const FILE_OPERATORS = [
-  { value: 'str_equal', label: '等于' },
-  { value: 'str_contains', label: '包含' },
-  { value: 'not_str_contains', label: '不包含' },
-  { value: 're_equal', label: '正则匹配' }
+  { value: 'EQUALS', label: '等于' },
+  { value: 'STR_CONTAINS', label: '包含' },
+  // { value: 'not_str_contains', label: '不包含' },
+  { value: 'REGEX', label: '正则匹配' }
 ]
 
 const FILE_NAMES_OPERATORS = [
-  { value: 'str_equal', label: '等于' },
-  { value: 'str_contains', label: '包含' },
-  { value: 'not_str_contains', label: '不包含' },
-  { value: 're_equal', label: '正则匹配' }
+  { value: 'EQUALS', label: '等于' },
+  { value: 'STR_CONTAINS', label: '包含' },
+  // { value: 'not_str_contains', label: '不包含' },
+  { value: 'REGEX', label: '正则匹配' }
 ]
 
 const POST_BODY_OPERATORS = [
-  { value: 'str_contains', label: '包含' },
-  { value: 'not_str_contains', label: '不包含' },
-  { value: 're_equal', label: '正则匹配' }
+  { value: 'EQUALS', label: '包含' },
+  // { value: 'not_str_contains', label: '不包含' },
+  { value: 'REGEX', label: '正则匹配' }
 ]
 
 const REQ_HEADER_OPERATORS = [
-  { value: 'str_equal', label: '等于' },
-  { value: 'str_contains', label: '包含' },
-  { value: 're_equal', label: '正则匹配' },
-  { value: 'not_exist', label: '不存在' },
-  { value: 'num_gt', label: '数值大于' },
-  { value: 'num_le', label: '数值小于' },
-  { value: 'num_equal', label: '数值等于' }
+  { value: 'EQUALS', label: '等于' },
+  { value: 'STR_CONTAINS', label: '包含' },
+  { value: 'REGEX', label: '正则匹配' },
+  // { value: 'not_exist', label: '不存在' },
+  { value: 'GREATER', label: '数值大于' },
+  { value: 'LESS', label: '数值小于' }
+  // { value: 'num_equal', label: '数值等于' }
 ]
 
 const CC_ACTIONS = [

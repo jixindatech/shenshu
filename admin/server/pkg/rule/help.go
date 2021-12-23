@@ -55,20 +55,20 @@ var variable = map[string]bool{
 }
 
 var operator = map[string]bool{
-	"not_exist":        true,
-	"str_equal":        true,
-	"not_str_equal":    true,
-	"str_contains":     true,
-	"not_str_contains": true,
-	"prefix_equal":     true,
-	"suffix_equal":     true,
-	"ip_contains":      true,
-	"not_ip_contains":  true,
-	"num_gt":           true,
-	"num_le":           true,
-	"num_equal":        true,
-	"re_equal":         true,
-	"not_re_equal":     true,
+	// "not_exist":        true,
+	"EQUALS": true,
+	// "not_str_equal":    true,
+	"STR_CONTAINS": true,
+	// "not_str_contains": true,
+	// "prefix_equal":     true,
+	// "suffix_equal":     true,
+	// "ip_contains":      true,
+	// "not_ip_contains":  true,
+	"GREATER": true,
+	"LESS":    true,
+	// "num_equal":        true,
+	"REGEX": true,
+	// "not_re_equal":     true,
 }
 
 var hsArgs = map[string]bool{

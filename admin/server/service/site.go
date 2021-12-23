@@ -304,25 +304,34 @@ func getBatchRules() (interface{}, error) {
 }
 
 func getSpecificRules() (interface{}, error) {
-	ruleSpecifcSrv := &RuleSpecific{
+	ruleSpecifcGroupSrv := &SpecificGroup{
 		Status: util.RULE_ENABLE,
 	}
-	specificList, _, err := ruleSpecifcSrv.GetList()
+	specificList, _, err := ruleSpecifcGroupSrv.GetList()
 	if err != nil {
 		return nil, err
 	}
 	var list []interface{}
-	for _, item := range specificList {
-		data := make(map[string]interface{})
-		data["id"] = item.ID
-		data["timestamp"] = item.UpdatedAt.Unix()
-		data["config"] = map[string]interface{}{
-			"action": item.Action,
-			"msg":    item.Remark,
-			"rules":  item.Rules,
+	for _, group := range specificList {
+		ruleSrv := &RuleSpecific{
+			RuleGroup: group.ID,
+			Status:    util.RULE_ENABLE,
 		}
-
-		list = append(list, data)
+		rules, _, err := ruleSrv.GetList()
+		if err != nil {
+			return nil, err
+		}
+		for _, rule := range rules {
+			data := make(map[string]interface{})
+			data["id"] = rule.ID
+			data["timestamp"] = rule.UpdatedAt.Unix()
+			data["config"] = map[string]interface{}{
+				"action": rule.Action,
+				"msg":    rule.Remark,
+				"rules":  rule.Rules,
+			}
+			list = append(list, data)
+		}
 	}
 
 	return list, nil

@@ -106,7 +106,7 @@ func GetSpecificGroups(query map[string]interface{}, page int, pageSize int) ([]
 			name = "%" + name + "%"
 			err = db.Order("priority DESC", true).Where("name like ?", name).Where(search).Find(&ruleGroups).Count(&count).Error
 		} else {
-			err = db.Order("priority DESC", true).Find(&ruleGroups).Count(&count).Error
+			err = db.Order("priority DESC", true).Where(search).Find(&ruleGroups).Count(&count).Error
 		}
 	} else {
 		pageNum := (page - 1) * pageSize

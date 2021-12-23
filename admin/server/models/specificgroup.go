@@ -30,7 +30,7 @@ func (s *SpecificGroup) AfterDelete(tx *gorm.DB) (err error) {
 }
 
 func changeRulesSpecificSiteTimestamp(id uint) error {
-	group, err := GetBatchGroup(id)
+	group, err := GetSpecificGroup(id)
 	if err != nil {
 		return err
 	}

@@ -126,7 +126,6 @@ func SetupSSLs() error {
 		return nil
 	}
 
-	iterID := 0
 	servers := []map[string]interface{}{}
 	for _, item := range certs {
 		pub := item.Pub
@@ -138,9 +137,8 @@ func SetupSSLs() error {
 		}
 		for _, name := range dnsNames {
 			if len(name) > 0 {
-				iterID = iterID + 1
 				ssl := make(map[string]interface{})
-				ssl["id"] = iterID
+				ssl["name"] = name
 				ssl["timestamp"] = item.UpdatedAt.Unix()
 				ssl["config"] = map[string]interface{}{
 					"sni":  name,

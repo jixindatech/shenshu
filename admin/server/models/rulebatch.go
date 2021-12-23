@@ -34,7 +34,7 @@ func AddBatchRule(data map[string]interface{}) error {
 		Remark:  data["remark"].(string),
 	}
 
-	return db.Debug().Model(&ruleGroup).Association("RuleBatchs").Append(&rule).Error
+	return db.Model(&ruleGroup).Association("RuleBatchs").Append(&rule).Error
 }
 
 func UpdateBatchRule(id uint, data map[string]interface{}) error {

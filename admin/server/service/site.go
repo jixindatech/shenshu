@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const cacheSiteName string = "site"
+const cacheSiteName string = "routes"
 
 type Site struct {
 	ID uint
@@ -534,19 +534,19 @@ func SetupSites() error {
 	}
 
 	data["values"] = ips
-	err = setCache("ip", data)
+	err = setCache("shenshu_ip", data)
 	if err != nil {
 		return err
 	}
 
 	data["values"] = ccs
-	err = setCache("cc", data)
+	err = setCache("shenshu_cc", data)
 	if err != nil {
 		return err
 	}
 
 	data["values"] = rules
-	err = setCache("rule", data)
+	err = setCache("shenshu_rule", data)
 	if err != nil {
 		return err
 	}
@@ -557,7 +557,7 @@ func SetupSites() error {
 		return err
 	}
 	data["values"] = brules
-	err = setCache("batch_rules", data)
+	err = setCache("shenshu_batch_rule", data)
 	if err != nil {
 		return err
 	}
@@ -568,7 +568,7 @@ func SetupSites() error {
 		return err
 	}
 	data["values"] = srules
-	err = setCache("specific_rules", data)
+	err = setCache("shenshu_specific_rule", data)
 	if err != nil {
 		return err
 	}

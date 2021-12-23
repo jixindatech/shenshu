@@ -20,7 +20,7 @@ type Upstream struct {
 
 	Remark string `json:"remark" gorm:"column:remark;"`
 
-	Sites []Site `gorm:"many2many:router_upstream;"`
+	Sites []Site `gorm:"many2many:site_upstream;"`
 }
 
 func AddUpstream(data map[string]interface{}) error {

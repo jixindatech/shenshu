@@ -45,13 +45,20 @@ type RuleConfig struct {
 }
 
 var variable = map[string]bool{
-	"IP":         true,
-	"METHOD":     true,
-	"URI":        true,
-	"QUERY":      true,
-	"REQ_HEADER": true,
-	"FILE":       true,
-	"FILE_NAMES": true,
+	"IP":              true,
+	"HTTP_VERSION":    true,
+	"METHOD":          true,
+	"URI":             true,
+	"QUERY_STRING":    true,
+	"URI_ARGS":        true,
+	"REQUEST_HEADERS": true,
+	"BODY_ARGS":       true,
+	"REQUEST_BODY":    true,
+	"FILES":           true,
+	"FILES_NAMES":     true,
+	"FILES_CONTENT":   true,
+	"FILES_SIZE":      true,
+	"FILES_SIZES":     true,
 }
 
 var operator = map[string]bool{

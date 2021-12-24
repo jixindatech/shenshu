@@ -159,6 +159,10 @@ export default {
   },
   methods: {
     async fetchData() {
+      if (this.groupId === 0) {
+        return this.$router.push({ name: 'SpecificGroup' })
+      }
+
       this.listLoading = true
       getList(
         this.groupId,

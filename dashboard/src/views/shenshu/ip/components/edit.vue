@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import * as globalIp from '@/api/globalip'
 import { add, update } from '@/api/ip'
 
 // import { validateIP } from '@/utils/validate'
@@ -148,12 +149,20 @@ export default {
         this.formData.ip.push(element.ip)
       })
 
+      this.formData.type = Number(this.type)
       let response = null
-      if (this.formData.id) {
-        response = await update(this.formData.id, this.formData)
+      if (this.site === 0) {
+        if (this.formData.id) {
+          response = await globalIp.update(this.formData.id, this.formData)
+        } else {
+          response = await globalIp.add(this.formData)
+        }
       } else {
-        this.formData.type = Number(this.type)
-        response = await add(this.site, this.formData)
+        if (this.formData.id) {
+          response = await update(this.formData.id, this.formData)
+        } else {
+          response = await add(this.site, this.formData)
+        }
       }
 
       if ((response.code === 0)) {

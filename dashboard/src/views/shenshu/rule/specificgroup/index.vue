@@ -138,7 +138,7 @@ import { getList, deleteById, getById } from '@/api/specificgroup'
 import Edit from './edit'
 import { RULE_TYPES_TEXT } from '@/utils/rule'
 export default {
-  name: 'SpecificGroup',
+  name: 'SpecifcGroup',
   components: { Edit },
   props: {
     ids: {

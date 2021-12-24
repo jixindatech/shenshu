@@ -132,7 +132,12 @@ export default {
     '$route.path': {
       immediate: true,
       handler() {
-        this.groupId = this.$route.params.groupId
+        const id = this.$route.params.groupId
+        if (id === undefined) {
+          this.fetchData()
+        } else {
+          this.groupId = id
+        }
       }
     }
   },
@@ -141,6 +146,10 @@ export default {
   },
   methods: {
     async fetchData() {
+      if (this.groupId === 0) {
+        return this.$router.push({ name: 'BatchGroup' })
+      }
+
       this.listLoading = true
       getList(
         this.groupId,

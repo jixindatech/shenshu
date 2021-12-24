@@ -68,6 +68,7 @@ export default {
     fetchData() {
       site.getList({}, 0).then((response) => {
         this.sites = response.data.list
+        this.sites.unshift({ id: 0, name: '全局' })
       })
     },
     selectChanged(id) {

@@ -123,7 +123,7 @@ export const constantRoutes = [
       },
       {
         path: 'specificgroup',
-        name: 'SpeicifcGroup',
+        name: 'SpecificGroup',
         component: () => import('@/views/shenshu/rule/specificgroup'),
         meta: { title: 'Specific组配置', icon: 'dashboard' }
       },

@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import * as globalIp from '@/api/globalip'
 import { getList, deleteById, getById } from '@/api/ip'
 import Edit from './edit'
 
@@ -156,17 +157,30 @@ export default {
     fetchData() {
       this.query.type = Number(this.type)
       this.listLoading = true
-      getList(
-        this.siteId,
-        this.query,
-        this.page.current,
-        this.page.size
-      ).then(response => {
-        const { data } = response
-        this.list = data.list
-        this.page.total = data.total
-        this.listLoading = false
-      })
+      if (this.siteId === 0) {
+        globalIp.getList(
+          this.query,
+          this.page.current,
+          this.page.size
+        ).then(response => {
+          const { data } = response
+          this.list = data.list
+          this.page.total = data.total
+          this.listLoading = false
+        })
+      } else {
+        getList(
+          this.siteId,
+          this.query,
+          this.page.current,
+          this.page.size
+        ).then(response => {
+          const { data } = response
+          this.list = data.list
+          this.page.total = data.total
+          this.listLoading = false
+        })
+      }
     },
     queryData() {
       this.page.current = 1
@@ -200,23 +214,39 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deleteById(id).then((response) => {
-            this.$message({
-              type: response.code === 0 ? 'success' : 'error',
-              message: '删除成功!'
+          if (this.siteId === 0) {
+            globalIp.deleteById(id).then((response) => {
+              this.$message({
+                type: response.code === 0 ? 'success' : 'error',
+                message: '删除成功!'
+              })
+              this.fetchData()
             })
-            this.fetchData()
-          })
+          } else {
+            deleteById(id).then((response) => {
+              this.$message({
+                type: response.code === 0 ? 'success' : 'error',
+                message: '删除成功!'
+              })
+              this.fetchData()
+            })
+          }
         })
         .catch(() => {
         })
     },
     handleEdit(id) {
-      getById(id).then((response) => {
-        this.edit.formData = response.data.item
-        this.edit.title = '编辑'
-        this.edit.visible = true
-      })
+      if (this.siteId === 0) {
+        globalIp.getById(id).then((response) => {
+          this.edit.formData = response.data.item
+        })
+      } else {
+        getById(id).then((response) => {
+          this.edit.formData = response.data.item
+        })
+      }
+      this.edit.title = '编辑'
+      this.edit.visible = true
     }
   }
 }

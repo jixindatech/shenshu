@@ -76,6 +76,8 @@ var operator = map[string]bool{
 	// "num_equal":        true,
 	"REGEX": true,
 	// "not_re_equal":     true,
+	"DETECT_SQLI": true,
+	"DETECT_XSS":  true,
 }
 
 var hsArgs = map[string]bool{

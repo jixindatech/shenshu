@@ -52,6 +52,7 @@ func Setup(cfg *config.DataBase) error {
 		Upstream{},
 		Site{},
 
+		GlobalIP{},
 		IP{},
 		CC{},
 		BatchGroup{},

@@ -467,6 +467,11 @@ func SetupSites() error {
 		return err
 	}
 
+	err = SetupGlobalIPs()
+	if err != nil {
+		return err
+	}
+
 	sites, count, err := site.GetList()
 	if err != nil {
 		return err

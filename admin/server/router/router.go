@@ -94,6 +94,12 @@ func Setup(mode string) (g *gin.Engine, err error) {
 
 	shenshuApis := r.Group("/shenshu", auth())
 	{
+		shenshuApis.POST("/globalip", shenshu.AddGlobalIP)
+		shenshuApis.GET("/globalip", shenshu.GetGlobalIPs)
+		shenshuApis.GET("/globalip/:id", shenshu.GetGlobalIP)
+		shenshuApis.PUT("/globalip/:id", shenshu.UpdateGlobalIP)
+		shenshuApis.DELETE("/globalip/:id", shenshu.DeleteGlobalIP)
+
 		shenshuApis.POST("/site/:id/ip", shenshu.AddIP)
 		shenshuApis.GET("/site/:id/ip", shenshu.GetIPs)
 		shenshuApis.GET("/site/ip/:id", shenshu.GetIP)

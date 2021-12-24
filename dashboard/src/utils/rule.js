@@ -44,7 +44,9 @@ const OPERATORS_TEXT = {
   STR_CONTAINS: '包含',
   GREATER: '大于',
   LESS: '小于',
-  REGEX: '正则匹配'
+  REGEX: '正则匹配',
+  DETECT_SQLI: '检测SQL注入',
+  DETECT_XSS: '检测XSS'
 }
 
 const EQUAL_OPERATORS = [
@@ -54,7 +56,9 @@ const EQUAL_OPERATORS = [
 const STR_OPERATORS = [
   { value: 'EQUALS', label: '等于' },
   { value: 'STR_CONTAINS', label: '包含' },
-  { value: 'REGEX', label: '正则匹配' }
+  { value: 'REGEX', label: '正则匹配' },
+  { value: 'DETECT_SQLI', label: '检测SQL注入' },
+  { value: 'DETECT_XSS', label: '检测XSS' }
 ]
 
 const NUM_OPERATORS = [

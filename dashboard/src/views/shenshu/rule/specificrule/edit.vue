@@ -93,7 +93,12 @@
             <el-form-item v-if="scope.row.variable === 'REQUEST_HEADERS'" :prop="'rules.' + scope.$index + '.header'" :rules="rules.header">
               <el-input v-model="scope.row.header" size="mini" placeholder="请输入请求头" />
             </el-form-item>
-            <el-form-item v-if="scope.row.operator !== 'not_exist'" :prop="'rules.' + scope.$index + '.pattern'" :rules="rules.pattern">
+            <el-form-item
+              v-if="scope.row.operator !== 'DETECT_SQLI' &&
+                scope.row.operator !== 'DETECT_XSS'"
+              :prop="'rules.' + scope.$index + '.pattern'"
+              :rules="rules.pattern"
+            >
               <el-input v-model="scope.row.pattern" size="mini" placeholder="请输入匹配内容" />
             </el-form-item>
           </template>

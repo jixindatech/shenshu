@@ -41,7 +41,7 @@
       <el-table-column align="left" prop="rules" label="规则内容" width="200">
         <template slot-scope="scope">
           <div v-for="(item, index) in scope.row.rules" :key="index">
-            <el-input v-if="item.variable === 'REQ_HEADER'" :value="VARIABLES_TEXT[item.variable] + ':' + item.header + ' ' + OPERATORS_TEXT[item.operator] + ' ' + item.pattern" size="mini" />
+            <el-input v-if="item.variable === 'REQUEST_HEADERS'" :value="VARIABLES_TEXT[item.variable] + ':' + item.header + ' ' + OPERATORS_TEXT[item.operator] + ' ' + item.pattern" size="mini" />
             <el-input v-else type="success" size="mini" :value="VARIABLES_TEXT[item.variable] + ' ' + OPERATORS_TEXT[item.operator] + ' ' + item.pattern" />
           </div>
         </template>

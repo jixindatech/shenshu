@@ -17,7 +17,7 @@
         <el-input v-model="formData.name" placeholder="请输入规则类别" />
       </el-form-item>
       <p style="line-height: 40px;color: #606266; font-weight: bold; margin-bottom: 0; margin-top: 0; display: inline-block"><span style="color: red;display: inline-block;">*</span>匹配条件</p>
-      <el-tooltip content="支持CIDR类型IP,多个IP以英文逗号(,)分割" placement="right" effect="light">
+      <el-tooltip content="支持CIDR类型IP,多个IP以英文逗号(,)分割, 输入请求头时需要精确匹配" placement="right" effect="light">
         <i class="el-icon-question" />
       </el-tooltip>
       <el-table
@@ -45,53 +45,52 @@
                 <el-option v-for="(item,index) in OPERATORS " :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="scope.row.variable === 'REQ_HEADER'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
-              <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
-                <el-option v-for="(item,index) in REQ_HEADER_OPERATORS " :key="index" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-            <!--
             <el-form-item v-if="scope.row.variable === 'IP'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
               <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
-                <el-option v-for="(item,index) in IP_OPERATORS " :key="index" :label="item.label" :value="item.value" />
+                <el-option v-for="(item,index) in EQUAL_OPERATORS " :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            -->
-            <el-form-item v-if="scope.row.variable === 'METHOD'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
+            <el-form-item v-if="scope.row.variable === 'HTTP_VERSION' || scope.row.variable === 'METHOD'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
               <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
-                <el-option v-for="(item,index) in METHOD_OPERATORS " :key="index" :label="item.label" :value="item.value" />
+                <el-option v-for="(item,index) in EQUAL_OPERATORS " :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="scope.row.variable === 'URI'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
+            <el-form-item v-if="scope.row.variable === 'REQUEST_HEADERS'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
               <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
-                <el-option v-for="(item,index) in URI_OPERATORS " :key="index" :label="item.label" :value="item.value" />
+                <el-option v-for="(item,index) in REQUEST_HEADER_OPERATORS " :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="scope.row.variable === 'QUERY'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
+            <el-form-item
+              v-if="scope.row.variable === 'URI' ||
+                scope.row.variable === 'URI_ARGS' ||
+                scope.row.variable === 'QUERY_STRING' ||
+                scope.row.variable === 'BODY_ARGS' ||
+                scope.row.variable === 'REQUEST_BODY' ||
+                scope.row.variable === 'FILES' ||
+                scope.row.variable === 'FILES_NAMES' ||
+                scope.row.variable === 'FILES_CONTENT'"
+              :prop="'rules.' + scope.$index + '.operator'"
+              :rules="rules.operator"
+            >
               <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
-                <el-option v-for="(item,index) in QUERY_OPERATORS " :key="index" :label="item.label" :value="item.value" />
+                <el-option v-for="(item,index) in STR_OPERATORS " :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="scope.row.variable === 'POST_BODY'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.operator">
+            <el-form-item
+              v-if="scope.row.variable === 'FILES_SIZE' ||
+                scope.row.variable === 'FILES_SIZES'"
+              :prop="'rules.' + scope.$index + '.operator'"
+              :rules="rules.operator"
+            >
               <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
-                <el-option v-for="(item,index) in POST_BODY_OPERATORS " :key="index" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-            <el-form-item v-if="scope.row.variable === 'FILE'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.file">
-              <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
-                <el-option v-for="(item,index) in FILE_OPERATORS " :key="index" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-            <el-form-item v-if="scope.row.variable === 'FILE_NAMES'" :prop="'rules.' + scope.$index + '.operator'" :rules="rules.fileName">
-              <el-select v-model="scope.row.operator" size="mini" placeholder="请选择匹配字段">
-                <el-option v-for="(item,index) in FILE_NAMES_OPERATORS " :key="index" :label="item.label" :value="item.value" />
+                <el-option v-for="(item,index) in NUM_OPERATORS " :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
           </template>
         </el-table-column>
         <el-table-column align="center" label="匹配内容" width="300px">
           <template slot-scope="scope">
-            <el-form-item v-if="scope.row.variable === 'REQ_HEADER'" :prop="'rules.' + scope.$index + '.header'" :rules="rules.header">
+            <el-form-item v-if="scope.row.variable === 'REQUEST_HEADERS'" :prop="'rules.' + scope.$index + '.header'" :rules="rules.header">
               <el-input v-model="scope.row.header" size="mini" placeholder="请输入请求头" />
             </el-form-item>
             <el-form-item v-if="scope.row.operator !== 'not_exist'" :prop="'rules.' + scope.$index + '.pattern'" :rules="rules.pattern">
@@ -140,7 +139,7 @@
 
 <script>
 import * as api from '@/api/rulespecific'
-import { ACTION_TYPES, REQ_HEADER_OPERATORS, IP_OPERATORS, METHOD_OPERATORS, URI_OPERATORS, QUERY_OPERATORS, POST_BODY_OPERATORS, FILE_OPERATORS, FILE_NAMES_OPERATORS } from '@/utils/rule'
+import { VARIABLES, ACTION_TYPES, REQUEST_HEADER_OPERATORS, EQUAL_OPERATORS, NUM_OPERATORS, STR_OPERATORS } from '@/utils/rule'
 import { isInteger } from '@/utils/validate'
 
 export default {
@@ -169,19 +168,15 @@ export default {
 
   data() {
     return {
-      VARIABLES: ['IP', 'METHOD', 'URI', 'REQ_HEADER', 'QUERY', 'POST_BODY', 'FILE', 'FILE_NAMES'],
+      VARIABLES,
       OPERATORS: [
         { value: '', label: '' }
       ],
       ACTION_TYPES,
-      IP_OPERATORS,
-      METHOD_OPERATORS,
-      URI_OPERATORS,
-      REQ_HEADER_OPERATORS,
-      QUERY_OPERATORS,
-      POST_BODY_OPERATORS,
-      FILE_OPERATORS,
-      FILE_NAMES_OPERATORS,
+      EQUAL_OPERATORS,
+      NUM_OPERATORS,
+      STR_OPERATORS,
+      REQUEST_HEADER_OPERATORS,
       rules: {
         type: [
           { required: true, message: '请输入类型', trigger: 'change' }
@@ -270,22 +265,24 @@ export default {
       this.formData.rules.push(item)
     },
     variableChange(row) {
-      if (row.variable === 'IP') {
-        row.operator = this.IP_OPERATORS[0].value
-      } else if (row.variable === 'METHOD') {
-        row.operator = this.METHOD_OPERATORS[0].value
-      } else if (row.variable === 'URI') {
-        row.operator = this.URI_OPERATORS[0].value
-      } else if (row.variable === 'QUERY') {
-        row.operator = this.QUERY_OPERATORS[0].value
-      } else if (row.variable === 'REQ_HEADER') {
-        row.operator = this.REQ_HEADER_OPERATORS[0].value
-      } else if (row.variable === 'POST_BODY') {
-        row.operator = this.POST_BODY_OPERATORS[0].value
-      } else if (row.variable === 'FILE') {
-        row.operator = this.FILE_OPERATORS[0].value
-      } else if (row.variable === 'FILE_NAMES') {
-        row.operator = this.FILE_NAMES_OPERATORS[0].value
+      if (row.variable === 'IP' ||
+      row.variable === 'HTTP_VERSION' ||
+      row.variable === 'METHOD') {
+        row.operator = this.EQUAL_OPERATORS[0].value
+      } else if (row.variable === 'URI' ||
+      row.variable === 'URI_ARGS' ||
+      row.variable === 'QUERY_STRING' ||
+      row.variable === 'BODY_ARGS' ||
+      row.variable === 'REQUEST_BODY' ||
+      row.variable === 'FILES' ||
+      row.variable === 'FILES_NAMES' ||
+      row.variable === 'FILES_CONTENT') {
+        row.operator = this.STR_OPERATORS[0].value
+      } else if (row.variable === 'REQUEST_HEADERS') {
+        row.operator = this.REQUEST_HEADER_OPERATORS[0].value
+      } else if (row.variable === 'FILES_SIZE' ||
+      row.variable === 'FILES_SIZES') {
+        row.operator = this.NUM_OPERATORS[0].value
       }
     }
   }

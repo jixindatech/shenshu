@@ -16,11 +16,11 @@ type RuleBatch struct {
 }
 
 func (r *RuleBatch) AfterSave(tx *gorm.DB) (err error) {
-	return changeRulesBatchSiteTimestamp(r.BatchGroupID)
+	return changeBatchGroupTimestamp(r.BatchGroupID)
 }
 
 func (r *RuleBatch) AfterDelete(tx *gorm.DB) (err error) {
-	return changeRulesBatchSiteTimestamp(r.BatchGroupID)
+	return changeBatchGroupTimestamp(r.BatchGroupID)
 }
 
 func AddBatchRule(data map[string]interface{}) error {

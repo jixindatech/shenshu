@@ -1,9 +1,12 @@
 package models
 
 import (
+	"admin/core/log"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
 	"gorm.io/datatypes"
+	"time"
 )
 
 type BatchGroup struct {
@@ -17,35 +20,20 @@ type BatchGroup struct {
 	Priority int            `json:"priority" gorm:"column:priority;not null"`
 	Remark   string         `json:"remark" gorm:"column:remark;"`
 
-	Sites      []*Site `json:"sites" gorm:"many2many:site_batchroup;"`
+	Sites      []*Site `json:"sites" gorm:"many2many:site_batchgroup;"`
 	RuleBatchs []*RuleBatch
 }
 
-func (b *BatchGroup) AfterSave(tx *gorm.DB) (err error) {
-	return changeRulesBatchSiteTimestamp(b.ID)
-}
+func changeBatchGroupTimestamp(id uint) error {
+	group := BatchGroup{}
+	group.Model.ID = id
 
-func (b *BatchGroup) AfterDelete(tx *gorm.DB) (err error) {
-	return changeRulesBatchSiteTimestamp(b.ID)
-}
-
-func changeRulesBatchSiteTimestamp(id uint) error {
-	group, err := GetBatchGroup(id)
+	err := db.Model(&group).Update("updated_at", time.Now()).Error
 	if err != nil {
-		return err
+		log.Logger.Error("batch_group", zap.String("err", err.Error()))
 	}
 
-	var sites []*Site
-	err = db.Model(&group).Association("Sites").Find(&sites).Error
-	if err != nil {
-		return err
-	}
-
-	for _, site := range sites {
-		changeSiteTimestamp(site.ID, "RuleTimestamp")
-	}
-
-	return nil
+	return err
 }
 
 func AddBatchGroup(data map[string]interface{}) error {

@@ -2,9 +2,6 @@ package models
 
 import (
 	"admin/core/log"
-	"admin/server/util"
-	"encoding/json"
-	"fmt"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 	"gorm.io/gorm/clause"
@@ -28,7 +25,7 @@ type Site struct {
 	Upstreams      []*Upstream      `json:"upstreamRef" gorm:"many2many:site_upstream;"`
 	IPs            []IP             `json:"ips"`
 	CCs            []*CC            `json:"ccs"`
-	BatchGroups    []*BatchGroup    `json:"batchgroup" gorm:"many2many:site_batchroup;"`
+	BatchGroups    []*BatchGroup    `json:"batchgroup" gorm:"many2many:site_batchgroup;"`
 	SpecificGroups []*SpecificGroup `json:"specificgroup" gorm:"many2many:site_specificgroup;"`
 }
 
@@ -192,6 +189,7 @@ func GetSite(id uint) (*Site, error) {
 	return &site, nil
 }
 
+/*
 func GetSiteConfig(id uint) (map[string]interface{}, error) {
 	var site Site
 	site.Model.ID = id
@@ -227,9 +225,10 @@ func GetSiteConfig(id uint) (map[string]interface{}, error) {
 		if err != nil {
 			return &site, err
 		}
-	*/
+
 	return data, nil
 }
+*/
 
 func GetSites(data map[string]interface{}) ([]*Site, int, error) {
 	var sites []*Site

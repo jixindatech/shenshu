@@ -115,8 +115,8 @@ func SetupGlobalIPs() error {
 	data["values"] = []map[string]interface{}{
 		0: map[string]interface{}{
 			"config": map[string]interface{}{
-				"accept": ipsAccept,
-				"deny":   ipsDeny,
+				"allow": ipsAccept,
+				"deny":  ipsDeny,
 			},
 			"name":      "globalip",
 			"timestamp": time.Now().Unix(),

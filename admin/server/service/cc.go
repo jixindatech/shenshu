@@ -12,7 +12,6 @@ type CC struct {
 	Mode      string
 	Method    string
 	URI       string
-	Match     string
 	Threshold int
 	Duration  int
 	Action    string
@@ -28,7 +27,6 @@ func (c *CC) Save() (err error) {
 	data["mode"] = c.Mode
 	data["method"] = c.Method
 	data["uri"] = c.URI
-	data["match"] = c.Match
 	data["threshold"] = c.Threshold
 	data["duration"] = c.Duration
 	data["action"] = c.Action

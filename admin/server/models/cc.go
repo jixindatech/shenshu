@@ -12,7 +12,6 @@ type CC struct {
 	Mode      string `json:"mode" gorm:"column:mode;not null"`
 	Method    string `json:"method" gorm:"column:method;not null"`
 	URI       string `json:"uri" gorm:"column:uri;not null"`
-	Match     string `json:"match" gorm:"column:match;not null"`
 	Threshold int    `json:"threshold" gorm:"column:threshold;not null"`
 	Duration  int    `json:"duration" gorm:"column:duration;not null"`
 	Action    string `json:"action" gorm:"column:action;not null"`
@@ -37,7 +36,6 @@ func AddCC(data map[string]interface{}) error {
 		Mode:      data["mode"].(string),
 		Method:    data["method"].(string),
 		URI:       data["uri"].(string),
-		Match:     data["match"].(string),
 		Threshold: data["threshold"].(int),
 		Duration:  data["duration"].(int),
 		Action:    data["action"].(string),

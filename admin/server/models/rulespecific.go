@@ -11,18 +11,18 @@ type RuleSpeicifc struct {
 	SpecificGroupId uint   `json:"ruleGroup" gorm:"not null"`
 
 	Rules    datatypes.JSON `json:"rules" gorm:"column:rules;type:VARBINARY(1024);not null;comment:'规则'"`
-	Action   int            `json:"action" gorm:"column:action;default:'0'"` // deny score
+	Action   int            `json:"action" gorm:"column:action;default:'0'"`
 	Priority int            `json:"priority" gorm:"column:priority;default:'0'"`
 	Status   int            `json:"status" gorm:"column:status;default:'0'"`
 	Remark   string         `json:"remark" gorm:"column:remark;"`
 }
 
 func (r *RuleSpeicifc) AfterSave(tx *gorm.DB) (err error) {
-	return changeRulesSpecificSiteTimestamp(r.SpecificGroupId)
+	return changeSpecificGroupTimestamp(r.SpecificGroupId)
 }
 
 func (r *RuleSpeicifc) AfterDelete(tx *gorm.DB) (err error) {
-	return changeRulesSpecificSiteTimestamp(r.SpecificGroupId)
+	return changeSpecificGroupTimestamp(r.SpecificGroupId)
 }
 
 func AddRuleSpecific(data map[string]interface{}) error {

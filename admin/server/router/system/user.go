@@ -370,8 +370,8 @@ func UpdateUserPassword(c *gin.Context) {
 }
 
 type loginForm struct {
-	UserName string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	UserName string `json:"username" validate:"required,gt=1"`
+	Password string `json:"password" validate:"required,gt=1"`
 }
 
 func Login(c *gin.Context) (interface{}, error) {

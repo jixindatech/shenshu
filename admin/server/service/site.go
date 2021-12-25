@@ -208,7 +208,7 @@ func getIPData(id uint) (map[string]interface{}, error) {
 	}
 
 	data := make(map[string]interface{})
-	data["accept"] = ipsAccept
+	data["allow"] = ipsAccept
 	data["deny"] = ipsDeny
 	return data, nil
 }
@@ -229,7 +229,6 @@ func getCCData(id uint) ([]map[string]interface{}, error) {
 	for _, item := range list {
 		tmp := make(map[string]interface{})
 		tmp["uri"] = item.URI
-		tmp["match"] = item.Match
 		tmp["mode"] = item.Mode
 		tmp["method"] = item.Method
 		tmp["threshold"] = item.Threshold
@@ -294,10 +293,14 @@ func getBatchRules() (interface{}, error) {
 		data["timestamp"] = item.UpdatedAt.Unix()
 		data["config"] = map[string]interface{}{
 			"pattern": item.Pattern,
-			"msg":     "batch msg",
+			"msg":     item.Remark,
 		}
 
 		list = append(list, data)
+	}
+
+	if len(list) == 0 {
+		list = []interface{}{}
 	}
 
 	return list, nil
@@ -332,6 +335,10 @@ func getSpecificRules() (interface{}, error) {
 			}
 			list = append(list, data)
 		}
+	}
+
+	if len(list) == 0 {
+		list = []interface{}{}
 	}
 
 	return list, nil

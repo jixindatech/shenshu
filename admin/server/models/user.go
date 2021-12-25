@@ -22,13 +22,13 @@ func AddUser(data map[string]interface{}) error {
 		Username:    data["username"].(string),
 		DisplayName: data["displayName"].(string),
 		LoginType:   data["loginType"].(string),
-		//Password:    "",
-		//Salt:        "",
-		Email:  data["email"].(string),
-		Phone:  data["phone"].(string),
-		Status: data["status"].(int),
-		Role:   data["role"].(string),
-		Remark: data["remark"].(string),
+		Password:    data["password"].(string),
+		Salt:        data["salt"].(string),
+		Email:       data["email"].(string),
+		Phone:       data["phone"].(string),
+		Status:      data["status"].(int),
+		Role:        data["role"].(string),
+		Remark:      data["remark"].(string),
 	}
 	return db.Create(&user).Error
 }

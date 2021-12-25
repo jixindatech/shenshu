@@ -1,9 +1,12 @@
 package models
 
 import (
+	"admin/core/log"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
 	"gorm.io/datatypes"
+	"time"
 )
 
 type SpecificGroup struct {
@@ -21,31 +24,16 @@ type SpecificGroup struct {
 	RuleSpecifics []*RuleSpeicifc
 }
 
-func (s *SpecificGroup) AfterSave(tx *gorm.DB) (err error) {
-	return changeRulesSpecificSiteTimestamp(s.ID)
-}
+func changeSpecificGroupTimestamp(id uint) error {
+	group := SpecificGroup{}
+	group.Model.ID = id
 
-func (s *SpecificGroup) AfterDelete(tx *gorm.DB) (err error) {
-	return changeRulesSpecificSiteTimestamp(s.ID)
-}
-
-func changeRulesSpecificSiteTimestamp(id uint) error {
-	group, err := GetSpecificGroup(id)
+	err := db.Model(&group).Update("updated_at", time.Now()).Error
 	if err != nil {
-		return err
+		log.Logger.Error("specific_group", zap.String("err", err.Error()))
 	}
 
-	var sites []*Site
-	err = db.Model(&group).Association("Sites").Find(&sites).Error
-	if err != nil {
-		return err
-	}
-
-	for _, site := range sites {
-		changeSiteTimestamp(site.ID, "RuleTimestamp")
-	}
-
-	return nil
+	return err
 }
 
 func AddSpecificGroup(data map[string]interface{}) error {

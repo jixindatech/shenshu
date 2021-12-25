@@ -15,7 +15,6 @@ type ccForm struct {
 	Mode      string `json:"mode" validate:"required"`
 	Method    string `json:"method" validate:"required"`
 	URI       string `json:"uri" validate:"required"`
-	Match     string `json:"match" validate:"required"`
 	Threshold int    `json:"threshold" validate:"required,min=1"`
 	Duration  int    `json:"duration" validate:"required,min=1"`
 	Action    string `json:"action" validate:"required"`
@@ -53,7 +52,6 @@ func AddCC(c *gin.Context) {
 		Mode:      form.Mode,
 		Method:    form.Method,
 		URI:       form.URI,
-		Match:     form.Match,
 		Threshold: form.Threshold,
 		Duration:  form.Duration,
 		Action:    form.Action,
@@ -188,7 +186,6 @@ func UpdateCC(c *gin.Context) {
 		Mode:      form.Mode,
 		Method:    form.Method,
 		URI:       form.URI,
-		Match:     form.Match,
 		Threshold: form.Threshold,
 		Duration:  form.Duration,
 		Action:    form.Action,

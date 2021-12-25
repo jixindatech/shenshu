@@ -362,7 +362,7 @@ func getRuleData(id uint) (map[string]interface{}, error) {
 	var batch []uint
 	var specific []uint
 	for _, item := range batchList {
-		if action < item.Action {
+		if action > item.Action {
 			action = item.Action
 		}
 
@@ -438,8 +438,19 @@ func getRuleData(id uint) (map[string]interface{}, error) {
 	}
 
 	data := make(map[string]interface{})
+	/* short circuit check*/
+	if action%2 != 0 {
+		data["short_circuit"] = 1
+	}
+
+	/* LOG for 2, DENY for 3*/
+	if action < 3 {
+		data["action"] = 2
+	} else {
+		data["action"] = 3
+	}
+
 	data["decoders"] = decoders
-	data["action"] = action
 	data["batch"] = batch
 	data["specific"] = specific
 

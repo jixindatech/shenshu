@@ -56,7 +56,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="remark" label="备注" />
-      <el-table-column align="center" label="操作" width="700px">
+      <el-table-column align="center" label="操作" width="550px">
         <template slot-scope="scope">
           <el-button
             v-permission="['PUT:/nginx/site/:id']"

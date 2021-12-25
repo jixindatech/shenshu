@@ -27,13 +27,16 @@
           <el-option v-for="(item,index) in methodList" :key="index" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="URI：" prop="uri">
+      <el-form-item prop="uri">
+        <span slot="label">URI
+          <el-tooltip placement="top" effect="light">
+            <div slot="content">
+              web服务的访问路径，支持通配符
+            </div>
+            <i class="el-icon-question" />
+          </el-tooltip>
+        </span>
         <el-input v-model="formData.uri" />
-      </el-form-item>
-      <el-form-item label="匹配条件：" prop="match">
-        <el-select v-model="formData.match" placeholder="请选择匹配方式">
-          <el-option v-for="(item,index) in URI_OPERATORS" :key="index" :label="item.label" :value="item.value" />
-        </el-select>
       </el-form-item>
       <el-row>
         <el-col :span="9">

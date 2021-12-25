@@ -102,7 +102,6 @@ export default {
         { name: 'form', value: 'Form解析' }],
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
         priority: [
           { required: true, message: '请选择类型', trigger: 'blur' },
           { validator: isInteger }],

@@ -50,7 +50,7 @@
 
 <script>
 import * as api from '@/api/rulebatch'
-import { ACTION_TYPES } from '@/utils/rule'
+// import { ACTION_TYPES } from '@/utils/rule'
 
 export default {
   props: {
@@ -78,7 +78,7 @@ export default {
 
   data() {
     return {
-      ACTION_TYPES,
+      ACTION_TYPES: [{ label: '阻断', value: 2 }],
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'change' }

@@ -144,7 +144,7 @@
 
 <script>
 import * as api from '@/api/rulespecific'
-import { VARIABLES, ACTION_TYPES, REQUEST_HEADER_OPERATORS, EQUAL_OPERATORS, NUM_OPERATORS, STR_OPERATORS } from '@/utils/rule'
+import { VARIABLES, /* ACTION_TYPES, */ REQUEST_HEADER_OPERATORS, EQUAL_OPERATORS, NUM_OPERATORS, STR_OPERATORS } from '@/utils/rule'
 import { isInteger } from '@/utils/validate'
 
 export default {
@@ -177,7 +177,7 @@ export default {
       OPERATORS: [
         { value: '', label: '' }
       ],
-      ACTION_TYPES,
+      ACTION_TYPES: [{ label: '允许', value: 1 }, { label: '阻断', value: 2 }],
       EQUAL_OPERATORS,
       NUM_OPERATORS,
       STR_OPERATORS,

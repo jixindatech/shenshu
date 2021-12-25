@@ -29,8 +29,8 @@
         <el-radio-group v-model="formData.action" size="mini">
           <el-radio-button :label="1" border>日志短路</el-radio-button>
           <el-radio-button :label="2" border>日志全量</el-radio-button>
-          <el-radio-button :label="3" border>短路</el-radio-button>
-          <el-radio-button :label="4" border>全量</el-radio-button>
+          <el-radio-button :label="3" border>拦截短路</el-radio-button>
+          <el-radio-button :label="4" border>拦截全量</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="解码配置：" prop="decoder">

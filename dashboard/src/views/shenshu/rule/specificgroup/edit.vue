@@ -159,5 +159,5 @@ export default {
 </script>
 
 <style scoped>
-::v-deep .el-radio-button--mini .el-radio-button__inner  {padding: 5 7px;}
+  .el-radio-button ::v-deep  .el-radio-button__inner  {padding: 5px 7px;}
 </style>

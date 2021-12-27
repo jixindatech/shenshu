@@ -56,20 +56,43 @@ func DeleteBatchGroup(id uint) error {
 		return err
 	}
 
-	ruleCount := db.Model(&batchGroup).Association("RuleBatchs").Count()
-	if ruleCount != 0 {
+	count := db.Model(&batchGroup).Association("Sites").Count()
+	if count != 0 {
+		return fmt.Errorf("%s", "site exist link in this group")
+	}
+
+	count = db.Model(&batchGroup).Association("RuleBatchs").Count()
+	if count != 0 {
 		return fmt.Errorf("%s", "rule exist in this group")
 	}
 	return db.Delete(&batchGroup).Error
 }
 
 func UpdateBatchGroup(id uint, data map[string]interface{}) error {
-	batchGroup, err := GetBatchGroup(id)
+	group, err := GetBatchGroup(id)
 	if err != nil {
 		return err
 	}
 
-	return db.Model(&batchGroup).Update(data).Error
+	err = db.Model(&group).Update(data).Error
+	if err != nil {
+		return err
+	}
+
+	var sites []*Site
+	err = db.Model(&group).Association("Sites").Find(&sites).Error
+	if err != nil {
+		return err
+	}
+
+	for _, site := range sites {
+		err := db.Model(&site).Update("rule_timestamp", time.Now().Unix()).Error
+		if err != nil {
+			log.Logger.Error("batch_group", zap.String("err", err.Error()))
+		}
+	}
+
+	return nil
 }
 
 func GetBatchGroup(id uint) (*BatchGroup, error) {

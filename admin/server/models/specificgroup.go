@@ -53,15 +53,44 @@ func AddSpecificGroup(data map[string]interface{}) error {
 func DeleteSpecificGroup(id uint) error {
 	var specificGroup SpecificGroup
 	specificGroup.Model.ID = id
-	ruleCount := db.Model(&specificGroup).Association("RuleSpecifics").Count()
-	if ruleCount != 0 {
+
+	count := db.Model(&specificGroup).Association("Sites").Count()
+	if count != 0 {
+		return fmt.Errorf("%s", "site exist link in this group")
+	}
+
+	count = db.Model(&specificGroup).Association("RuleSpecifics").Count()
+	if count != 0 {
 		return fmt.Errorf("%s", "rule exist in this group")
 	}
 	return db.Delete(&specificGroup).Error
 }
 
 func UpdateSpecificGroup(id uint, data map[string]interface{}) error {
-	return db.Model(&SpecificGroup{}).Where("id = ?", id).Update(data).Error
+	group, err := GetSpecificGroup(id)
+	if err != nil {
+		return err
+	}
+
+	err = db.Model(&group).Update(data).Error
+	if err != nil {
+		return err
+	}
+
+	var sites []*Site
+	err = db.Model(&group).Association("Sites").Find(&sites).Error
+	if err != nil {
+		return err
+	}
+
+	for _, site := range sites {
+		err := db.Model(&site).Update("rule_timestamp", time.Now().Unix()).Error
+		if err != nil {
+			log.Logger.Error("batch_group", zap.String("err", err.Error()))
+		}
+	}
+
+	return nil
 }
 
 func GetSpecificGroup(id uint) (*SpecificGroup, error) {

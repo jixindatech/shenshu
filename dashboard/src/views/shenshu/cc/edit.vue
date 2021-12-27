@@ -42,14 +42,7 @@
         <el-col :span="9">
           <el-form-item label="阈值：" prop="threshold">
             <el-input v-model.number="formData.threshold" oninput="value=value.replace(/[^\d]/g,'')" placeholder="阈值" style="width: 150px">
-              <template slot="append">次</template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="9">
-          <el-form-item prop="duration">
-            <el-input v-model.number="formData.duration" oninput="value=value.replace(/[^\d]/g,'')" placeholder="单位时间" style="width: 150px">
-              <template slot="append">秒</template>
+              <template slot="append">次/秒</template>
             </el-input>
           </el-form-item>
         </el-col>

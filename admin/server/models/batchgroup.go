@@ -24,6 +24,25 @@ type BatchGroup struct {
 	RuleBatchs []*RuleBatch
 }
 
+func changeSiteBatchGroupTimestamp(id uint) error {
+	var group BatchGroup
+	group.Model.ID = id
+
+	var sites []*Site
+	err := db.Model(&group).Association("Sites").Find(&sites).Error
+	if err != nil {
+		return err
+	}
+
+	for _, site := range sites {
+		err := db.Model(&site).Update("rule_timestamp", time.Now().Unix()).Error
+		if err != nil {
+			log.Logger.Error("batch_group", zap.String("err", err.Error()))
+		}
+	}
+	return nil
+}
+
 func changeBatchGroupTimestamp(id uint) error {
 	group := BatchGroup{}
 	group.Model.ID = id
@@ -33,7 +52,7 @@ func changeBatchGroupTimestamp(id uint) error {
 		log.Logger.Error("batch_group", zap.String("err", err.Error()))
 	}
 
-	return err
+	return changeSiteBatchGroupTimestamp(id)
 }
 
 func AddBatchGroup(data map[string]interface{}) error {
@@ -79,20 +98,7 @@ func UpdateBatchGroup(id uint, data map[string]interface{}) error {
 		return err
 	}
 
-	var sites []*Site
-	err = db.Model(&group).Association("Sites").Find(&sites).Error
-	if err != nil {
-		return err
-	}
-
-	for _, site := range sites {
-		err := db.Model(&site).Update("rule_timestamp", time.Now().Unix()).Error
-		if err != nil {
-			log.Logger.Error("batch_group", zap.String("err", err.Error()))
-		}
-	}
-
-	return nil
+	return changeSiteBatchGroupTimestamp(id)
 }
 
 func GetBatchGroup(id uint) (*BatchGroup, error) {

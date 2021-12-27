@@ -24,6 +24,25 @@ type SpecificGroup struct {
 	RuleSpecifics []*RuleSpeicifc
 }
 
+func changeSiteSpecificGroupTimestamp(id uint) error {
+	var group SpecificGroup
+	group.Model.ID = id
+
+	var sites []*Site
+	err := db.Model(&group).Association("Sites").Find(&sites).Error
+	if err != nil {
+		return err
+	}
+
+	for _, site := range sites {
+		err := db.Model(&site).Update("rule_timestamp", time.Now().Unix()).Error
+		if err != nil {
+			log.Logger.Error("batch_group", zap.String("err", err.Error()))
+		}
+	}
+	return nil
+}
+
 func changeSpecificGroupTimestamp(id uint) error {
 	group := SpecificGroup{}
 	group.Model.ID = id
@@ -33,7 +52,7 @@ func changeSpecificGroupTimestamp(id uint) error {
 		log.Logger.Error("specific_group", zap.String("err", err.Error()))
 	}
 
-	return err
+	return changeSiteSpecificGroupTimestamp(id)
 }
 
 func AddSpecificGroup(data map[string]interface{}) error {
@@ -77,20 +96,7 @@ func UpdateSpecificGroup(id uint, data map[string]interface{}) error {
 		return err
 	}
 
-	var sites []*Site
-	err = db.Model(&group).Association("Sites").Find(&sites).Error
-	if err != nil {
-		return err
-	}
-
-	for _, site := range sites {
-		err := db.Model(&site).Update("rule_timestamp", time.Now().Unix()).Error
-		if err != nil {
-			log.Logger.Error("batch_group", zap.String("err", err.Error()))
-		}
-	}
-
-	return nil
+	return changeSiteSpecificGroupTimestamp(id)
 }
 
 func GetSpecificGroup(id uint) (*SpecificGroup, error) {

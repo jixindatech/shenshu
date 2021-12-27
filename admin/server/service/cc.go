@@ -13,7 +13,6 @@ type CC struct {
 	Method    string
 	URI       string
 	Threshold int
-	Duration  int
 	Action    string
 	Remark    string
 
@@ -28,7 +27,6 @@ func (c *CC) Save() (err error) {
 	data["method"] = c.Method
 	data["uri"] = c.URI
 	data["threshold"] = c.Threshold
-	data["duration"] = c.Duration
 	data["action"] = c.Action
 	data["remark"] = c.Remark
 

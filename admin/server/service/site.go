@@ -228,11 +228,11 @@ func getCCData(id uint) ([]map[string]interface{}, error) {
 	var data []map[string]interface{}
 	for _, item := range list {
 		tmp := make(map[string]interface{})
+		tmp["id"] = item.ID
 		tmp["uri"] = item.URI
 		tmp["mode"] = item.Mode
 		tmp["method"] = item.Method
 		tmp["threshold"] = item.Threshold
-		tmp["duration"] = item.Duration
 		tmp["action"] = item.Action
 
 		data = append(data, tmp)

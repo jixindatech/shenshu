@@ -2,8 +2,9 @@ FROM node:15.11.0 as builder
 ARG VUE=/usr/src/vue
 COPY ./dashboard $VUE
 WORKDIR $VUE
-RUN yarn config set registry https://registry.npm.taobao.org
-RUN yarn install && npm run build:prod
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm config set ignore-engines true
+RUN npm install && npm run build:prod
 
 FROM golang:alpine AS development
 WORKDIR $GOPATH/src

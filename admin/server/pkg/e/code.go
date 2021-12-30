@@ -70,4 +70,6 @@ const (
 	RuleBatchGetFailed    = 14002
 	RuleBatchPutFailed    = 14003
 	RuleBatchDeleteFailed = 14004
+
+	CCEventGetFailed = 16001
 )

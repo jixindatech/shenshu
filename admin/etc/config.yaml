@@ -42,8 +42,8 @@ memory:
   purge_time: 60 # seconds
 
 elasticsearch:
-  host: http://192.168.3.203:9200
-  index: waf-events
+  host: http://192.168.91.100:9200
+  cc_index: shenshu_cc
   timeout: 5s
   user: elastic
   password: changme

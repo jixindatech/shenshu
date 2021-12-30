@@ -81,3 +81,5 @@ p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup, PUT
 p, admin, ^/shenshu/site/\+?[1-9][0-9]*/rulegroup, GET
 
 p, admin, ^/shenshu/site/\+?[1-9][0-9]*/enable$, POST
+
+p, admin, ^/shenshu/event/cc$, GET

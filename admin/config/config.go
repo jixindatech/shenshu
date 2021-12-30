@@ -54,23 +54,25 @@ type Memory struct {
 }
 
 type Elasticsearch struct {
-	Host     string `mapstructure:"host" json:"host" yaml:"host"`
-	Timeout  string `mapstructure:"timeout" json:"timeout" yaml:"timeout"`
-	Index    string `mapstructure:"index" json:"index" yaml:"index"`
-	User     string `mapstructure:"user" json:"user" yaml:"user"`
-	Password string `mapstructure:"password" json:"password" yaml:"password"`
+	Host      string `mapstructure:"host" json:"host" yaml:"host"`
+	Timeout   string `mapstructure:"timeout" json:"timeout" yaml:"timeout"`
+	User      string `mapstructure:"user" json:"user" yaml:"user"`
+	Password  string `mapstructure:"password" json:"password" yaml:"password"`
+	CCIndex   string `mapstructure:"cc_index" json:"cc_index" yaml:"cc_index"`
+	RuleIndex string `mapstructure:"rule_index" json:"rule_index" yaml:"rule_index"`
 }
 
 type Config struct {
-	RunMode  string    `mapstructure:"run_mode"`
-	Log      *Log      `mapstructure:"log"`
-	Server   *Server   `mapstructure:"server"`
-	Database *DataBase `mapstructer:"database"`
-	Rbac     *Rbac     `mapstructer:"rbac"`
-	App      *App      `mapstructer:"app"`
-	Cache    string    `mapstructer:"cache"`
-	Redis    *Redis    `mapstructer:"redis"`
-	Memory   *Memory   `mapstructer:"memory"`
+	RunMode       string         `mapstructure:"run_mode"`
+	Log           *Log           `mapstructure:"log"`
+	Server        *Server        `mapstructure:"server"`
+	Database      *DataBase      `mapstructer:"database"`
+	Rbac          *Rbac          `mapstructer:"rbac"`
+	App           *App           `mapstructer:"app"`
+	Cache         string         `mapstructer:"cache"`
+	Redis         *Redis         `mapstructer:"redis"`
+	Elasticsearch *Elasticsearch `mapstructer:"elasticsearch"`
+	Memory        *Memory        `mapstructer:"memory"`
 }
 
 var config *Config

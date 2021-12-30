@@ -149,10 +149,16 @@ export const constantRoutes = [
       meta: { title: 'CC日志', icon: 'dashboard' }
     },
     {
-      path: 'ruleevent',
-      name: 'RuleEvent',
-      component: () => import('@/views/event/rule'),
-      meta: { title: '规则日志', icon: 'dashboard' }
+      path: 'batchruleevent',
+      name: 'BatchRuleEvent',
+      component: () => import('@/views/event/batchrule'),
+      meta: { title: 'Batch日志', icon: 'dashboard' }
+    },
+    {
+      path: 'specificruleevent',
+      name: 'SpecificRuleEvent',
+      component: () => import('@/views/event/specificrule'),
+      meta: { title: 'Specific日志', icon: 'dashboard' }
     }]
   },
   {

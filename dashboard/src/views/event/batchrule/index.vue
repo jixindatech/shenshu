@@ -3,11 +3,6 @@
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
-      <el-form-item
-        label="服务器名称:"
-      >
-        <el-input v-model.trim="query.name" />
-      </el-form-item>
       <el-form-item>
         <el-date-picker
           v-model="queryTime"
@@ -40,13 +35,16 @@
       style="width: 100%"
     >
       <el-table-column align="center" type="index" label="序号" width="60" />
-      <el-table-column align="center" prop="name" label="名称" />
-      <el-table-column align="center" prop="server" label="域名">
+      <el-table-column align="center" prop="_source.id" label="命中ID" />
+      <el-table-column align="center" prop="_source.host" label="域名" />
+      <el-table-column align="center" prop="_source.method" label="请求方法" />
+      <el-table-column align="center" prop="_source.uri" label="Uri" />
+      <el-table-column align="center" prop="_source.time" label="时间">
         <template slot-scope="scope">
-          <el-input v-for="(item, index) in scope.row.server" :key="index" :value="item" size="mini" />
+          {{ new Date(scope.row._source.timestamp * 1000).toLocaleString() }}
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="remark" label="备注" />
+
     </el-table>
     <el-pagination
       :current-page="page.current"
@@ -62,10 +60,10 @@
 </template>
 
 <script>
-import * as api from '@/api/ruleevent'
+import * as api from '@/api/batchruleevent'
 
 export default {
-  name: 'RuleEvent',
+  name: 'BatchRuleEvent',
   data() {
     return {
       list: [],

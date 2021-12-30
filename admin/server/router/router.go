@@ -142,6 +142,8 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		shenshuApis.POST("/site/:id/enable", shenshu.EnableSiteConfig)
 
 		shenshuApis.GET("/event/cc", shenshu.GetCCEvents)
+		shenshuApis.GET("/event/batchrule", shenshu.GetBatchRuleEvents)
+		shenshuApis.GET("/event/specificrule", shenshu.GetSpecificRuleEvents)
 	}
 	return r, nil
 }

@@ -141,3 +141,27 @@ func GetCCEventList(query map[string]interface{}, page, pageSize int, start, end
 	res["data"] = data["hits"].(map[string]interface{})["hits"]
 	return res, nil
 }
+
+func GetBatchRuleEventList(query map[string]interface{}, page, pageSize int, start, end int64) (map[string]interface{}, error) {
+	data, err := esSearchList(esCfg.BatchRuleIndex, query, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make(map[string]interface{})
+	res["count"] = data["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"]
+	res["data"] = data["hits"].(map[string]interface{})["hits"]
+	return res, nil
+}
+
+func GetSpecificRuleEventList(query map[string]interface{}, page, pageSize int, start, end int64) (map[string]interface{}, error) {
+	data, err := esSearchList(esCfg.SpecificRuleIndex, query, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make(map[string]interface{})
+	res["count"] = data["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"]
+	res["data"] = data["hits"].(map[string]interface{})["hits"]
+	return res, nil
+}

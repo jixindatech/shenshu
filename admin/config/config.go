@@ -54,12 +54,13 @@ type Memory struct {
 }
 
 type Elasticsearch struct {
-	Host      string `mapstructure:"host" json:"host" yaml:"host"`
-	Timeout   string `mapstructure:"timeout" json:"timeout" yaml:"timeout"`
-	User      string `mapstructure:"user" json:"user" yaml:"user"`
-	Password  string `mapstructure:"password" json:"password" yaml:"password"`
-	CCIndex   string `mapstructure:"cc_index" json:"cc_index" yaml:"cc_index"`
-	RuleIndex string `mapstructure:"rule_index" json:"rule_index" yaml:"rule_index"`
+	Host              string `mapstructure:"host" json:"host" yaml:"host"`
+	Timeout           string `mapstructure:"timeout" json:"timeout" yaml:"timeout"`
+	User              string `mapstructure:"user" json:"user" yaml:"user"`
+	Password          string `mapstructure:"password" json:"password" yaml:"password"`
+	CCIndex           string `mapstructure:"cc_index" json:"cc_index" yaml:"cc_index"`
+	BatchRuleIndex    string `mapstructure:"batch_rule_index" json:"batch_rule_index" yaml:"batch_rule_index"`
+	SpecificRuleIndex string `mapstructure:"specific_rule_index" json:"specific_rule_index" yaml:"specific_rule_index"`
 }
 
 type Config struct {

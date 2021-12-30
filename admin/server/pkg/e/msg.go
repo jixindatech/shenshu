@@ -75,7 +75,9 @@ var MsgFlags = map[int]string{
 	RuleBatchPutFailed:    "更新RuleBatch失败",
 	RuleBatchDeleteFailed: "删除RuleBatch失败",
 
-	CCEventGetFailed: "获取CCEvent失败",
+	CCEventGetFailed:           "获取CCEvent失败",
+	BatchRuleEventGetFailed:    "获取BatchRuleEvent失败",
+	SpecificRuleEventGetFailed: "获取SpecificRuleEvent失败",
 }
 
 func GetMsg(code int) string {

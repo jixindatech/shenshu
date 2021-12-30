@@ -44,6 +44,8 @@ memory:
 elasticsearch:
   host: http://192.168.91.100:9200
   cc_index: shenshu_cc
+  batch_rule_index: shenshu_batch
+  specific_rule_index: shenshu_specific
   timeout: 5s
   user: elastic
   password: changme

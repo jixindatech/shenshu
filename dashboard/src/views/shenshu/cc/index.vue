@@ -42,6 +42,7 @@
       highlight-current-row
       row-key="id"
     >
+      <el-table-column prop="id" label="ID" />
       <el-table-column prop="name" label="规则名" />
       <el-table-column align="center" prop="mode" label="限定方式">
         <template slot-scope="scope">
@@ -50,14 +51,8 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="method" label="请求方法" />
-      <el-table-column align="center" prop="match" label="匹配条件">
-        <template slot-scope="scope">
-          {{ OPERATORS_TEXT[scope.row.match] }}
-        </template>
-      </el-table-column>
       <el-table-column align="center" prop="uri" label="URI" />
       <el-table-column align="center" prop="threshold" label="阈值" />
-      <el-table-column align="center" prop="duration" label="时间间隔" />
       <el-table-column align="center" prop="action" label="执行动作">
         <template slot-scope="scope">
           {{ CC_ACTION_TEXT[scope.row.action] }}

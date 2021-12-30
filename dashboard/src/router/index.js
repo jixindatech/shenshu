@@ -138,6 +138,24 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/event',
+    component: Layout,
+    meta: { title: '日志列表', icon: 'el-icon-s-help' },
+    redirect: 'ccevent',
+    children: [{
+      path: 'ccevent',
+      name: 'CCEvent',
+      component: () => import('@/views/event/cc'),
+      meta: { title: 'CC日志', icon: 'dashboard' }
+    },
+    {
+      path: 'ruleevent',
+      name: 'RuleEvent',
+      component: () => import('@/views/event/rule'),
+      meta: { title: '规则日志', icon: 'dashboard' }
+    }]
+  },
+  {
     path: '/system',
     component: Layout,
     meta: { title: '系统管理', icon: 'el-icon-s-help' },

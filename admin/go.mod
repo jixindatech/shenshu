@@ -8,6 +8,7 @@ require (
 	github.com/bitly/go-simplejson v0.5.0
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/casbin/casbin/v2 v2.39.1
+	github.com/elastic/go-elasticsearch/v7 v7.16.0
 	github.com/gin-contrib/zap v0.0.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-ldap/ldap/v3 v3.4.1

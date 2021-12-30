@@ -20,7 +20,7 @@ RUN go build -a -ldflags '-extldflags "-static"' -o ./bin/admin  ./cmd/main.go
 
 
 FROM alpine:latest AS production
-WORKDIR /opt/sqlaudit
+WORKDIR /opt/shenshu
 COPY --from=development /go/src/bin/admin .
 RUN mkdir etc
 COPY --from=development /go/src/etc/config.yaml etc/

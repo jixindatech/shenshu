@@ -1,5 +1,6 @@
 <template>
   <div
+    v-permission="['GET:/shenshu/event/batchrule']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
@@ -39,12 +40,16 @@
       <el-table-column align="center" prop="_source.host" label="域名" />
       <el-table-column align="center" prop="_source.method" label="请求方法" />
       <el-table-column align="center" prop="_source.uri" label="Uri" />
+      <el-table-column align="center" prop="_source.values" label="匹配内容">
+        <template slot-scope="scope">
+          {{ scope.row._source.values }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" prop="_source.time" label="时间">
         <template slot-scope="scope">
           {{ new Date(scope.row._source.timestamp * 1000).toLocaleString() }}
         </template>
       </el-table-column>
-
     </el-table>
     <el-pagination
       :current-page="page.current"

@@ -1,5 +1,6 @@
 <template>
   <div
+    v-permission="['GET:/shenshu/event/cc']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">

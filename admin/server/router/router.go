@@ -28,6 +28,10 @@ func Setup(mode string) (g *gin.Engine, err error) {
 	}
 	r.NoRoute(authMiddleware.MiddlewareFunc(), system.NoRoute)
 
+	r.StaticFile("/", "dashboard/dist/index.html")
+	r.StaticFile("/favicon.ico", "dashboard/dist/favicon.ico")
+	r.Static("/static", "dashboard/dist/static")
+
 	r.POST("/login", authMiddleware.LoginHandler)
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{

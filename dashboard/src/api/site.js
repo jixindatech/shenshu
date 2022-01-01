@@ -60,3 +60,11 @@ export function UpdateSiteRuleGroup(id, data) {
     data
   })
 }
+
+export function getInfo(query) {
+  return request({
+    url: `/shenshu/site/event`,
+    method: 'get',
+    params: { ...query }
+  })
+}

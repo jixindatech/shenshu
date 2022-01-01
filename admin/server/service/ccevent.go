@@ -24,5 +24,5 @@ func (c *CCEvent) GetList() (map[string]interface{}, error) {
 		},
 	}
 
-	return models.GetCCEventList(query, c.Page, c.PageSize, c.Start, c.End)
+	return models.GetCCEventList(query, c.Page, c.PageSize)
 }

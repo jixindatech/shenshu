@@ -99,6 +99,8 @@ func esSearch(index string, query map[string]interface{}) (map[string]interface{
 		esClient.Search.WithPretty(),
 	)
 
+	fmt.Println(res)
+
 	if err != nil {
 		return nil, fmt.Errorf("Error getting response: %s", err)
 	}
@@ -130,7 +132,7 @@ func esSearch(index string, query map[string]interface{}) (map[string]interface{
 	return r, nil
 }
 
-func GetCCEventList(query map[string]interface{}, page, pageSize int, start, end int64) (map[string]interface{}, error) {
+func GetCCEventList(query map[string]interface{}, page, pageSize int) (map[string]interface{}, error) {
 	data, err := esSearchList(esCfg.CCIndex, query, page, pageSize)
 	if err != nil {
 		return nil, err
@@ -142,7 +144,7 @@ func GetCCEventList(query map[string]interface{}, page, pageSize int, start, end
 	return res, nil
 }
 
-func GetBatchRuleEventList(query map[string]interface{}, page, pageSize int, start, end int64) (map[string]interface{}, error) {
+func GetBatchRuleEventList(query map[string]interface{}, page, pageSize int) (map[string]interface{}, error) {
 	data, err := esSearchList(esCfg.BatchRuleIndex, query, page, pageSize)
 	if err != nil {
 		return nil, err
@@ -154,8 +156,32 @@ func GetBatchRuleEventList(query map[string]interface{}, page, pageSize int, sta
 	return res, nil
 }
 
-func GetSpecificRuleEventList(query map[string]interface{}, page, pageSize int, start, end int64) (map[string]interface{}, error) {
+func GetSpecificRuleEventList(query map[string]interface{}, page, pageSize int) (map[string]interface{}, error) {
 	data, err := esSearchList(esCfg.SpecificRuleIndex, query, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make(map[string]interface{})
+	res["count"] = data["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"]
+	res["data"] = data["hits"].(map[string]interface{})["hits"]
+	return res, nil
+}
+
+func GetSpecificRuleEventInfo(query map[string]interface{}) (map[string]interface{}, error) {
+	data, err := esSearch(esCfg.SpecificRuleIndex, query)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make(map[string]interface{})
+	res["count"] = data["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"]
+	res["data"] = data["hits"].(map[string]interface{})["hits"]
+	return res, nil
+}
+
+func GetBatchRuleEventInfo(query map[string]interface{}) (map[string]interface{}, error) {
+	data, err := esSearch(esCfg.SpecificRuleIndex, query)
 	if err != nil {
 		return nil, err
 	}

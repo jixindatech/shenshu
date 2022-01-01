@@ -72,6 +72,7 @@ const (
 	RuleBatchDeleteFailed = 14004
 
 	CCEventGetFailed           = 16001
-	BatchRuleEventGetFailed    = 16002
-	SpecificRuleEventGetFailed = 16003
+	SpecificRuleEventGetFailed = 16002
+	BatchRuleEventGetFailed    = 16003
+	SiteRuleEventGetFailed     = 16004
 )

@@ -85,3 +85,4 @@ p, admin, ^/shenshu/site/\+?[1-9][0-9]*/enable$, POST
 p, admin, ^/shenshu/event/cc$, GET
 p, admin, ^/shenshu/event/batchrule$, GET
 p, admin, ^/shenshu/event/specificrule$, GET
+p, admin, ^/shenshu/site/event$, GET

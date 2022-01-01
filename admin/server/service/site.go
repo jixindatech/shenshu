@@ -607,3 +607,34 @@ func SetupSites() error {
 
 	return nil
 }
+
+func (s *Site) GetRuleEventInfo(start, end int64) (map[string]interface{}, error) {
+	bGroup := &BatchRuleEvent{
+		SiteID: s.ID,
+		Start:  start,
+		End:    end,
+	}
+
+	bInfo, err := bGroup.GetInfo()
+	if err != nil {
+		return nil, err
+	}
+
+	sGroup := &SpecificRuleEvent{
+		SiteID: s.ID,
+		Start:  start,
+		End:    end,
+	}
+	sInfo, err := sGroup.GetInfo()
+	if err != nil {
+		return nil, err
+	}
+
+	data := make(map[string]interface{})
+	data = map[string]interface{}{
+		"batch":    bInfo,
+		"specific": sInfo,
+	}
+
+	return data, nil
+}

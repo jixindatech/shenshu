@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-type queryBatchRuleEventForm struct {
+type queryRuleEventForm struct {
 	Start    int64 `form:"start" validate:"required"`
 	End      int64 `form:"end" validate:"required"`
 	Page     int   `form:"page" validate:"required,min=1"`
@@ -20,7 +20,7 @@ type queryBatchRuleEventForm struct {
 func GetBatchRuleEvents(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		form     queryBatchRuleEventForm
+		form     queryRuleEventForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -54,17 +54,10 @@ func GetBatchRuleEvents(c *gin.Context) {
 	appG.Response(httpCode, errCode, "", data)
 }
 
-type querySpecificRuleEventForm struct {
-	Start    int64 `form:"start" validate:"required"`
-	End      int64 `form:"end" validate:"required"`
-	Page     int   `form:"page" validate:"required,min=1"`
-	PageSize int   `form:"size" validate:"required,min=1,max=50"`
-}
-
 func GetSpecificRuleEvents(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		form     querySpecificRuleEventForm
+		form     queryRuleEventForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
@@ -95,5 +88,44 @@ func GetSpecificRuleEvents(c *gin.Context) {
 	data := make(map[string]interface{})
 	data["list"] = events["data"]
 	data["total"] = events["count"]
+	appG.Response(httpCode, errCode, "", data)
+}
+
+type querySiteEventInfoForm struct {
+	SiteId uint  `form:"site" validate:"min=0"`
+	Start  int64 `form:"start" validate:"required"`
+	End    int64 `form:"end" validate:"required"`
+}
+
+func GetSiteRuleEventInfo(c *gin.Context) {
+	var (
+		appG     = app.Gin{C: c}
+		form     querySiteEventInfoForm
+		httpCode = http.StatusOK
+		errCode  = e.SUCCESS
+	)
+
+	err := app.BindAndValid(c, &form)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	ruleSrv := service.Site{
+		ID: form.SiteId,
+	}
+	events, err := ruleSrv.GetRuleEventInfo(form.Start, form.End)
+	if err != nil {
+		log.Logger.Error("SiteEvent", zap.String("get", err.Error()))
+		httpCode = http.StatusInternalServerError
+		errCode = e.SiteRuleEventGetFailed
+		appG.Response(httpCode, errCode, "", nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["item"] = events
 	appG.Response(httpCode, errCode, "", data)
 }

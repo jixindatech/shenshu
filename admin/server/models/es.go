@@ -176,7 +176,8 @@ func GetSpecificRuleEventInfo(query map[string]interface{}) (map[string]interfac
 
 	res := make(map[string]interface{})
 	res["count"] = data["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"]
-	res["data"] = data["hits"].(map[string]interface{})["hits"]
+	// res["data"] = data["hits"].(map[string]interface{})["hits"]
+	res["aggregations"] = data["aggregations"]
 	return res, nil
 }
 
@@ -188,6 +189,7 @@ func GetBatchRuleEventInfo(query map[string]interface{}) (map[string]interface{}
 
 	res := make(map[string]interface{})
 	res["count"] = data["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"]
-	res["data"] = data["hits"].(map[string]interface{})["hits"]
+	// res["data"] = data["hits"].(map[string]interface{})["hits"]
+	res["aggregations"] = data["aggregations"]
 	return res, nil
 }

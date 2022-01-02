@@ -2,6 +2,8 @@ package service
 
 import "admin/server/models"
 
+const maxItemGroup = 10
+
 type BatchRuleEvent struct {
 	ID uint
 
@@ -43,6 +45,9 @@ func (c *BatchRuleEvent) GetInfo() (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	start := c.Start / 1000
+	end := c.End / 1000
+	interval := (end - start) / maxItemGroup
 
 	infos := make(map[string]interface{})
 	for _, item := range list {
@@ -73,10 +78,22 @@ func (c *BatchRuleEvent) GetInfo() (map[string]interface{}, error) {
 						{
 							"range": map[string]interface{}{
 								"timestamp": map[string]interface{}{
-									"gte": c.Start / 1000,
-									"lte": c.End / 1000,
+									"gte": start,
+									"lte": end,
 								},
 							},
+						},
+					},
+				},
+			},
+			"aggs": map[string]interface{}{
+				"by_timestamp": map[string]interface{}{
+					"histogram": map[string]interface{}{
+						"field":    "timestamp",
+						"interval": interval,
+						"extended_bounds": map[string]interface{}{
+							"min": start,
+							"max": end,
 						},
 					},
 				},
@@ -87,6 +104,15 @@ func (c *BatchRuleEvent) GetInfo() (map[string]interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		docCount := res["aggregations"].(map[string]interface{})["by_timestamp"].(map[string]interface{})["buckets"]
+		var intervalData []int64
+		for _, item := range docCount.([]interface{}) {
+			intervalData = append(intervalData, int64(item.(map[string]interface{})["doc_count"].(float64)))
+		}
+		res["interval"] = intervalData
+		delete(res, "aggregations")
+
 		infos[item.Name] = res
 	}
 

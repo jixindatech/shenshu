@@ -44,6 +44,10 @@ func (c *SpecificRuleEvent) GetInfo() (map[string]interface{}, error) {
 		return nil, err
 	}
 
+	start := c.Start / 1000
+	end := c.End / 1000
+	interval := (end - start) / maxItemGroup
+
 	infos := make(map[string]interface{})
 	for _, item := range list {
 		ruleSrv := &RuleSpecific{
@@ -81,11 +85,31 @@ func (c *SpecificRuleEvent) GetInfo() (map[string]interface{}, error) {
 					},
 				},
 			},
+			"aggs": map[string]interface{}{
+				"by_timestamp": map[string]interface{}{
+					"histogram": map[string]interface{}{
+						"field":    "timestamp",
+						"interval": interval,
+						"extended_bounds": map[string]interface{}{
+							"min": start,
+							"max": end,
+						},
+					},
+				},
+			},
 		}
 		res, err := models.GetSpecificRuleEventInfo(query)
 		if err != nil {
 			return nil, err
 		}
+		docCount := res["aggregations"].(map[string]interface{})["by_timestamp"].(map[string]interface{})["buckets"]
+		var intervalData []int64
+		for _, item := range docCount.([]interface{}) {
+			intervalData = append(intervalData, int64(item.(map[string]interface{})["doc_count"].(float64)))
+		}
+		res["interval"] = intervalData
+		delete(res, "aggregations")
+
 		infos[item.Name] = res
 	}
 

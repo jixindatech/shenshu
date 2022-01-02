@@ -8,23 +8,36 @@
       :options="options"
       :query-data="queryData"
     />
-
+    <el-row style="margin-top:30px">
+      <el-card>
+        <EventLineChart
+          ref-name="batch"
+          title="batch事件分布"
+          :data="batchEvents"
+        />
+      </el-card>
+    </el-row>
+    <el-row style="margin-top:30px">
+      <el-card>
+        <EventLineChart
+          ref-name="specific"
+          title="specific事件分布"
+          :data="specificEvents"
+        />
+      </el-card>
+    </el-row>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import PanelGroup from './components/PanelGroup'
-import * as site from '@/api/site'
+import EventLineChart from './components/EventLineChart'
+import * as api from '@/api/site'
 
 export default {
   name: 'Dashboard',
-  components: { PanelGroup },
-  computed: {
-    ...mapGetters([
-      'name'
-    ])
-  },
+  components: { PanelGroup, EventLineChart },
   data() {
     return {
       eventTotal: 1000,
@@ -34,8 +47,15 @@ export default {
 
       flag: false, // 判断是否显示图表组件
       categoryTotal: {}, // 每个分类下的文章数
-      options: []
+      options: [],
+      batchEvents: {},
+      specificEvents: {}
     }
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   created() {
     // this.getEventInfo(null, 0, 0)
@@ -44,8 +64,9 @@ export default {
   },
   methods: {
     async fetchData() {
-      const { data } = await site.getList({}, 0)
-      const sites = data.list
+      let response = null
+      response = await api.getList({}, 0)
+      const sites = response.data.list
       for (const record of sites) {
         const item = {}
         item.label = record.name
@@ -54,17 +75,26 @@ export default {
       }
       const start = new Date().getTime() - 3600 * 1000 * 24 * 7
       const end = new Date().getTime()
-      const { info } = await this.queryData(0, start ,end)
-      console.log(info)
+      response = await this.queryData(0, start, end)
+
+      this.batchEvents = {}
+      this.batchEvents.items = response.data.item.batch
+      this.batchEvents.start = start
+      this.batchEvents.end = end
+
+      this.specificEvents = {}
+      this.specificEvents.items = response.data.item.specific
+      this.specificEvents.start = start
+      this.specificEvents.end = end
     },
 
-    async queryData(id, start, end) {
+    queryData(id, start, end) {
       const query = {}
       query.start = start
       query.end = end
       query.site = id
 
-      await site.getInfo(query)
+      return api.getInfo(query)
     }
   }
 }

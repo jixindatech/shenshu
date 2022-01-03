@@ -138,7 +138,8 @@ export default {
           data: this.legend
         },
         series: this.series
-      })
+      },
+      true)
     }
   }
 }

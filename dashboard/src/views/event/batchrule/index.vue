@@ -142,7 +142,7 @@ export default {
       }
       const { data } = await api.getList(this.query, this.page.current, this.page.size)
       this.list = data.list
-      this.page.total = data.count
+      this.page.total = data.total
     },
 
     handleSizeChange(val) {

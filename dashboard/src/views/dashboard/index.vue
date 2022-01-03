@@ -2,9 +2,9 @@
   <div class="dashboard-container">
     <panel-group
       :event-total="eventTotal"
-      :allowed-total="allowedTotal"
-      :denied-total="deniedTotal"
-      :unknown-total="unknownTotal"
+      :batch-total="batchTotal"
+      :cc-total="ccTotal"
+      :specific-total="specificTotal"
       :options="options"
       :query-data="queryData"
     />
@@ -64,14 +64,15 @@ export default {
   components: { PanelGroup, EventLineChart, EventPieChart },
   data() {
     return {
-      eventTotal: 1000,
-      allowedTotal: 1000,
-      deniedTotal: 1000,
-      unknownTotal: 1000,
+      eventTotal: 0,
+      batchTotal: 0,
+      ccTotal: 0,
+      specificTotal: 0,
 
       flag: false, // 判断是否显示图表组件
       categoryTotal: {}, // 每个分类下的文章数
       options: [],
+      ccEvents: {},
       batchEvents: {},
       specificEvents: {}
     }
@@ -99,26 +100,44 @@ export default {
       }
       const start = new Date().getTime() - 3600 * 1000 * 24 * 7
       const end = new Date().getTime()
-      response = await this.queryData(0, start, end)
-
-      this.batchEvents = {}
-      this.batchEvents.items = response.data.item.batch
-      this.batchEvents.start = start
-      this.batchEvents.end = end
-
-      this.specificEvents = {}
-      this.specificEvents.items = response.data.item.specific
-      this.specificEvents.start = start
-      this.specificEvents.end = end
+      await this.queryData(0, start, end)
     },
 
-    queryData(id, start, end) {
+    async queryData(id, start, end) {
       const query = {}
       query.start = start
       query.end = end
       query.site = id
 
-      return api.getInfo(query)
+      const response = await api.getInfo(query)
+      this.fillData(response, query.start, query.end)
+    },
+
+    fillData(response, start, end) {
+      this.ccEvents = {}
+      this.ccEvents.items = response.data.item.cc
+      this.ccEvents.start = start
+      this.ccEvents.end = end
+      this.ccTotal = this.ccEvents.items.count
+
+      this.batchEvents = {}
+      this.batchEvents.items = response.data.item.batch
+      this.batchEvents.start = start
+      this.batchEvents.end = end
+      this.batchTotal = 0
+      for (var item1 in this.batchEvents.items) {
+        this.batchTotal = this.batchTotal + this.batchEvents.items[item1].count
+      }
+
+      this.specificEvents = {}
+      this.specificEvents.items = response.data.item.specific
+      this.specificEvents.start = start
+      this.specificEvents.end = end
+      this.specificTotal = 0
+      for (var item2 in this.specificEvents.items) {
+        this.specificTotal = this.specificTotal + this.specificEvents.items[item2].count
+      }
+      this.eventTotal = this.ccTotal + this.batchTotal + this.specificTotal
     }
   }
 }

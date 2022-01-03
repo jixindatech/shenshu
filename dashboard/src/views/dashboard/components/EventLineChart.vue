@@ -44,8 +44,6 @@ export default {
   data() {
     return {
       chart: null,
-      selectData: [130, 140, 141, 142, 145, 150, 160, 11, 87, 20],
-      unionData: [120, 82, 91, 154, 162, 140, 130, 140, 141, 142],
       legend: [],
       series: [],
       timeData: []
@@ -54,12 +52,7 @@ export default {
   watch: {
     data: {
       handler(newValue, oldValue) {
-        console.log('newvalue:', newValue)
-        const defaultData = [1, 2, 3, 4, 5, 7, 4, 3, 2, 0, 11]
         this.data = newValue
-        this.selectData = defaultData
-        this.unionData = defaultData
-
         const intervalTime = (this.data.end - this.data.start) / 10
         const timesSplice = []
         for (var i = 0; i < 10; i++) {
@@ -71,7 +64,6 @@ export default {
         this.legend = []
         this.series = []
         for (var item in this.data.items) {
-          console.log(item)
           this.legend.push(item)
           const tmp = {
             name: item,
@@ -81,6 +73,7 @@ export default {
           }
           this.series.push(tmp)
         }
+
         this.initChart()
       },
       deep: true

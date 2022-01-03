@@ -52,7 +52,7 @@
             <div class="card-panel-text">
               cc类型数量
             </div>
-            <count-to :start-val="0" :end-val="deniedTotal" :duration="2600" class="card-panel-num" />
+            <count-to :start-val="0" :end-val="ccTotal" :duration="2600" class="card-panel-num" />
           </div>
         </div>
       </el-col>
@@ -66,7 +66,7 @@
             <div class="card-panel-text">
               batch类型数量
             </div>
-            <count-to :start-val="0" :end-val="allowedTotal" :duration="3000" class="card-panel-num" />
+            <count-to :start-val="0" :end-val="batchTotal" :duration="3000" class="card-panel-num" />
           </div>
         </div>
       </el-col>
@@ -79,7 +79,7 @@
             <div class="card-panel-text">
               speicific类型数量
             </div>
-            <count-to :start-val="0" :end-val="unknownTotal" :duration="3200" class="card-panel-num" />
+            <count-to :start-val="0" :end-val="specificTotal" :duration="3200" class="card-panel-num" />
           </div>
         </div>
       </el-col>
@@ -98,19 +98,19 @@ export default {
   props: {
     eventTotal: {
       type: Number,
-      default: 1000
+      default: 0
     },
-    allowedTotal: {
+    batchTotal: {
       type: Number,
-      default: 1000
+      default: 0
     },
-    deniedTotal: {
+    ccTotal: {
       type: Number,
-      default: 1000
+      default: 0
     },
-    unknownTotal: {
+    specificTotal: {
       type: Number,
-      default: 1000
+      default: 0
     },
 
     options: {

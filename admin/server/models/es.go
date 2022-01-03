@@ -168,21 +168,18 @@ func GetSpecificRuleEventList(query map[string]interface{}, page, pageSize int) 
 	return res, nil
 }
 
-func GetSpecificRuleEventInfo(query map[string]interface{}) (map[string]interface{}, error) {
-	data, err := esSearch(esCfg.SpecificRuleIndex, query)
-	if err != nil {
-		return nil, err
+func GetEventInfo(index string, query map[string]interface{}) (map[string]interface{}, error) {
+	var esIndex string
+	switch index {
+	case "cc":
+		esIndex = esCfg.CCIndex
+	case "batch":
+		esIndex = esCfg.BatchRuleIndex
+	case "specific":
+		esIndex = esCfg.SpecificRuleIndex
 	}
 
-	res := make(map[string]interface{})
-	res["count"] = data["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"]
-	// res["data"] = data["hits"].(map[string]interface{})["hits"]
-	res["aggregations"] = data["aggregations"]
-	return res, nil
-}
-
-func GetBatchRuleEventInfo(query map[string]interface{}) (map[string]interface{}, error) {
-	data, err := esSearch(esCfg.SpecificRuleIndex, query)
+	data, err := esSearch(esIndex, query)
 	if err != nil {
 		return nil, err
 	}

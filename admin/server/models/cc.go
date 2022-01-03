@@ -63,10 +63,15 @@ func GetCC(id uint) (*CC, error) {
 
 func GetCCs(data map[string]interface{}) ([]*CC, int, error) {
 	var ccs []*CC
-	site := data["site"].(uint)
 	name := data["name"].(string)
 	page := data["page"].(int)
 	pageSize := data["pagesize"].(int)
+	site := data["site"].(uint)
+
+	search := make(map[string]interface{})
+	if site != 0 {
+		search["site_id"] = site
+	}
 
 	var err error
 	var count int
@@ -74,12 +79,12 @@ func GetCCs(data map[string]interface{}) ([]*CC, int, error) {
 		offset := (page - 1) * pageSize
 		if len(name) > 0 {
 			name = "%" + name + "%"
-			err = db.Where("site_id = ?", site).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&ccs).Count(&count).Error
+			err = db.Where(search).Where("name LIKE ?", name).Offset(offset).Limit(pageSize).Find(&ccs).Count(&count).Error
 		} else {
-			err = db.Where("site_id = ?", site).Offset(offset).Limit(pageSize).Find(&ccs).Count(&count).Error
+			err = db.Where(search).Offset(offset).Limit(pageSize).Find(&ccs).Count(&count).Error
 		}
 	} else {
-		err = db.Where("site_id = ?", site).Find(&ccs).Count(&count).Error
+		err = db.Where(search).Find(&ccs).Count(&count).Error
 	}
 
 	if err == gorm.ErrRecordNotFound {

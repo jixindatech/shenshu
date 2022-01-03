@@ -60,30 +60,39 @@ func (c *BatchRuleEvent) GetInfo() (map[string]interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		var ids []uint
+
+		ids := []uint{}
 		for _, rule := range rules {
 			ids = append(ids, rule.ID)
 		}
 
+		filter := []map[string]interface{}{
+			{
+				"terms": map[string]interface{}{
+					"id": ids,
+				},
+			},
+			{
+				"range": map[string]interface{}{
+					"timestamp": map[string]interface{}{
+						"gte": start,
+						"lte": end,
+					},
+				},
+			},
+		}
+		if c.SiteID > 0 {
+			filter = append(filter, map[string]interface{}{
+				"terms": map[string]interface{}{
+					"router": []uint{c.SiteID},
+				},
+			})
+		}
 		query := map[string]interface{}{
 			"size": 0,
 			"query": map[string]interface{}{
 				"bool": map[string]interface{}{
-					"filter": []map[string]interface{}{
-						{
-							"terms": map[string]interface{}{
-								"id": ids,
-							},
-						},
-						{
-							"range": map[string]interface{}{
-								"timestamp": map[string]interface{}{
-									"gte": start,
-									"lte": end,
-								},
-							},
-						},
-					},
+					"filter": filter,
 				},
 			},
 			"aggs": map[string]interface{}{
@@ -100,7 +109,7 @@ func (c *BatchRuleEvent) GetInfo() (map[string]interface{}, error) {
 			},
 		}
 
-		res, err := models.GetBatchRuleEventInfo(query)
+		res, err := models.GetEventInfo("batch", query)
 		if err != nil {
 			return nil, err
 		}

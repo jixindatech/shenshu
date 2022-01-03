@@ -8,6 +8,29 @@
       :options="options"
       :query-data="queryData"
     />
+    <el-row :gutter="40">
+      <el-col :xs="24" :sm="24" :lg="12">
+        <el-card>
+          <EventPieChart
+            v-if="flag"
+            ref-name="batchPie"
+            title="batch事件分布"
+            :data="batchEvents"
+          />
+        </el-card>
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="12">
+        <el-card>
+          <EventPieChart
+            v-if="flag"
+            ref-name="specificPie"
+            title="specific事件分布"
+            :data="specificEvents"
+          />
+        </el-card>
+      </el-col>
+    </el-row>
+
     <el-row style="margin-top:30px">
       <el-card>
         <EventLineChart
@@ -33,11 +56,12 @@
 import { mapGetters } from 'vuex'
 import PanelGroup from './components/PanelGroup'
 import EventLineChart from './components/EventLineChart'
+import EventPieChart from './components/EventPieChart'
 import * as api from '@/api/site'
 
 export default {
   name: 'Dashboard',
-  components: { PanelGroup, EventLineChart },
+  components: { PanelGroup, EventLineChart, EventPieChart },
   data() {
     return {
       eventTotal: 1000,

@@ -1,5 +1,10 @@
 <template>
-  <div class="dashboard-container">
+  <div
+    v-permission="[
+      'GET:/nginx/site',
+      'GET:/shenshu/site/event']"
+    class="dashboard-container"
+  >
     <panel-group
       :event-total="eventTotal"
       :batch-total="batchTotal"

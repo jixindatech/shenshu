@@ -49,6 +49,15 @@
         />
       </el-card>
     </el-row>
+    <el-row style="margin-top:30px">
+      <el-card>
+        <EventLineChart
+          ref-name="cc"
+          title="cc事件分布"
+          :data="ccEvents"
+        />
+      </el-card>
+    </el-row>
   </div>
 </template>
 

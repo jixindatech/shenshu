@@ -16,6 +16,19 @@
           align="right"
         />
       </el-form-item>
+      <el-form-item label="站点名称:">
+        <el-select v-model="query.site" clearable placeholder="全部站点">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="站点:">
+        <el-input v-model.trim="query.name" />
+      </el-form-item>
       <el-form-item>
         <el-button
           icon="el-icon-search"
@@ -61,6 +74,7 @@
 </template>
 
 <script>
+import * as site from '@/api/site'
 import * as api from '@/api/ccevent'
 
 export default {
@@ -73,7 +87,7 @@ export default {
         size: 20,
         total: 0
       },
-
+      options: [],
       query: {},
       queryTime: [],
       pickerOptions: {
@@ -132,6 +146,17 @@ export default {
 
   methods: {
     async fetchData() {
+      let response = null
+      response = await site.getList({}, 0)
+      const sites = response.data.list
+      this.options = []
+      for (const record of sites) {
+        const item = {}
+        item.label = record.name
+        item.value = record.id
+        this.options.push(item)
+      }
+
       if (this.queryTime.length > 0) {
         this.query['start'] = this.queryTime[0]
         this.query['end'] = this.queryTime[1]

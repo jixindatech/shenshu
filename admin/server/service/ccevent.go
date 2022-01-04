@@ -5,22 +5,46 @@ import "admin/server/models"
 type CCEvent struct {
 	ID uint
 
-	SiteID uint
-	Start  int64
-	End    int64
+	SiteID   uint
+	SiteName string
+	Start    int64
+	End      int64
 
 	Page     int
 	PageSize int
 }
 
 func (c *CCEvent) GetList() (map[string]interface{}, error) {
-	query := map[string]interface{}{
-		"query": map[string]interface{}{
+	start := c.Start / 1000
+	end := c.End / 1000
+	filter := []map[string]interface{}{
+		{
 			"range": map[string]interface{}{
 				"timestamp": map[string]interface{}{
-					"gte": c.Start / 1000,
-					"lte": c.End / 1000,
+					"gte": start,
+					"lte": end,
 				},
+			},
+		},
+	}
+	if c.SiteID > 0 {
+		filter = append(filter, map[string]interface{}{
+			"term": map[string]interface{}{
+				"router": c.SiteID,
+			},
+		})
+	}
+	if len(c.SiteName) > 0 {
+		filter = append(filter, map[string]interface{}{
+			"term": map[string]interface{}{
+				"host": c.SiteName,
+			},
+		})
+	}
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"filter": filter,
 			},
 		},
 	}
@@ -84,5 +108,5 @@ func (c *CCEvent) GetInfo() (map[string]interface{}, error) {
 	res["interval"] = intervalData
 	delete(res, "aggregations")
 
-	return res, nil
+	return map[string]interface{}{"cc": res}, nil
 }

@@ -7,22 +7,46 @@ const maxItemGroup = 10
 type BatchRuleEvent struct {
 	ID uint
 
-	SiteID uint
-	Start  int64
-	End    int64
+	SiteID   uint
+	SiteName string
+	Start    int64
+	End      int64
 
 	Page     int
 	PageSize int
 }
 
 func (c *BatchRuleEvent) GetList() (map[string]interface{}, error) {
-	query := map[string]interface{}{
-		"query": map[string]interface{}{
+	start := c.Start / 1000
+	end := c.End / 1000
+	filter := []map[string]interface{}{
+		{
 			"range": map[string]interface{}{
 				"timestamp": map[string]interface{}{
-					"gte": c.Start / 1000,
-					"lte": c.End / 1000,
+					"gte": start,
+					"lte": end,
 				},
+			},
+		},
+	}
+	if c.SiteID > 0 {
+		filter = append(filter, map[string]interface{}{
+			"term": map[string]interface{}{
+				"router": c.SiteID,
+			},
+		})
+	}
+	if len(c.SiteName) > 0 {
+		filter = append(filter, map[string]interface{}{
+			"term": map[string]interface{}{
+				"host": c.SiteName,
+			},
+		})
+	}
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"filter": filter,
 			},
 		},
 	}
@@ -83,8 +107,8 @@ func (c *BatchRuleEvent) GetInfo() (map[string]interface{}, error) {
 		}
 		if c.SiteID > 0 {
 			filter = append(filter, map[string]interface{}{
-				"terms": map[string]interface{}{
-					"router": []uint{c.SiteID},
+				"term": map[string]interface{}{
+					"router": c.SiteID,
 				},
 			})
 		}

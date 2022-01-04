@@ -11,10 +11,12 @@ import (
 )
 
 type queryCCEventForm struct {
-	Start    int64 `form:"start" validate:"required"`
-	End      int64 `form:"end" validate:"required"`
-	Page     int   `form:"page" validate:"required,min=1"`
-	PageSize int   `form:"size" validate:"required,min=1,max=50"`
+	SiteID   uint   `form:"site"`
+	SiteName string `form:"name"`
+	Start    int64  `form:"start" validate:"required"`
+	End      int64  `form:"end" validate:"required"`
+	Page     int    `form:"page" validate:"required,min=1"`
+	PageSize int    `form:"size" validate:"required,min=1,max=50"`
 }
 
 func GetCCEvents(c *gin.Context) {
@@ -34,6 +36,8 @@ func GetCCEvents(c *gin.Context) {
 	}
 
 	ccSrv := service.CCEvent{
+		SiteID:   form.SiteID,
+		SiteName: form.SiteName,
 		Start:    form.Start,
 		End:      form.End,
 		Page:     form.Page,

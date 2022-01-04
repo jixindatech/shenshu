@@ -496,19 +496,36 @@ func SetupSites() error {
 	}
 	if count == 0 {
 		data := make(map[string]interface{})
-		data["id"] = 0
 		data["values"] = [][]struct{}{}
 		data["timestamp"] = time.Now().Unix()
 
-		siteStr, err := json.Marshal(data)
+		err = setCache(cacheSiteName, data)
 		if err != nil {
-			log.Logger.Error("site", zap.String("err", err.Error()))
 			return err
 		}
 
-		err = cache.Set(cache.CONFIG, cacheSiteName, string(siteStr), 0)
+		err = setCache("shenshu_ip", data)
 		if err != nil {
-			log.Logger.Error("site", zap.String("err", err.Error()))
+			return err
+		}
+
+		err = setCache("shenshu_cc", data)
+		if err != nil {
+			return err
+		}
+
+		err = setCache("shenshu_rule", data)
+		if err != nil {
+			return err
+		}
+
+		err = setCache("shenshu_batch_rule", data)
+		if err != nil {
+			return err
+		}
+
+		err = setCache("shenshu_specific_rule", data)
+		if err != nil {
 			return err
 		}
 

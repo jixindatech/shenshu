@@ -42,6 +42,11 @@ func (c *CCEvent) GetList() (map[string]interface{}, error) {
 		})
 	}
 	query := map[string]interface{}{
+		"sort": map[string]interface{}{
+			"timestamp": map[string]interface{}{
+				"order": "desc",
+			},
+		},
 		"query": map[string]interface{}{
 			"bool": map[string]interface{}{
 				"filter": filter,

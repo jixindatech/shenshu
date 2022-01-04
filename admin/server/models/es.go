@@ -63,7 +63,6 @@ func esSearchList(index string, query map[string]interface{}, page, pageSize int
 		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
 			return nil, fmt.Errorf("Error parsing the response body: %s", err)
 		} else {
-			fmt.Println(e)
 			return nil, fmt.Errorf("[%s] %s: %s",
 				res.Status(),
 				e["error"].(map[string]interface{})["type"],
@@ -98,8 +97,6 @@ func esSearch(index string, query map[string]interface{}) (map[string]interface{
 		esClient.Search.WithTrackTotalHits(true),
 		esClient.Search.WithPretty(),
 	)
-
-	fmt.Println(res)
 
 	if err != nil {
 		return nil, fmt.Errorf("Error getting response: %s", err)

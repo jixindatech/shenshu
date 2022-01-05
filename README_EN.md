@@ -10,6 +10,9 @@ web firewall admin
 2. support ldap login method, email server should be configured, because
 reset user password by email.
 
+## basic schema
+![image](doc/schema.png)
+
 ## config introduction
 1. auth.json based on rbac. only admin role exists，others could be added like admin easily.
 2. basic_model.conf and basic_policy.csv based on casbin for api authority check, others could be added like admin easily.

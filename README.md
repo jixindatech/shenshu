@@ -12,6 +12,8 @@ web防火墙管理端
 其它角色可以自己独立配置。
 3. 关于config.yaml，database是mysql存放所有的配置数据， redis是缓存，神荼网关会从redis里面定时拉取
 配置数据，elasticsearch是存放神荼网关的事件，跟神荼网关相关的redis和elasticsearch配置要跟网关一致。
+4. adminpassword 是管理员密码，如果存在这个字段，启动时就会修改管理员密码为这个配置，
+启动之后，可以删除这个字段即可。
 
 ##Contributing
 欢迎issue和star

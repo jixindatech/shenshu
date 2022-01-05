@@ -1,7 +1,8 @@
 # 神荼
 中文 | [English](./README_EN.md)
 web防火墙管理端
-
+##网关地址
+[网关](https://github.com/jixindatech/shenshu-gw) 地址
 ##安装
 1. 前端用vue，后端用golang，正常安装即可
 

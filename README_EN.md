@@ -2,6 +2,9 @@
 English | [中文](./README.md)
 web firewall admin
 
+## gateway
+[gateway](https://github.com/jixindatech/shenshu-gw) address
+
 ## install
 1. Web component adapts vue，server use golang，install easily.
 

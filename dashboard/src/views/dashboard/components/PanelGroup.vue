@@ -30,6 +30,7 @@
     </el-form>
 
     <el-row :gutter="40" class="panel-group">
+      <!--
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-people">
@@ -43,6 +44,7 @@
           </div>
         </div>
       </el-col>
+      -->
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper icon-people">

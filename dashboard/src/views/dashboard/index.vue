@@ -132,7 +132,9 @@ export default {
       this.ccEvents.items = response.data.item.cc
       this.ccEvents.start = start
       this.ccEvents.end = end
-      this.ccTotal = this.ccEvents.items.count
+      for (var item0 in this.ccEvents.items) {
+        this.ccTotal = this.ccTotal + this.ccEvents.items[item0].count
+      }
 
       this.batchEvents = {}
       this.batchEvents.items = response.data.item.batch

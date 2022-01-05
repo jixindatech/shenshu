@@ -7,6 +7,8 @@ web firewall admin
 
 ## install
 1. Web component adapts vue，server use golang，install easily.
+2. support ldap login method, email server should be configured, because
+reset user password by email.
 
 ## config introduction
 1. auth.json based on rbac. only admin role exists，others could be added like admin easily.

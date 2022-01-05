@@ -4,7 +4,8 @@ web防火墙管理端
 ##网关地址
 [网关](https://github.com/jixindatech/shenshu-gw) 地址
 ##安装
-1. 前端用vue，后端用golang，正常安装即可
+1. 前端用vue，后端用golang，正常安装即可。
+2. 支持ldap登陆，邮件服务器需要配置，否则不能重置用户密码。
 
 ## 配置文件说明
 1. auth.json 是基于rbac的权限，写在了配置文件中，默认只有admin角色，可以自定义配置

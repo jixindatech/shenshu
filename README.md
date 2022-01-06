@@ -20,7 +20,7 @@ web防火墙管理端
 4. adminpassword 是管理员密码，如果存在这个字段，启动时就会修改管理员密码为这个配置，
 启动之后，可以删除这个字段即可。
 
-##Contributing
+## Contributing
 欢迎issue和star
 
 ## Discussion Group
